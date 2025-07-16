@@ -1,0 +1,17 @@
+[gd_scene load_steps=4 format=3 uid="uid://doymmdgdlp6g0"]
+
+[ext_resource type="Script" path="res://Basketball/Basketball.cs" id="1_bklda"]
+
+[sub_resource type="SphereMesh" id="SphereMesh_e87ox"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_a7gri"]
+
+[node name="Basketball" type="StaticBody3D"]
+script = ExtResource("1_bklda")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("SphereMesh_e87ox")
+skeleton = NodePath("")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("SphereShape3D_a7gri")

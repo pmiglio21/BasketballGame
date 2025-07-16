@@ -1,6 +1,7 @@
-[gd_scene load_steps=4 format=3 uid="uid://67mof4iojay2"]
+[gd_scene load_steps=5 format=3 uid="uid://67mof4iojay2"]
 
 [ext_resource type="Script" path="res://BasketballPlayers/BasketballPlayer.cs" id="1_kr2bl"]
+[ext_resource type="PackedScene" uid="uid://doymmdgdlp6g0" path="res://Basketball/Basketball.tscn" id="2_tw5ys"]
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_mulv8"]
 
@@ -9,15 +10,15 @@
 [node name="BasketballPlayer" type="CharacterBody3D"]
 script = ExtResource("1_kr2bl")
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+[node name="CharacterBodyMesh" type="MeshInstance3D" parent="."]
 mesh = SubResource("CapsuleMesh_mulv8")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 shape = SubResource("CapsuleShape3D_mc2ct")
 
-[node name="Camera3D" type="Camera3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 0.866025, 0.5, 0, -0.5, 0.866025, 0, 4, 5)
-
 [node name="OmniLight3D" type="OmniLight3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.04226, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.51982, 0)
 omni_range = 10.0
+
+[node name="Basketball" parent="." instance=ExtResource("2_tw5ys")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1.23252)

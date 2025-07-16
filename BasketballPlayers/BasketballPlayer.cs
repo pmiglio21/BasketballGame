@@ -1,5 +1,7 @@
 using Godot;
 using System;
+using System.Runtime.CompilerServices;
+using static Godot.TextServer;
 
 namespace BasketballPlayer
 {
@@ -17,8 +19,9 @@ namespace BasketballPlayer
 
         float moveDeadzone = 0.32f;
         protected Vector3 moveDirection = Vector3.Zero;
+        protected float moveAngle = 0;
 
-        float speed = 10.0f;
+        float speed = 20.0f;
 
         #endregion
 
@@ -50,6 +53,7 @@ namespace BasketballPlayer
                 var normalizedMoveInput = moveInput.Normalized();
 
                 moveDirection = new Vector3(normalizedMoveInput.X, 0, normalizedMoveInput.Z);
+                //moveAngle = new Vector3(normalizedMoveInput.X, 0, normalizedMoveInput.Z);
             }
             else
             {
@@ -65,8 +69,18 @@ namespace BasketballPlayer
         private void MovePlayer()
         {
             Velocity = moveDirection * speed;
-
             MoveAndSlide();
+
+            if (moveDirection != Vector3.Zero)
+            {
+                //LookAt((GlobalPosition + moveDirection), Vector3.Up);
+
+                var newAngle = Mathf.LerpAngle(GlobalRotation.Y, Mathf.Atan2(moveDirection.X, moveDirection.Z), 1);
+
+                GlobalRotation = new Vector3(GlobalRotation.X, newAngle, GlobalRotation.Z);
+
+                //Rotation = GlobalPosition.Rotated(moveDirection, 0);
+            }
         }
     }
 }
