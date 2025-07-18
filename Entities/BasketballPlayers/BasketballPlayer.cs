@@ -1,12 +1,22 @@
 using Godot;
+using Levels;
 using System;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 
 namespace Entities
 {
-    public partial class BasketballPlayer : CharacterBody3D
+    public partial class BasketballPlayer : CharacterBody3D, INotifyPropertyChanged
     {
+        #region Parents
+
+        public BasketballCourtLevel ParentBasketballCourtLevel = new BasketballCourtLevel();
+
+        #endregion
+
         #region Components
 
+        private StaticBody3D _possessionIndicator = new StaticBody3D();
 
         #endregion
 
@@ -14,7 +24,20 @@ namespace Entities
 
         [Export]
         public string DeviceIdentifier = "1";
-        public bool HasBasketball = false;
+
+        public bool HasBasketball
+        {
+            get { return _hasBasketball; } 
+            set
+            {
+                if (_hasBasketball != value)
+                {
+                    _hasBasketball = value;
+                    OnPropertyChanged(nameof(HasBasketball));
+                }
+            }
+        }
+        private bool _hasBasketball = false;
 
         #endregion
 
@@ -36,6 +59,26 @@ namespace Entities
         // Called when the node enters the scene tree for the first time.
         public override void _Ready()
         {
+            ParentBasketballCourtLevel = GetParent() as BasketballCourtLevel;
+
+            _possessionIndicator = GetNode("PossessionIndicator") as StaticBody3D;
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected void OnPropertyChanged([CallerMemberName] string? propertyName = null)
+        {
+            if (propertyName == nameof(HasBasketball))
+            {
+                if (HasBasketball)
+                {
+                    _possessionIndicator.Show();
+                }
+                else
+                {
+                    _possessionIndicator.Hide();
+                }
+            }
         }
 
         // Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -43,7 +86,24 @@ namespace Entities
         {
             if (HasBasketball)
             {
+                GetPassTargetInput();
+
                 GetMovementInput();
+            }
+        }
+
+
+        protected void GetPassTargetInput()
+        {
+            //Use ParentBasketballCourtLevel.AllBasketballPlayers to find nearest player left and right
+
+            if (Input.IsActionJustPressed($"SelectPassTargetLeft_{DeviceIdentifier}"))
+            {
+                GD.Print($"Player {DeviceIdentifier} passed the basketball.");
+            }
+            else if (Input.IsActionJustPressed($"SelectPassTargetLeft_{DeviceIdentifier}"))
+            {
+                GD.Print($"Player {DeviceIdentifier} passed the basketball.");
             }
         }
 

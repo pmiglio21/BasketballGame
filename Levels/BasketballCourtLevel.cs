@@ -4,7 +4,7 @@ using Entities;
 using System;
 using System.Collections.Generic;
 
-namespace BasketballCourtLevel
+namespace Levels
 {
     public partial class BasketballCourtLevel : Node3D
     {

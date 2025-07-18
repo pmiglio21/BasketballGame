@@ -1,10 +1,18 @@
-[gd_scene load_steps=4 format=3 uid="uid://67mof4iojay2"]
+[gd_scene load_steps=8 format=3 uid="uid://67mof4iojay2"]
 
 [ext_resource type="Script" path="res://Entities/BasketballPlayers/BasketballPlayer.cs" id="1_kr2bl"]
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_mulv8"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_mc2ct"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_nega0"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_yw1f0"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_bgp65"]
+
+[sub_resource type="SphereMesh" id="SphereMesh_cv76t"]
 
 [node name="BasketballPlayer" type="CharacterBody3D" groups=["BasketballPlayer"]]
 script = ExtResource("1_kr2bl")
@@ -18,3 +26,34 @@ shape = SubResource("CapsuleShape3D_mc2ct")
 [node name="OmniLight3D" type="OmniLight3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.51982, 0)
 omni_range = 10.0
+
+[node name="PossessionIndicator" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.6, 0)
+visible = false
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="PossessionIndicator"]
+transform = Transform3D(0.353553, -0.353553, 0, 0.353553, 0.353553, 0, 0, 0, 0.5, 0, 0, 0)
+shape = SubResource("BoxShape3D_nega0")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="PossessionIndicator"]
+transform = Transform3D(0.353553, -0.353553, 0, 0.353553, 0.353553, 0, 0, 0, 0.5, 0, 0, 0)
+mesh = SubResource("BoxMesh_yw1f0")
+skeleton = NodePath("../..")
+
+[node name="OmniLight3D" type="OmniLight3D" parent="PossessionIndicator"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+
+[node name="PassTargetIndicator" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.6, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="PassTargetIndicator"]
+transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0, 0)
+shape = SubResource("SphereShape3D_bgp65")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="PassTargetIndicator"]
+transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0, 0)
+mesh = SubResource("SphereMesh_cv76t")
+skeleton = NodePath("../..")
+
+[node name="OmniLight3D" type="OmniLight3D" parent="PassTargetIndicator"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
