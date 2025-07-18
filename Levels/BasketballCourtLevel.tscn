@@ -1,15 +1,15 @@
-[gd_scene load_steps=4 format=3 uid="uid://ckacamuxb6baa"]
+[gd_scene load_steps=6 format=3 uid="uid://ckacamuxb6baa"]
 
-[ext_resource type="PackedScene" uid="uid://67mof4iojay2" path="res://BasketballPlayers/BasketballPlayer.tscn" id="1_fngcb"]
+[ext_resource type="Script" path="res://Levels/BasketballCourtLevel.cs" id="1_fd8c3"]
+[ext_resource type="PackedScene" uid="uid://67mof4iojay2" path="res://Entities/BasketballPlayers/BasketballPlayer.tscn" id="1_omy0y"]
+[ext_resource type="PackedScene" uid="uid://doymmdgdlp6g0" path="res://Entities/Basketball/Basketball.tscn" id="3_aa00t"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_cmsn1"]
 
 [sub_resource type="BoxMesh" id="BoxMesh_4rm8i"]
 
 [node name="BasketballCourtLevel" type="Node3D"]
-
-[node name="BasketballPlayer" parent="." instance=ExtResource("1_fngcb")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0)
+script = ExtResource("1_fd8c3")
 
 [node name="TestCubeMesh" type="StaticBody3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3, 1.5, 0)
@@ -36,3 +36,17 @@ skeleton = NodePath("../..")
 
 [node name="Camera3D" type="Camera3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 0.866025, 0.5, 0, -0.5, 0.866025, 0, 6, 7)
+
+[node name="BasketballPlayer" parent="." instance=ExtResource("1_omy0y")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8, 2, 0)
+
+[node name="BasketballPlayer2" parent="." instance=ExtResource("1_omy0y")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 2, 0)
+DeviceIdentifier = "2"
+
+[node name="BasketballPlayer3" parent="." instance=ExtResource("1_omy0y")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 2, 0)
+DeviceIdentifier = "3"
+
+[node name="Basketball" parent="." instance=ExtResource("3_aa00t")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 2, 0)

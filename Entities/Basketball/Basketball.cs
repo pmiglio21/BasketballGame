@@ -1,10 +1,12 @@
 using Godot;
 using System;
 
-namespace Basketball
+namespace Entities
 {
     public partial class Basketball : Node3D
     {
+        public BasketballPlayer ParentPlayer = null;
+
         // Called when the node enters the scene tree for the first time.
         public override void _Ready()
         {

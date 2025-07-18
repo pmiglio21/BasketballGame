@@ -1,14 +1,20 @@
 using Godot;
 using System;
-using System.Runtime.CompilerServices;
-using static Godot.TextServer;
 
-namespace BasketballPlayer
+namespace Entities
 {
     public partial class BasketballPlayer : CharacterBody3D
     {
         #region Components
 
+
+        #endregion
+
+        #region Player Identification Properties
+
+        [Export]
+        public string DeviceIdentifier = "1";
+        public bool HasBasketball = false;
 
         #endregion
 
@@ -25,11 +31,7 @@ namespace BasketballPlayer
 
         #endregion
 
-        #region Player Identification Properties
-
-        public string DeviceIdentifier = "1";
-
-        #endregion
+        
 
         // Called when the node enters the scene tree for the first time.
         public override void _Ready()
@@ -39,7 +41,10 @@ namespace BasketballPlayer
         // Called every frame. 'delta' is the elapsed time since the previous frame.
         public override void _Process(double delta)
         {
-            GetMovementInput();
+            if (HasBasketball)
+            {
+                GetMovementInput();
+            }
         }
 
         protected void GetMovementInput()
@@ -75,7 +80,7 @@ namespace BasketballPlayer
             {
                 //LookAt((GlobalPosition + moveDirection), Vector3.Up);
 
-                var newAngle = Mathf.LerpAngle(GlobalRotation.Y, Mathf.Atan2(moveDirection.X, moveDirection.Z), 1);
+                var newAngle = Mathf.LerpAngle(GlobalRotation.Y, Mathf.Atan2(moveDirection.X, moveDirection.Z), .1f);
 
                 GlobalRotation = new Vector3(GlobalRotation.X, newAngle, GlobalRotation.Z);
 
