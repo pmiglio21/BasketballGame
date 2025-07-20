@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Runtime.CompilerServices;
 
 namespace Entities
 {
@@ -90,7 +89,7 @@ namespace Entities
 
         #endregion
 
-        public BasketballPlayer TargetBasketballPlayer = null;
+        public BasketballPlayer PassTargetPlayer = null;
 
         // Called when the node enters the scene tree for the first time.
         public override void _Ready()
@@ -100,11 +99,14 @@ namespace Entities
             _possessionIndicator = GetNode("PossessionIndicator") as StaticBody3D;
 
             _passTargetIndicator = GetNode("PassTargetIndicator") as StaticBody3D;
+
+            //Start target on the current player so TargetBasketballPlayer has something to go off of on the first target-selection input
+            PassTargetPlayer = this;
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        protected void OnPropertyChanged([CallerMemberName] string? propertyName = null)
+        protected void OnPropertyChanged(string propertyName = null)
         {
             if (propertyName == nameof(HasBasketball))
             {
@@ -135,45 +137,41 @@ namespace Entities
         {
             if (Input.IsActionJustPressed($"SelectPassTargetLeft_{DeviceIdentifier}"))
             {
-                List<BasketballPlayer> availablePlayers = GetOrganizedAvailablePassTargets(true);
-
-                int indexOfCurrentTargetPlayer = availablePlayers.IndexOf(TargetBasketballPlayer);
-
-                if (indexOfCurrentTargetPlayer == 0)
-                {
-                    TargetBasketballPlayer = availablePlayers.Last();
-                }
-                else
-                {
-                    TargetBasketballPlayer = availablePlayers.ElementAt(indexOfCurrentTargetPlayer - 1);
-                }
-
-                TargetBasketballPlayer.IsTargetedForPass = true;
-
-                //GD.Print($"Player {DeviceIdentifier} will pass to Player {TargetBasketballPlayer?.DeviceIdentifier}\n");
+                FindPassTargetPlayer(true);
             }
             else if (Input.IsActionJustPressed($"SelectPassTargetRight_{DeviceIdentifier}"))
             {
-                List<BasketballPlayer> availablePlayers = GetOrganizedAvailablePassTargets(false);
-
-                int indexOfCurrentTargetPlayer = availablePlayers.IndexOf(TargetBasketballPlayer);
-
-                if (indexOfCurrentTargetPlayer == availablePlayers.Count - 1)
-                {
-                    TargetBasketballPlayer = availablePlayers.First();
-                }
-                else
-                {
-                    TargetBasketballPlayer = availablePlayers.ElementAt(indexOfCurrentTargetPlayer + 1);
-                }
-
-                TargetBasketballPlayer.IsTargetedForPass = true;
-
-                //GD.Print($"Player {DeviceIdentifier} will pass to Player {TargetBasketballPlayer?.DeviceIdentifier}\n");
+                FindPassTargetPlayer(false);
             }
         }
 
-        private List<BasketballPlayer> GetOrganizedAvailablePassTargets(bool fromLeftToRight = true)
+
+        private void FindPassTargetPlayer(bool fromLeftToRight)
+        {
+            List<BasketballPlayer> availablePlayers = GetOrganizedAvailablePassTargets(fromLeftToRight);
+
+            if (PassTargetPlayer != this)
+            {
+                availablePlayers.Remove(this);
+            }
+
+            int indexOfCurrentTargetPlayer = availablePlayers.IndexOf(PassTargetPlayer);
+
+            if (indexOfCurrentTargetPlayer == 0)
+            {
+                PassTargetPlayer = availablePlayers.Last();
+            }
+            else
+            {
+                PassTargetPlayer = availablePlayers.ElementAt(indexOfCurrentTargetPlayer - 1);
+            }
+
+            PassTargetPlayer.IsTargetedForPass = true;
+
+            //GD.Print($"Player {DeviceIdentifier} will pass to Player {PassTargetPlayer?.DeviceIdentifier}\n");
+        }
+
+        private List<BasketballPlayer> GetOrganizedAvailablePassTargets(bool fromLeftToRight)
         {
             List<BasketballPlayer> availablePassTargets;
 
@@ -188,9 +186,6 @@ namespace Entities
             {
                 availablePassTargets = ParentBasketballCourtLevel.AllBasketballPlayers.OrderByDescending(player => player.GlobalPosition.X).ToList();
             }
-
-            //Remove the current player from the list of available pass targets
-            availablePassTargets.Remove(this);
 
             return availablePassTargets;
         }

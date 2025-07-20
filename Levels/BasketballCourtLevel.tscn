@@ -48,5 +48,9 @@ DeviceIdentifier = "2"
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 2, 0)
 DeviceIdentifier = "3"
 
+[node name="BasketballPlayer4" parent="." instance=ExtResource("1_omy0y")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9, 2, 0)
+DeviceIdentifier = "3"
+
 [node name="Basketball" parent="." instance=ExtResource("3_aa00t")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 2, 0)
