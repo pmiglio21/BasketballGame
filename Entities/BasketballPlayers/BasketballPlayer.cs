@@ -1,7 +1,9 @@
 using Godot;
 using Levels;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Runtime.CompilerServices;
 
 namespace Entities
@@ -131,63 +133,66 @@ namespace Entities
 
         protected void GetPassTargetInput()
         {
-            //Use ParentBasketballCourtLevel.AllBasketballPlayers to find nearest player left and right
-
             if (Input.IsActionJustPressed($"SelectPassTargetLeft_{DeviceIdentifier}"))
             {
-                float distanceToNearestPlayer = float.MaxValue;
+                List<BasketballPlayer> availablePlayers = GetOrganizedAvailablePassTargets(true);
 
-                foreach (BasketballPlayer player in ParentBasketballCourtLevel.AllBasketballPlayers)
+                int indexOfCurrentTargetPlayer = availablePlayers.IndexOf(TargetBasketballPlayer);
+
+                if (indexOfCurrentTargetPlayer == 0)
                 {
-                    player.IsTargetedForPass = false;
-
-                    if (player != this && player.GlobalPosition.X <= GlobalPosition.X)
-                    {
-                        float distanceToCurrentPlayer = GlobalPosition.DistanceTo(player.GlobalPosition);
-
-                        if (distanceToCurrentPlayer < distanceToNearestPlayer)
-                        {
-                            distanceToNearestPlayer = distanceToCurrentPlayer;
-                            TargetBasketballPlayer = player;
-                        }
-                    }
+                    TargetBasketballPlayer = availablePlayers.Last();
+                }
+                else
+                {
+                    TargetBasketballPlayer = availablePlayers.ElementAt(indexOfCurrentTargetPlayer - 1);
                 }
 
-                if (TargetBasketballPlayer != null)
-                {
-                    TargetBasketballPlayer.IsTargetedForPass = true;
-                }
+                TargetBasketballPlayer.IsTargetedForPass = true;
 
-                GD.Print($"Player {DeviceIdentifier} will pass to Player {TargetBasketballPlayer?.DeviceIdentifier}");
+                //GD.Print($"Player {DeviceIdentifier} will pass to Player {TargetBasketballPlayer?.DeviceIdentifier}\n");
             }
             else if (Input.IsActionJustPressed($"SelectPassTargetRight_{DeviceIdentifier}"))
             {
-                float distanceToNearestPlayer = float.MaxValue;
+                List<BasketballPlayer> availablePlayers = GetOrganizedAvailablePassTargets(false);
 
-                foreach (BasketballPlayer player in ParentBasketballCourtLevel.AllBasketballPlayers)
+                int indexOfCurrentTargetPlayer = availablePlayers.IndexOf(TargetBasketballPlayer);
+
+                if (indexOfCurrentTargetPlayer == availablePlayers.Count - 1)
                 {
-                    player.IsTargetedForPass = false;
-
-                    if (player != this && player.GlobalPosition.X >= GlobalPosition.X)
-                    {
-                        float distanceToCurrentPlayer = GlobalPosition.DistanceTo(player.GlobalPosition);
-
-                        if (distanceToCurrentPlayer < distanceToNearestPlayer)
-                        {
-                            distanceToNearestPlayer = distanceToCurrentPlayer;
-                            TargetBasketballPlayer = player;
-                            
-                        }
-                    }
+                    TargetBasketballPlayer = availablePlayers.First();
+                }
+                else
+                {
+                    TargetBasketballPlayer = availablePlayers.ElementAt(indexOfCurrentTargetPlayer + 1);
                 }
 
-                if (TargetBasketballPlayer != null)
-                {
-                    TargetBasketballPlayer.IsTargetedForPass = true;
-                }
+                TargetBasketballPlayer.IsTargetedForPass = true;
 
-                GD.Print($"Player {DeviceIdentifier} will pass to Player {TargetBasketballPlayer?.DeviceIdentifier}");
+                //GD.Print($"Player {DeviceIdentifier} will pass to Player {TargetBasketballPlayer?.DeviceIdentifier}\n");
             }
+        }
+
+        private List<BasketballPlayer> GetOrganizedAvailablePassTargets(bool fromLeftToRight = true)
+        {
+            List<BasketballPlayer> availablePassTargets;
+
+            //Reset pass target indicators for all players
+            ParentBasketballCourtLevel.AllBasketballPlayers.ForEach(player => player.IsTargetedForPass = false);
+
+            if (fromLeftToRight)
+            {
+                availablePassTargets = ParentBasketballCourtLevel.AllBasketballPlayers.OrderBy(player => player.GlobalPosition.X).ToList();
+            }
+            else
+            {
+                availablePassTargets = ParentBasketballCourtLevel.AllBasketballPlayers.OrderByDescending(player => player.GlobalPosition.X).ToList();
+            }
+
+            //Remove the current player from the list of available pass targets
+            availablePassTargets.Remove(this);
+
+            return availablePassTargets;
         }
 
         protected void GetMovementInput()
