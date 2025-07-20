@@ -17,6 +17,8 @@ namespace Entities
         #region Components
 
         private StaticBody3D _possessionIndicator = new StaticBody3D();
+        
+        private StaticBody3D _passTargetIndicator = new StaticBody3D();
 
         #endregion
 
@@ -25,19 +27,51 @@ namespace Entities
         [Export]
         public string DeviceIdentifier = "1";
 
+        #endregion
+
+        #region State Properties
+
         public bool HasBasketball
         {
-            get { return _hasBasketball; } 
+            get { return _hasBasketball; }
             set
             {
                 if (_hasBasketball != value)
                 {
                     _hasBasketball = value;
                     OnPropertyChanged(nameof(HasBasketball));
+
+                    if (_hasBasketball)
+                    {
+                        IsTargetedForPass = false;
+                    }
                 }
             }
         }
         private bool _hasBasketball = false;
+
+        public bool IsTargetedForPass
+        {
+            get { return _isTargetedForPass; }
+            set
+            {
+                if (_isTargetedForPass != value)
+                {
+                    _isTargetedForPass = value;
+                    OnPropertyChanged(nameof(IsTargetedForPass));
+
+                    if (_isTargetedForPass)
+                    {
+                        _passTargetIndicator.Show();
+                    }
+                    else
+                    {
+                       _passTargetIndicator.Hide();
+                    }
+                }
+            }
+        }
+        private bool _isTargetedForPass = false;
 
         #endregion
 
@@ -54,7 +88,7 @@ namespace Entities
 
         #endregion
 
-        
+        public BasketballPlayer TargetBasketballPlayer = null;
 
         // Called when the node enters the scene tree for the first time.
         public override void _Ready()
@@ -62,6 +96,8 @@ namespace Entities
             ParentBasketballCourtLevel = GetParent() as BasketballCourtLevel;
 
             _possessionIndicator = GetNode("PossessionIndicator") as StaticBody3D;
+
+            _passTargetIndicator = GetNode("PassTargetIndicator") as StaticBody3D;
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -99,11 +135,58 @@ namespace Entities
 
             if (Input.IsActionJustPressed($"SelectPassTargetLeft_{DeviceIdentifier}"))
             {
-                GD.Print($"Player {DeviceIdentifier} passed the basketball.");
+                float distanceToNearestPlayer = float.MaxValue;
+
+                foreach (BasketballPlayer player in ParentBasketballCourtLevel.AllBasketballPlayers)
+                {
+                    player.IsTargetedForPass = false;
+
+                    if (player != this && player.GlobalPosition.X <= GlobalPosition.X)
+                    {
+                        float distanceToCurrentPlayer = GlobalPosition.DistanceTo(player.GlobalPosition);
+
+                        if (distanceToCurrentPlayer < distanceToNearestPlayer)
+                        {
+                            distanceToNearestPlayer = distanceToCurrentPlayer;
+                            TargetBasketballPlayer = player;
+                        }
+                    }
+                }
+
+                if (TargetBasketballPlayer != null)
+                {
+                    TargetBasketballPlayer.IsTargetedForPass = true;
+                }
+
+                GD.Print($"Player {DeviceIdentifier} will pass to Player {TargetBasketballPlayer?.DeviceIdentifier}");
             }
-            else if (Input.IsActionJustPressed($"SelectPassTargetLeft_{DeviceIdentifier}"))
+            else if (Input.IsActionJustPressed($"SelectPassTargetRight_{DeviceIdentifier}"))
             {
-                GD.Print($"Player {DeviceIdentifier} passed the basketball.");
+                float distanceToNearestPlayer = float.MaxValue;
+
+                foreach (BasketballPlayer player in ParentBasketballCourtLevel.AllBasketballPlayers)
+                {
+                    player.IsTargetedForPass = false;
+
+                    if (player != this && player.GlobalPosition.X >= GlobalPosition.X)
+                    {
+                        float distanceToCurrentPlayer = GlobalPosition.DistanceTo(player.GlobalPosition);
+
+                        if (distanceToCurrentPlayer < distanceToNearestPlayer)
+                        {
+                            distanceToNearestPlayer = distanceToCurrentPlayer;
+                            TargetBasketballPlayer = player;
+                            
+                        }
+                    }
+                }
+
+                if (TargetBasketballPlayer != null)
+                {
+                    TargetBasketballPlayer.IsTargetedForPass = true;
+                }
+
+                GD.Print($"Player {DeviceIdentifier} will pass to Player {TargetBasketballPlayer?.DeviceIdentifier}");
             }
         }
 
