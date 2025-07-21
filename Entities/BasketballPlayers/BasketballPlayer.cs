@@ -137,14 +137,51 @@ namespace Entities
         {
             if (HasBasketball)
             {
+                GetMovementInput();
+
+                GetShootBasketballInput();
+
                 GetPassTargetInput();
 
                 if (PassTargetPlayer != this)
                 {
                     GetPassBallInput();
                 }
+            }
+        }
 
-                GetMovementInput();
+        protected void GetMovementInput()
+        {
+            moveInput.X = Input.GetActionStrength($"MoveEast_{TeamIdentifier}") - Input.GetActionStrength($"MoveWest_{TeamIdentifier}");
+            moveInput.Z = Input.GetActionStrength($"MoveSouth_{TeamIdentifier}") - Input.GetActionStrength($"MoveNorth_{TeamIdentifier}");
+
+            if (Vector3.Zero.DistanceTo(moveInput) > moveDeadzone * Math.Sqrt(2.0))
+            {
+                //float speed = (float)((float)(100 + CharacterStats.Speed) / 100);
+                var normalizedMoveInput = moveInput.Normalized();
+
+                moveDirection = new Vector3(normalizedMoveInput.X, 0, normalizedMoveInput.Z);
+                //moveAngle = new Vector3(normalizedMoveInput.X, 0, normalizedMoveInput.Z);
+            }
+            else
+            {
+                moveDirection = Vector3.Zero;
+            }
+        }
+
+        protected void GetShootBasketballInput()
+        {
+            if (Input.IsActionJustPressed($"ShootBall_{TeamIdentifier}"))
+            {
+                GD.Print($"ShootBall triggered by player {PlayerIdentifier}");
+
+                this.HasBasketball = false;
+
+                ParentBasketballCourtLevel.Basketball.Reparent(ParentBasketballCourtLevel.HoopArea);
+
+                ParentBasketballCourtLevel.Basketball.GlobalPosition = ParentBasketballCourtLevel.HoopArea.GlobalPosition + new Vector3(0, 1f, 0);
+
+                PassTargetPlayer = this;
             }
         }
 
@@ -223,25 +260,6 @@ namespace Entities
                 ParentBasketballCourtLevel.Basketball.GlobalPosition = PassTargetPlayer.GlobalPosition + new Vector3(0, 0, 1.5f);
 
                 PassTargetPlayer = this;
-            }
-        }
-
-        protected void GetMovementInput()
-        {
-            moveInput.X = Input.GetActionStrength($"MoveEast_{TeamIdentifier}") - Input.GetActionStrength($"MoveWest_{TeamIdentifier}");
-            moveInput.Z = Input.GetActionStrength($"MoveSouth_{TeamIdentifier}") - Input.GetActionStrength($"MoveNorth_{TeamIdentifier}");
-
-            if (Vector3.Zero.DistanceTo(moveInput) > moveDeadzone * Math.Sqrt(2.0))
-            {
-                //float speed = (float)((float)(100 + CharacterStats.Speed) / 100);
-                var normalizedMoveInput = moveInput.Normalized();
-
-                moveDirection = new Vector3(normalizedMoveInput.X, 0, normalizedMoveInput.Z);
-                //moveAngle = new Vector3(normalizedMoveInput.X, 0, normalizedMoveInput.Z);
-            }
-            else
-            {
-                moveDirection = Vector3.Zero;
             }
         }
 

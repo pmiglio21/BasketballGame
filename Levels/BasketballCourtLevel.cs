@@ -8,15 +8,24 @@ namespace Levels
 {
     public partial class BasketballCourtLevel : Node3D
     {
+        #region Children Objects
+
         public Basketball Basketball = new Basketball();
+
+        public StaticBody3D BasketballHoop = new StaticBody3D();
+
+        public Area3D HoopArea = new Area3D();
 
         public List<BasketballPlayer> AllBasketballPlayers = new List<BasketballPlayer>();
 
+        #endregion
 
         // Called when the node enters the scene tree for the first time.
         public override void _Ready()
         {
             Basketball = GetNode("Basketball") as Basketball;
+            BasketballHoop = GetNode("BasketballHoop") as StaticBody3D;
+            HoopArea = BasketballHoop.GetNode("HoopArea") as Area3D;
 
             GetAllBasketballPlayers();
         }
