@@ -25,8 +25,14 @@ namespace Entities
 
         #region Player Identification Properties
 
+        //[Export]
+        //public string DeviceIdentifier = "1";
+
         [Export]
-        public string DeviceIdentifier = "1";
+        public string TeamIdentifier = "1";
+
+        [Export]
+        public string PlayerIdentifier = "1";
 
         #endregion
 
@@ -44,7 +50,12 @@ namespace Entities
 
                     if (_hasBasketball)
                     {
+                        //_possessionIndicator.Show();
                         IsTargetedForPass = false;
+                    }
+                    else
+                    {
+                        //_possessionIndicator.Hide();
                     }
                 }
             }
@@ -128,18 +139,24 @@ namespace Entities
             {
                 GetPassTargetInput();
 
+                if (PassTargetPlayer != this)
+                {
+                    GetPassBallInput();
+                }
+
                 GetMovementInput();
             }
         }
 
+        #region Pass Target Input
 
         protected void GetPassTargetInput()
         {
-            if (Input.IsActionJustPressed($"SelectPassTargetLeft_{DeviceIdentifier}"))
+            if (Input.IsActionJustPressed($"SelectPassTargetLeft_{TeamIdentifier}"))
             {
                 FindPassTargetPlayer(true);
             }
-            else if (Input.IsActionJustPressed($"SelectPassTargetRight_{DeviceIdentifier}"))
+            else if (Input.IsActionJustPressed($"SelectPassTargetRight_{TeamIdentifier}"))
             {
                 FindPassTargetPlayer(false);
             }
@@ -190,10 +207,29 @@ namespace Entities
             return availablePassTargets;
         }
 
+        #endregion
+
+        protected void GetPassBallInput()
+        {
+            if (Input.IsActionJustPressed($"PassBall_{TeamIdentifier}"))
+            {
+                GD.Print($"PassBall triggered by player {PlayerIdentifier}");
+
+                PassTargetPlayer.HasBasketball = true;
+                this.HasBasketball = false;
+
+                ParentBasketballCourtLevel.Basketball.Reparent(PassTargetPlayer);
+
+                ParentBasketballCourtLevel.Basketball.GlobalPosition = PassTargetPlayer.GlobalPosition + new Vector3(0, 0, 1.5f);
+
+                PassTargetPlayer = this;
+            }
+        }
+
         protected void GetMovementInput()
         {
-            moveInput.X = Input.GetActionStrength($"MoveEast_{DeviceIdentifier}") - Input.GetActionStrength($"MoveWest_{DeviceIdentifier}");
-            moveInput.Z = Input.GetActionStrength($"MoveSouth_{DeviceIdentifier}") - Input.GetActionStrength($"MoveNorth_{DeviceIdentifier}");
+            moveInput.X = Input.GetActionStrength($"MoveEast_{TeamIdentifier}") - Input.GetActionStrength($"MoveWest_{TeamIdentifier}");
+            moveInput.Z = Input.GetActionStrength($"MoveSouth_{TeamIdentifier}") - Input.GetActionStrength($"MoveNorth_{TeamIdentifier}");
 
             if (Vector3.Zero.DistanceTo(moveInput) > moveDeadzone * Math.Sqrt(2.0))
             {
@@ -211,7 +247,10 @@ namespace Entities
 
         public override void _PhysicsProcess(double delta)
         {
-            MovePlayer();
+            if (HasBasketball)
+            {
+                MovePlayer();
+            }
         }
 
         private void MovePlayer()
