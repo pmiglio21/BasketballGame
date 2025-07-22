@@ -47,11 +47,19 @@ namespace Levels
                 {
                     BasketballPlayer basketballPlayer = basketballPlayerRootNode as BasketballPlayer;
 
-                    Basketball.Reparent(basketballPlayer);
-                    basketballPlayer.HasBasketball = true;
-
-                    Basketball.GlobalPosition = basketballPlayer.GlobalPosition + new Vector3(0, 0, 1.5f);
+                    GiveBasketballToPlayer(basketballPlayer);
                 }
+            }
+        }
+
+        private void GiveBasketballToPlayer(BasketballPlayer basketballPlayer)
+        {
+            if (basketballPlayer != null)
+            {
+                Basketball.Reparent(basketballPlayer);
+                basketballPlayer.HasBasketball = true;
+
+                Basketball.GlobalPosition = basketballPlayer.GlobalPosition + new Vector3(0, 0, 1.5f);
             }
         }
     }
