@@ -69,7 +69,7 @@ PlayerIdentifier = "4"
 [node name="Basketball" parent="." instance=ExtResource("3_aa00t")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 2, 0)
 
-[node name="ThreePointLine" type="Area3D" parent="."]
+[node name="ThreePointLine" type="Area3D" parent="." groups=["ThreePointLine"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.456768, -93.9226)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="ThreePointLine"]

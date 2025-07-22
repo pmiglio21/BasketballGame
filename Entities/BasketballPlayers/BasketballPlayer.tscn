@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://67mof4iojay2"]
+[gd_scene load_steps=9 format=3 uid="uid://67mof4iojay2"]
 
 [ext_resource type="Script" path="res://Entities/BasketballPlayers/BasketballPlayer.cs" id="1_kr2bl"]
 
@@ -13,6 +13,8 @@
 [sub_resource type="SphereShape3D" id="SphereShape3D_bgp65"]
 
 [sub_resource type="SphereMesh" id="SphereMesh_cv76t"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_faggy"]
 
 [node name="BasketballPlayer" type="CharacterBody3D" groups=["BasketballPlayer"]]
 script = ExtResource("1_kr2bl")
@@ -58,3 +60,11 @@ skeleton = NodePath("../..")
 
 [node name="OmniLight3D" type="OmniLight3D" parent="PassTargetIndicator"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+
+[node name="BodyDetectionArea" type="Area3D" parent="."]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="BodyDetectionArea"]
+shape = SubResource("CapsuleShape3D_faggy")
+
+[connection signal="area_entered" from="BodyDetectionArea" to="." method="OnBodyDetectionAreaEntered"]
+[connection signal="area_exited" from="BodyDetectionArea" to="." method="OnBodyDetectionAreaExited"]

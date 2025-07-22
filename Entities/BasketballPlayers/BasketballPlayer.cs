@@ -1,3 +1,4 @@
+using Constants;
 using Godot;
 using Levels;
 using System;
@@ -84,6 +85,12 @@ namespace Entities
             }
         }
         private bool _isTargetedForPass = false;
+
+        #endregion
+
+        #region Skill Properties
+
+        public SkillStats CharacterStats = new SkillStats();
 
         #endregion
 
@@ -287,6 +294,26 @@ namespace Entities
                 //Rotation = GlobalPosition.Rotated(moveDirection, 0);
             }
         }
+
+        #region Signal Receptions
+
+        private void OnBodyDetectionAreaEntered(Area3D area)
+        {
+            if (area.IsInGroup(GroupTags.ThreePointLine))
+            {
+                GD.Print("In 3 point line");
+            }
+        }
+
+        private void OnBodyDetectionAreaExited(Area3D area)
+        {
+            if (area.IsInGroup(GroupTags.ThreePointLine))
+            {
+                GD.Print("Left 3 point line");
+            }
+        }
+
+        #endregion
     }
 }
 

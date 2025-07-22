@@ -11,5 +11,7 @@ namespace Constants
         public const string BasketballPlayer = "BasketballPlayer";
 
         public const string Basketball = "Basketball";
+
+        public const string ThreePointLine = "ThreePointLine";
     }
 }
