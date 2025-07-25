@@ -15,3 +15,5 @@ skeleton = NodePath("")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 shape = SubResource("SphereShape3D_a7gri")
+
+[node name="OmniLight3D" type="OmniLight3D" parent="."]

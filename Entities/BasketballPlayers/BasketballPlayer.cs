@@ -1,4 +1,5 @@
 using Constants;
+using Enums;
 using Godot;
 using Levels;
 using System;
@@ -90,7 +91,8 @@ namespace Entities
 
         #region Skill Properties
 
-        public SkillStats CharacterStats = new SkillStats();
+
+        public SkillStats SkillStats = new SkillStats();
 
         #endregion
 
@@ -144,6 +146,8 @@ namespace Entities
         {
             if (HasBasketball)
             {
+                GetSkillStatsData();
+
                 GetMovementInput();
 
                 GetShootBasketballInput();
@@ -153,6 +157,25 @@ namespace Entities
                 if (PassTargetPlayer != this)
                 {
                     GetPassBallInput();
+                }
+            }
+        }
+
+        private void GetSkillStatsData()
+        {
+            if (Input.IsActionJustPressed($"ShowSkillStats_{TeamIdentifier}"))
+            {
+                foreach (BasketballPlayer player in ParentBasketballCourtLevel.AllBasketballPlayers)
+                {
+                    GD.Print($"Player {player.PlayerIdentifier} Skill Stats:\n" +
+                        $"2PT: {player.SkillStats.TwoPointShooting}\n" +
+                        $"3PT: {player.SkillStats.ThreePointShooting}\n" +
+                        $"DNK: {player.SkillStats.Dunking}\n" +
+                        $"REB: {player.SkillStats.Rebounding}\n" +
+                        $"STL: {player.SkillStats.Stealing}\n" +
+                        $"BLK: {player.SkillStats.Blocking}\n" +
+                        $"HDL: {player.SkillStats.BallHandling}\n" +
+                        $"SPD: {player.SkillStats.Speed}\n");
                 }
             }
         }
