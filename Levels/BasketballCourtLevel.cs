@@ -20,6 +20,8 @@ namespace Levels
 
         public List<BasketballPlayer> AllBasketballPlayers = new List<BasketballPlayer>();
 
+        public Timer BasketballResetTimer = new Timer();
+
         #endregion
 
         private RandomNumberGenerator _rng = new RandomNumberGenerator();
@@ -34,6 +36,8 @@ namespace Levels
             Basketball = GetNode("Basketball") as Basketball;
             BasketballHoop = GetNode("BasketballHoop") as StaticBody3D;
             HoopArea = BasketballHoop.GetNode("HoopArea") as Area3D;
+            BasketballResetTimer = GetNode("BasketballResetTimer") as Timer;
+            BasketballResetTimer.Timeout += ResetBasketballOnTimeout;
 
             GetAllBasketballPlayers();
         }
@@ -166,95 +170,9 @@ namespace Levels
             }
         }
 
-        //private void RandomlyAssignSkillStatsToPlayer(BasketballPlayer basketballPlayer)
-        //{
-        //    while (basketballPlayer.SkillStats.HighSkillStatsFilled.Count < 2)
-        //    {
-        //        int skillStatTypeIndex = _rng.RandiRange(0, 7);
-
-        //        if (!AllPlayersHighSkillStatsFilled.Contains((SkillStatType)skillStatTypeIndex))
-        //        {
-        //            AllPlayersHighSkillStatsFilled.Add((SkillStatType)skillStatTypeIndex);
-        //            basketballPlayer.SkillStats.HighSkillStatsFilled.Add((SkillStatType)skillStatTypeIndex);
-
-        //            if (skillStatTypeIndex == 0)
-        //            {
-        //                basketballPlayer.SkillStats.TwoPointShooting = GlobalConstants.SkillStatHigh;
-        //            }
-        //            else if (skillStatTypeIndex == 1)
-        //            {
-        //                basketballPlayer.SkillStats.ThreePointShooting = GlobalConstants.SkillStatHigh;
-        //            }
-        //            else if (skillStatTypeIndex == 2)
-        //            {
-        //                basketballPlayer.SkillStats.Dunking = GlobalConstants.SkillStatHigh;
-        //            }
-        //            else if (skillStatTypeIndex == 3)
-        //            {
-        //                basketballPlayer.SkillStats.Rebounding = GlobalConstants.SkillStatHigh;
-        //            }
-        //            else if (skillStatTypeIndex == 4)
-        //            {
-        //                basketballPlayer.SkillStats.Stealing = GlobalConstants.SkillStatHigh;
-        //            }
-        //            else if (skillStatTypeIndex == 5)
-        //            {
-        //                basketballPlayer.SkillStats.Blocking = GlobalConstants.SkillStatHigh;
-        //            }
-        //            else if (skillStatTypeIndex == 6)
-        //            {
-        //                basketballPlayer.SkillStats.BallHandling = GlobalConstants.SkillStatHigh;
-        //            }
-        //            else if (skillStatTypeIndex == 7)
-        //            {
-        //                basketballPlayer.SkillStats.Speed = GlobalConstants.SkillStatHigh;
-        //            }
-        //        }
-        //    }
-
-        //    while (basketballPlayer.SkillStats.LowSkillStatsFilled.Count < 2)
-        //    {
-        //        int skillStatTypeIndex = _rng.RandiRange(0, 7);
-
-        //        if (!AllPlayersLowSkillStatsFilled.Contains((SkillStatType)skillStatTypeIndex))// && !basketballPlayer.SkillStats.HighSkillStatsFilled.Contains((SkillStatType)skillStatTypeIndex))
-        //        {
-        //            AllPlayersLowSkillStatsFilled.Add((SkillStatType)skillStatTypeIndex);
-        //            basketballPlayer.SkillStats.LowSkillStatsFilled.Add((SkillStatType)skillStatTypeIndex);
-
-        //            if (skillStatTypeIndex == 0)
-        //            {
-        //                basketballPlayer.SkillStats.TwoPointShooting = GlobalConstants.SkillStatLow;
-        //            }
-        //            else if (skillStatTypeIndex == 1)
-        //            {
-        //                basketballPlayer.SkillStats.ThreePointShooting = GlobalConstants.SkillStatLow;
-        //            }
-        //            else if (skillStatTypeIndex == 2)
-        //            {
-        //                basketballPlayer.SkillStats.Dunking = GlobalConstants.SkillStatLow;
-        //            }
-        //            else if (skillStatTypeIndex == 3)
-        //            {
-        //                basketballPlayer.SkillStats.Rebounding = GlobalConstants.SkillStatLow;
-        //            }
-        //            else if (skillStatTypeIndex == 4)
-        //            {
-        //                basketballPlayer.SkillStats.Stealing = GlobalConstants.SkillStatLow;
-        //            }
-        //            else if (skillStatTypeIndex == 5)
-        //            {
-        //                basketballPlayer.SkillStats.Blocking = GlobalConstants.SkillStatLow;
-        //            }
-        //            else if (skillStatTypeIndex == 6)
-        //            {
-        //                basketballPlayer.SkillStats.BallHandling = GlobalConstants.SkillStatLow;
-        //            }
-        //            else if (skillStatTypeIndex == 7)
-        //            {
-        //                basketballPlayer.SkillStats.Speed = GlobalConstants.SkillStatLow;
-        //            }
-        //        }
-        //    }
-        //}
+        private void ResetBasketballOnTimeout()
+        {
+            GiveBasketballToPlayer(AllBasketballPlayers.FirstOrDefault());
+        }
     }
 }

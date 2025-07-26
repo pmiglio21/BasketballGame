@@ -212,6 +212,8 @@ namespace Entities
                 ParentBasketballCourtLevel.Basketball.GlobalPosition = ParentBasketballCourtLevel.HoopArea.GlobalPosition + new Vector3(0, 1f, 0);
 
                 PassTargetPlayer = this;
+
+                ParentBasketballCourtLevel.BasketballResetTimer.Start();
             }
         }
 

@@ -111,3 +111,7 @@ mesh = SubResource("CylinderMesh_6i3ce")
 [node name="OmniLight3D" type="OmniLight3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.29451, 29.0626, -23.1366)
 light_energy = 20.0
+
+[node name="BasketballResetTimer" type="Timer" parent="."]
+wait_time = 3.0
+one_shot = true
