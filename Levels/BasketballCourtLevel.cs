@@ -24,7 +24,7 @@ namespace Levels
 
         #endregion
 
-        private RandomNumberGenerator _rng = new RandomNumberGenerator();
+        public RandomNumberGenerator RandomNumberGenerator = new RandomNumberGenerator();
 
         public HashSet<SkillStatType> AllPlayersHighSkillStatsFilled = new HashSet<SkillStatType>();
 
@@ -81,7 +81,7 @@ namespace Levels
         {
             while (basketballPlayer.SkillStats.HighSkillStatsFilled.Count < 2)
             {
-                int skillStatTypeIndex = _rng.RandiRange(0, 7);
+                int skillStatTypeIndex = RandomNumberGenerator.RandiRange(0, 7);
 
                 if (!AllPlayersHighSkillStatsFilled.Contains((SkillStatType)skillStatTypeIndex) && basketballPlayer.SkillStats.AvailableSkillStatsToAlter.Contains((SkillStatType)skillStatTypeIndex))
                 {
@@ -126,7 +126,7 @@ namespace Levels
 
             while (basketballPlayer.SkillStats.LowSkillStatsFilled.Count < 2)
             {
-                int skillStatTypeIndex = _rng.RandiRange(0, 7);
+                int skillStatTypeIndex = RandomNumberGenerator.RandiRange(0, 7);
 
                 if (!AllPlayersLowSkillStatsFilled.Contains((SkillStatType)skillStatTypeIndex) && basketballPlayer.SkillStats.AvailableSkillStatsToAlter.Contains((SkillStatType)skillStatTypeIndex))
                 {
@@ -172,6 +172,8 @@ namespace Levels
 
         private void ResetBasketballOnTimeout()
         {
+            Basketball.OmniLight.LightColor = new Color(1, 1, 1); // Reset light color to white
+
             GiveBasketballToPlayer(AllBasketballPlayers.FirstOrDefault());
         }
     }
