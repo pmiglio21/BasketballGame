@@ -233,9 +233,9 @@ namespace Entities
         {
             if (Input.IsActionJustPressed($"ShowSkillStats_{TeamIdentifier}"))
             {
-                foreach (BasketballPlayer player in ParentBasketballCourtLevel.AllBasketballPlayers)
+                foreach (BasketballPlayer player in ParentBasketballCourtLevel.AllBasketballPlayers.Where(player => player.TeamIdentifier == TeamIdentifier))
                 {
-                    GD.Print($"Player {player.PlayerIdentifier} Skill Stats:\n" +
+                    GD.Print($"Team: {player.TeamIdentifier}, Player: {player.PlayerIdentifier} \nSkill Stats:\n" +
                         $"2PT: {player.SkillStats.TwoPointShooting}\n" +
                         $"3PT: {player.SkillStats.ThreePointShooting}\n" +
                         $"DNK: {player.SkillStats.Dunking}\n" +
