@@ -26,9 +26,13 @@ namespace Levels
 
         public RandomNumberGenerator RandomNumberGenerator = new RandomNumberGenerator();
 
-        public HashSet<SkillStatType> AllPlayersHighSkillStatsFilled = new HashSet<SkillStatType>();
+        public HashSet<SkillStatType> AllPlayersHighSkillStatsFilled_Team1 = new HashSet<SkillStatType>();
 
-        public HashSet<SkillStatType> AllPlayersLowSkillStatsFilled = new HashSet<SkillStatType>();
+        public HashSet<SkillStatType> AllPlayersHighSkillStatsFilled_Team2 = new HashSet<SkillStatType>();
+
+        public HashSet<SkillStatType> AllPlayersLowSkillStatsFilled_Team1 = new HashSet<SkillStatType>();
+
+        public HashSet<SkillStatType> AllPlayersLowSkillStatsFilled_Team2 = new HashSet<SkillStatType>();
 
         // Called when the node enters the scene tree for the first time.
         public override void _Ready()
@@ -57,12 +61,26 @@ namespace Levels
 
                 BasketballPlayer basketballPlayer = basketballPlayerRootNode as BasketballPlayer;
 
-                if (AllBasketballPlayers.Count == 1)
+                if (basketballPlayer.TeamIdentifier == "1")
                 {
-                    GiveBasketballToPlayer(basketballPlayer);
-                }
+                    if (basketballPlayer.PlayerIdentifier == "1")
+                    {
+                        GiveBasketballToPlayer(basketballPlayer);
+                    }
 
-                RandomlyAssignSkillStatsToPlayer(basketballPlayer);
+                    basketballPlayer.IsOnOffense = true;
+
+                    RandomlyAssignSkillStatsToPlayer(basketballPlayer, AllPlayersHighSkillStatsFilled_Team1, AllPlayersLowSkillStatsFilled_Team1);
+                }
+                else if (basketballPlayer.TeamIdentifier == "2")
+                {
+                    if (basketballPlayer.PlayerIdentifier == "1")
+                    {
+                        basketballPlayer.HasFocus = true;
+                    }
+
+                    RandomlyAssignSkillStatsToPlayer(basketballPlayer, AllPlayersHighSkillStatsFilled_Team2, AllPlayersLowSkillStatsFilled_Team2);
+                }
             }
         }
 
@@ -72,20 +90,21 @@ namespace Levels
             {
                 Basketball.Reparent(basketballPlayer);
                 basketballPlayer.HasBasketball = true;
+                basketballPlayer.HasFocus = true;
 
                 Basketball.GlobalPosition = basketballPlayer.GlobalPosition + new Vector3(0, 0, 1.5f);
             }
         }
 
-        private void RandomlyAssignSkillStatsToPlayer(BasketballPlayer basketballPlayer)
+        private void RandomlyAssignSkillStatsToPlayer(BasketballPlayer basketballPlayer, HashSet<SkillStatType> allPlayersHighSkillStatsFilled, HashSet<SkillStatType> allPlayersLowSkillStatsFilled)
         {
             while (basketballPlayer.SkillStats.HighSkillStatsFilled.Count < 2)
             {
                 int skillStatTypeIndex = RandomNumberGenerator.RandiRange(0, 7);
 
-                if (!AllPlayersHighSkillStatsFilled.Contains((SkillStatType)skillStatTypeIndex) && basketballPlayer.SkillStats.AvailableSkillStatsToAlter.Contains((SkillStatType)skillStatTypeIndex))
+                if (!allPlayersHighSkillStatsFilled.Contains((SkillStatType)skillStatTypeIndex) && basketballPlayer.SkillStats.AvailableSkillStatsToAlter.Contains((SkillStatType)skillStatTypeIndex))
                 {
-                    AllPlayersHighSkillStatsFilled.Add((SkillStatType)skillStatTypeIndex);
+                    allPlayersHighSkillStatsFilled.Add((SkillStatType)skillStatTypeIndex);
                     basketballPlayer.SkillStats.HighSkillStatsFilled.Add((SkillStatType)skillStatTypeIndex);
                     basketballPlayer.SkillStats.AvailableSkillStatsToAlter.Remove((SkillStatType)skillStatTypeIndex);
 
@@ -128,9 +147,9 @@ namespace Levels
             {
                 int skillStatTypeIndex = RandomNumberGenerator.RandiRange(0, 7);
 
-                if (!AllPlayersLowSkillStatsFilled.Contains((SkillStatType)skillStatTypeIndex) && basketballPlayer.SkillStats.AvailableSkillStatsToAlter.Contains((SkillStatType)skillStatTypeIndex))
+                if (!allPlayersLowSkillStatsFilled.Contains((SkillStatType)skillStatTypeIndex) && basketballPlayer.SkillStats.AvailableSkillStatsToAlter.Contains((SkillStatType)skillStatTypeIndex))
                 {
-                    AllPlayersLowSkillStatsFilled.Add((SkillStatType)skillStatTypeIndex);
+                    allPlayersLowSkillStatsFilled.Add((SkillStatType)skillStatTypeIndex);
                     basketballPlayer.SkillStats.LowSkillStatsFilled.Add((SkillStatType)skillStatTypeIndex);
                     basketballPlayer.SkillStats.AvailableSkillStatsToAlter.Remove((SkillStatType)skillStatTypeIndex);
 

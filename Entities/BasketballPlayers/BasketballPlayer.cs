@@ -40,6 +40,34 @@ namespace Entities
 
         #region State Properties
 
+        public bool IsOnOffense
+        {
+            get { return _isOnOffense; }
+            set
+            {
+                if (_isOnOffense != value)
+                {
+                    _isOnOffense = value;
+                    OnPropertyChanged(nameof(IsOnOffense));
+                }
+            }
+        }
+        private bool _isOnOffense = false;
+
+        public bool HasFocus
+        {
+            get { return _hasFocus; }
+            set
+            {
+                if (_hasFocus != value)
+                {
+                    _hasFocus = value;
+                    OnPropertyChanged(nameof(HasFocus));
+                }
+            }
+        }
+        private bool _hasFocus = false;
+
         public bool HasBasketball
         {
             get { return _hasBasketball; }
@@ -155,22 +183,48 @@ namespace Entities
             }
         }
 
+        #region Input Handling - Process
+
         // Called every frame. 'delta' is the elapsed time since the previous frame.
         public override void _Process(double delta)
         {
-            if (HasBasketball)
+            if (HasFocus)
             {
-                GetSkillStatsData();
-
-                GetMovementInput();
-
-                GetShootBasketballInput();
-
-                GetPassTargetInput();
-
-                if (PassTargetPlayer != this)
+                if (IsOnOffense)
                 {
-                    GetPassBallInput();
+                    if (HasBasketball)
+                    {
+                        GetSkillStatsData();
+
+                        GetMovementInput();
+
+                        if (HasBasketball)
+                        {
+                            GetShootBasketballInput();
+
+                            GetPassTargetInput();
+
+                            if (PassTargetPlayer != this)
+                            {
+                                GetPassBallInput();
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    GetSkillStatsData();
+
+                    GetMovementInput();
+
+                    //GetShootBasketballInput();
+
+                    //GetPassTargetInput();
+
+                    //if (PassTargetPlayer != this)
+                    //{
+                    //    GetPassBallInput();
+                    //}
                 }
             }
         }
@@ -419,11 +473,11 @@ namespace Entities
 
             if (fromLeftToRight)
             {
-                availablePassTargets = ParentBasketballCourtLevel.AllBasketballPlayers.OrderBy(player => player.GlobalPosition.X).ToList();
+                availablePassTargets = ParentBasketballCourtLevel.AllBasketballPlayers.Where(player => player.IsOnOffense).OrderBy(player => player.GlobalPosition.X).ToList();
             }
             else
             {
-                availablePassTargets = ParentBasketballCourtLevel.AllBasketballPlayers.OrderByDescending(player => player.GlobalPosition.X).ToList();
+                availablePassTargets = ParentBasketballCourtLevel.AllBasketballPlayers.Where(player => player.IsOnOffense).OrderByDescending(player => player.GlobalPosition.X).ToList();
             }
 
             return availablePassTargets;
@@ -437,8 +491,10 @@ namespace Entities
             {
                 GD.Print($"PassBall triggered by player {PlayerIdentifier}");
 
+                PassTargetPlayer.HasFocus = true;
                 PassTargetPlayer.HasBasketball = true;
                 this.HasBasketball = false;
+                this.HasFocus = false;
 
                 ParentBasketballCourtLevel.Basketball.Reparent(PassTargetPlayer);
 
@@ -448,9 +504,13 @@ namespace Entities
             }
         }
 
+        #endregion
+
+        #region Physics Handling - Process
+
         public override void _PhysicsProcess(double delta)
         {
-            if (HasBasketball)
+            if (HasFocus)
             {
                 MovePlayer();
             }
@@ -472,6 +532,8 @@ namespace Entities
                 //Rotation = GlobalPosition.Rotated(moveDirection, 0);
             }
         }
+
+        #endregion
 
         #region Signal Receptions
 

@@ -67,12 +67,22 @@ PlayerIdentifier = "2"
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 2, -11.3581)
 PlayerIdentifier = "3"
 
-[node name="BasketballPlayer4" parent="." instance=ExtResource("1_omy0y")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9, 2, -14.2445)
-PlayerIdentifier = "4"
-
 [node name="Basketball" parent="." instance=ExtResource("3_aa00t")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 2, 0)
+
+[node name="BasketballPlayer4" parent="." instance=ExtResource("1_omy0y")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10, 2, -27.2445)
+TeamIdentifier = "2"
+
+[node name="BasketballPlayer5" parent="." instance=ExtResource("1_omy0y")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, -26.2445)
+TeamIdentifier = "2"
+PlayerIdentifier = "2"
+
+[node name="BasketballPlayer6" parent="." instance=ExtResource("1_omy0y")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9, 2, -28.2445)
+TeamIdentifier = "2"
+PlayerIdentifier = "3"
 
 [node name="ThreePointLine" type="Area3D" parent="." groups=["ThreePointLine"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.456768, -93.9226)
