@@ -194,7 +194,7 @@ namespace Entities
                 {
                     GetSkillStatsData();
 
-                    GetMovementInput();
+                    GetMovementInput(delta);
 
                     GetPassTargetSelectionInput();
 
@@ -220,7 +220,7 @@ namespace Entities
                 {
                     GetSkillStatsData();
 
-                    GetMovementInput();
+                    GetMovementInput(delta);
 
                     GetPassTargetSelectionInput();
 
@@ -251,22 +251,40 @@ namespace Entities
             }
         }
 
-        protected void GetMovementInput()
+        protected void GetMovementInput(double delta)
         {
+            var gravity = 80.0f; // Adjust gravity as needed
+            var jumpVelocity = 200.0f; // Adjust jump velocity as needed
+
+            float yMoveInput = 0;
+
+            // Apply gravity if not on floor
+            if (!IsOnFloor())
+            {
+                yMoveInput = -gravity * (float)delta;
+            }
+
+            if (Input.IsActionPressed($"Jump_{TeamIdentifier}"))
+            {
+                yMoveInput = jumpVelocity * (float)delta;
+            }
+
             moveInput.X = Input.GetActionStrength($"MoveEast_{TeamIdentifier}") - Input.GetActionStrength($"MoveWest_{TeamIdentifier}");
             moveInput.Z = Input.GetActionStrength($"MoveSouth_{TeamIdentifier}") - Input.GetActionStrength($"MoveNorth_{TeamIdentifier}");
 
+            //TODO: Do I need this if statement?
             if (Vector3.Zero.DistanceTo(moveInput) > moveDeadzone * Math.Sqrt(2.0))
             {
                 //float speed = (float)((float)(100 + CharacterStats.Speed) / 100);
                 var normalizedMoveInput = moveInput.Normalized();
 
-                moveDirection = new Vector3(normalizedMoveInput.X, 0, normalizedMoveInput.Z);
-                //moveAngle = new Vector3(normalizedMoveInput.X, 0, normalizedMoveInput.Z);
+                moveDirection =  new Vector3(normalizedMoveInput.X, yMoveInput, normalizedMoveInput.Z);
             }
             else
             {
-                moveDirection = Vector3.Zero;
+                var normalizedMoveInput = moveInput.Normalized();
+
+                moveDirection = new Vector3(normalizedMoveInput.X, yMoveInput, normalizedMoveInput.Z);
             }
         }
 
