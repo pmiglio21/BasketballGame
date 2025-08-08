@@ -19,7 +19,7 @@ namespace Entities
 
         #region Components
 
-        private StaticBody3D _possessionIndicator = new StaticBody3D();
+        private StaticBody3D _hasFocusIndicator = new StaticBody3D();
         
         private StaticBody3D _passTargetIndicator = new StaticBody3D();
 
@@ -63,6 +63,11 @@ namespace Entities
                 {
                     _hasFocus = value;
                     OnPropertyChanged(nameof(HasFocus));
+
+                    if (_hasFocus)
+                    {
+                        IsTargeted = false;
+                    }
                 }
             }
         }
@@ -80,29 +85,24 @@ namespace Entities
 
                     if (_hasBasketball)
                     {
-                        //_possessionIndicator.Show();
-                        IsTargetedForPass = false;
-                    }
-                    else
-                    {
-                        //_possessionIndicator.Hide();
+                        IsTargeted = false;
                     }
                 }
             }
         }
         private bool _hasBasketball = false;
 
-        public bool IsTargetedForPass
+        public bool IsTargeted
         {
-            get { return _isTargetedForPass; }
+            get { return _isTargeted; }
             set
             {
-                if (_isTargetedForPass != value)
+                if (_isTargeted != value)
                 {
-                    _isTargetedForPass = value;
-                    OnPropertyChanged(nameof(IsTargetedForPass));
+                    _isTargeted = value;
+                    OnPropertyChanged(nameof(IsTargeted));
 
-                    if (_isTargetedForPass)
+                    if (_isTargeted)
                     {
                         _passTargetIndicator.Show();
                     }
@@ -113,7 +113,7 @@ namespace Entities
                 }
             }
         }
-        private bool _isTargetedForPass = false;
+        private bool _isTargeted = false;
 
         public bool IsInThreePointLine
         {
@@ -151,34 +151,34 @@ namespace Entities
 
         #endregion
 
-        public BasketballPlayer PassTargetPlayer = null;
+        public BasketballPlayer TargetPlayer = null;
 
         // Called when the node enters the scene tree for the first time.
         public override void _Ready()
         {
             ParentBasketballCourtLevel = GetParent() as BasketballCourtLevel;
 
-            _possessionIndicator = GetNode("PossessionIndicator") as StaticBody3D;
+            _hasFocusIndicator = GetNode("HasFocusIndicator") as StaticBody3D;
 
             _passTargetIndicator = GetNode("PassTargetIndicator") as StaticBody3D;
 
             //Start target on the current player so TargetBasketballPlayer has something to go off of on the first target-selection input
-            PassTargetPlayer = this;
+            TargetPlayer = this;
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
 
         protected void OnPropertyChanged(string propertyName = null)
         {
-            if (propertyName == nameof(HasBasketball))
+            if (propertyName == nameof(HasFocus))
             {
-                if (HasBasketball)
+                if (HasFocus)
                 {
-                    _possessionIndicator.Show();
+                    _hasFocusIndicator.Show();
                 }
                 else
                 {
-                    _possessionIndicator.Hide();
+                    _hasFocusIndicator.Hide();
                 }
             }
         }
@@ -192,19 +192,24 @@ namespace Entities
             {
                 if (IsOnOffense)
                 {
+                    GetSkillStatsData();
+
+                    GetMovementInput();
+
+                    GetPassTargetSelectionInput();
+
+                    if (TargetPlayer != this)
+                    {
+                        GetPassFocusInput();
+                    }
+
                     if (HasBasketball)
                     {
-                        GetSkillStatsData();
+                        GetShootBasketballInput();
 
-                        GetMovementInput();
-
-                        if (HasBasketball)
+                        if (TargetPlayer != this)
                         {
-                            GetShootBasketballInput();
-
-                            GetPassTargetInput();
-
-                            if (PassTargetPlayer != this)
+                            if (HasBasketball)
                             {
                                 GetPassBallInput();
                             }
@@ -217,14 +222,12 @@ namespace Entities
 
                     GetMovementInput();
 
-                    //GetShootBasketballInput();
+                    GetPassTargetSelectionInput();
 
-                    //GetPassTargetInput();
-
-                    //if (PassTargetPlayer != this)
-                    //{
-                    //    GetPassBallInput();
-                    //}
+                    if (TargetPlayer != this)
+                    {
+                        GetPassFocusInput();
+                    }
                 }
             }
         }
@@ -418,7 +421,7 @@ namespace Entities
                     }
                 }
 
-                PassTargetPlayer = this;
+                TargetPlayer = this;
 
                 ParentBasketballCourtLevel.BasketballResetTimer.Start();
             }
@@ -426,13 +429,13 @@ namespace Entities
 
         #region Pass Target Input
 
-        protected void GetPassTargetInput()
+        protected void GetPassTargetSelectionInput()
         {
-            if (Input.IsActionJustPressed($"SelectPassTargetLeft_{TeamIdentifier}"))
+            if (Input.IsActionJustPressed($"SelectTargetLeft_{TeamIdentifier}"))
             {
                 FindPassTargetPlayer(true);
             }
-            else if (Input.IsActionJustPressed($"SelectPassTargetRight_{TeamIdentifier}"))
+            else if (Input.IsActionJustPressed($"SelectTargetRight_{TeamIdentifier}"))
             {
                 FindPassTargetPlayer(false);
             }
@@ -443,23 +446,23 @@ namespace Entities
         {
             List<BasketballPlayer> availablePlayers = GetOrganizedAvailablePassTargets(fromLeftToRight);
 
-            if (PassTargetPlayer != this)
+            if (TargetPlayer != this)
             {
                 availablePlayers.Remove(this);
             }
 
-            int indexOfCurrentTargetPlayer = availablePlayers.IndexOf(PassTargetPlayer);
+            int indexOfCurrentTargetPlayer = availablePlayers.IndexOf(TargetPlayer);
 
             if (indexOfCurrentTargetPlayer == 0)
             {
-                PassTargetPlayer = availablePlayers.Last();
+                TargetPlayer = availablePlayers.Last();
             }
             else
             {
-                PassTargetPlayer = availablePlayers.ElementAt(indexOfCurrentTargetPlayer - 1);
+                TargetPlayer = availablePlayers.ElementAt(indexOfCurrentTargetPlayer - 1);
             }
 
-            PassTargetPlayer.IsTargetedForPass = true;
+            TargetPlayer.IsTargeted = true;
 
             //GD.Print($"Player {DeviceIdentifier} will pass to Player {PassTargetPlayer?.DeviceIdentifier}\n");
         }
@@ -469,15 +472,15 @@ namespace Entities
             List<BasketballPlayer> availablePassTargets;
 
             //Reset pass target indicators for all players
-            ParentBasketballCourtLevel.AllBasketballPlayers.ForEach(player => player.IsTargetedForPass = false);
+            ParentBasketballCourtLevel.AllBasketballPlayers.ForEach(player => player.IsTargeted = false);
 
             if (fromLeftToRight)
             {
-                availablePassTargets = ParentBasketballCourtLevel.AllBasketballPlayers.Where(player => player.IsOnOffense).OrderBy(player => player.GlobalPosition.X).ToList();
+                availablePassTargets = ParentBasketballCourtLevel.AllBasketballPlayers.Where(player => player.TeamIdentifier == TeamIdentifier).OrderBy(player => player.GlobalPosition.X).ToList();
             }
             else
             {
-                availablePassTargets = ParentBasketballCourtLevel.AllBasketballPlayers.Where(player => player.IsOnOffense).OrderByDescending(player => player.GlobalPosition.X).ToList();
+                availablePassTargets = ParentBasketballCourtLevel.AllBasketballPlayers.Where(player => player.TeamIdentifier == TeamIdentifier).OrderByDescending(player => player.GlobalPosition.X).ToList();
             }
 
             return availablePassTargets;
@@ -485,22 +488,37 @@ namespace Entities
 
         #endregion
 
+        protected void GetPassFocusInput()
+        {
+            if (Input.IsActionJustPressed($"PassFocus_{TeamIdentifier}"))
+            {
+                GD.Print($"PassFocus triggered by player {PlayerIdentifier}");
+
+                TargetPlayer.HasFocus = true;
+
+                this.HasFocus = false;
+
+                TargetPlayer = this;
+            }
+        }
+
         protected void GetPassBallInput()
         {
             if (Input.IsActionJustPressed($"PassBall_{TeamIdentifier}"))
             {
                 GD.Print($"PassBall triggered by player {PlayerIdentifier}");
 
-                PassTargetPlayer.HasFocus = true;
-                PassTargetPlayer.HasBasketball = true;
+                TargetPlayer.HasFocus = true;
+                TargetPlayer.HasBasketball = true;
+
                 this.HasBasketball = false;
                 this.HasFocus = false;
 
-                ParentBasketballCourtLevel.Basketball.Reparent(PassTargetPlayer);
+                ParentBasketballCourtLevel.Basketball.Reparent(TargetPlayer);
 
-                ParentBasketballCourtLevel.Basketball.GlobalPosition = PassTargetPlayer.GlobalPosition + new Vector3(0, 0, 1.5f);
+                ParentBasketballCourtLevel.Basketball.GlobalPosition = TargetPlayer.GlobalPosition + new Vector3(0, 0, 1.5f);
 
-                PassTargetPlayer = this;
+                TargetPlayer = this;
             }
         }
 

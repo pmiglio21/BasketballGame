@@ -193,6 +193,8 @@ namespace Levels
         {
             Basketball.OmniLight.LightColor = new Color(1, 1, 1); // Reset light color to white
 
+            AllBasketballPlayers.ForEach(player => player.HasFocus = false);
+
             GiveBasketballToPlayer(AllBasketballPlayers.FirstOrDefault());
         }
     }
