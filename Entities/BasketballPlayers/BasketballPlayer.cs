@@ -280,24 +280,34 @@ namespace Entities
 
             float yMoveInput = 0;
 
-            // Apply gravity if not on floor
-            if (!IsOnFloor() && _jumpTimer.IsStopped())
-            {
-                yMoveInput = -gravity * (float)delta;
-            }
+            #region Jumping Logic
 
             //Is on floor and begins to jump
             if (IsOnFloor() && _jumpTimer.IsStopped() && Input.IsActionPressed($"Jump_{TeamIdentifier}"))
             {
+                //GD.Print("1");
+
                 yMoveInput = jumpVelocity * (float)delta;
                 _jumpTimer.Start();
             }
 
-            //Is in air and continues to hold jump
-            if (!IsOnFloor() && !_jumpTimer.IsStopped() && Input.IsActionPressed($"Jump_{TeamIdentifier}"))
+            // Apply gravity if not on floor
+            else if (!IsOnFloor() && _jumpTimer.IsStopped())
             {
+                //GD.Print("2");
+
+                yMoveInput = -gravity * (float)delta;
+            }
+
+            //Is in air and continues to hold jump
+            else if (!IsOnFloor() && !_jumpTimer.IsStopped() && Input.IsActionPressed($"Jump_{TeamIdentifier}"))
+            {
+                //GD.Print("3");
+
                 yMoveInput = jumpVelocity * (float)delta;
             }
+
+            #endregion
 
             moveInput.X = Input.GetActionStrength($"MoveEast_{TeamIdentifier}") - Input.GetActionStrength($"MoveWest_{TeamIdentifier}");
             moveInput.Z = Input.GetActionStrength($"MoveSouth_{TeamIdentifier}") - Input.GetActionStrength($"MoveNorth_{TeamIdentifier}");
@@ -579,6 +589,13 @@ namespace Entities
             if (HasFocus)
             {
                 MovePlayer();
+            }
+
+            if (IsOnFloor() && !_jumpTimer.IsStopped())
+            {
+                GD.Print("Is considered on floor");
+
+                _jumpTimer.Stop();
             }
         }
 
