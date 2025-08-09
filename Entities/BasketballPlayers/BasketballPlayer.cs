@@ -19,9 +19,13 @@ namespace Entities
 
         #region Components
 
+        public MeshInstance3D _characterBodyMesh = new MeshInstance3D();
+
         private StaticBody3D _hasFocusIndicator = new StaticBody3D();
         
         private StaticBody3D _passTargetIndicator = new StaticBody3D();
+
+        private Timer _jumpTimer = new Timer();
 
         #endregion
 
@@ -158,14 +162,32 @@ namespace Entities
         {
             ParentBasketballCourtLevel = GetParent() as BasketballCourtLevel;
 
+            _characterBodyMesh = GetNode("CharacterBodyMesh") as MeshInstance3D;
+
+            if (TeamIdentifier == "1")
+            {
+                StandardMaterial3D blueTeamMaterial = GD.Load<Material>(MaterialPaths.BlueTeamMaterialPath) as StandardMaterial3D;
+
+                _characterBodyMesh.SetSurfaceOverrideMaterial(0, blueTeamMaterial);
+            }
+            else if (TeamIdentifier == "2")
+            {
+                StandardMaterial3D redTeamMaterial = GD.Load<Material>(MaterialPaths.RedTeamMaterialPath) as StandardMaterial3D;
+
+                _characterBodyMesh.SetSurfaceOverrideMaterial(0, redTeamMaterial);
+            }
+
             _hasFocusIndicator = GetNode("HasFocusIndicator") as StaticBody3D;
 
             _passTargetIndicator = GetNode("PassTargetIndicator") as StaticBody3D;
+
+            _jumpTimer = GetNode("JumpTimer") as Timer;
 
             //Start target on the current player so TargetBasketballPlayer has something to go off of on the first target-selection input
             TargetPlayer = this;
         }
 
+        //Necessary for INotifyPropertyChanged implementation
         public event PropertyChangedEventHandler PropertyChanged;
 
         protected void OnPropertyChanged(string propertyName = null)
@@ -259,12 +281,20 @@ namespace Entities
             float yMoveInput = 0;
 
             // Apply gravity if not on floor
-            if (!IsOnFloor())
+            if (!IsOnFloor() && _jumpTimer.IsStopped())
             {
                 yMoveInput = -gravity * (float)delta;
             }
 
-            if (Input.IsActionPressed($"Jump_{TeamIdentifier}"))
+            //Is on floor and begins to jump
+            if (IsOnFloor() && _jumpTimer.IsStopped() && Input.IsActionPressed($"Jump_{TeamIdentifier}"))
+            {
+                yMoveInput = jumpVelocity * (float)delta;
+                _jumpTimer.Start();
+            }
+
+            //Is in air and continues to hold jump
+            if (!IsOnFloor() && !_jumpTimer.IsStopped() && Input.IsActionPressed($"Jump_{TeamIdentifier}"))
             {
                 yMoveInput = jumpVelocity * (float)delta;
             }
