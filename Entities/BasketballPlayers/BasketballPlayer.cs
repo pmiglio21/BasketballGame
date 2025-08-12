@@ -231,7 +231,7 @@ namespace Entities
 
                         if (TargetPlayer != this)
                         {
-                            if (HasBasketball)
+                            if (HasFocus)
                             {
                                 GetPassBallInput();
                             }
@@ -330,7 +330,8 @@ namespace Entities
 
         protected void GetShootBasketballInput()
         {
-            if (Input.IsActionJustPressed($"ShootBall_{TeamIdentifier}"))
+            //TODO: Maybe do something with IsOnFloor() here?
+            if (Input.IsActionJustReleased($"Jump_{TeamIdentifier}"))
             {
                 GD.Print($"ShootBall triggered by player {PlayerIdentifier}");
 
