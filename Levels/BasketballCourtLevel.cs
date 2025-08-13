@@ -82,6 +82,11 @@ namespace Levels
                     RandomlyAssignSkillStatsToPlayer(basketballPlayer, AllPlayersHighSkillStatsFilled_Team2, AllPlayersLowSkillStatsFilled_Team2);
                 }
             }
+
+            foreach (BasketballPlayer basketballPlayer in AllBasketballPlayers)
+            {
+                basketballPlayer.PairingPlayer = AllBasketballPlayers.FirstOrDefault(p => p.TeamIdentifier != basketballPlayer.TeamIdentifier && p.PlayerIdentifier == basketballPlayer.PlayerIdentifier);
+            }
         }
 
         private void GiveBasketballToPlayer(BasketballPlayer basketballPlayer)
@@ -196,6 +201,13 @@ namespace Levels
             AllBasketballPlayers.ForEach(player => player.HasFocus = false);
 
             GiveBasketballToPlayer(AllBasketballPlayers.FirstOrDefault());
+
+            BasketballPlayer focusedDefensePlayer = AllBasketballPlayers.FirstOrDefault(p => p.TeamIdentifier != "1" && p.PlayerIdentifier == "1");
+
+            if (focusedDefensePlayer != null)
+            {
+                focusedDefensePlayer.HasFocus = true;
+            }
         }
     }
 }

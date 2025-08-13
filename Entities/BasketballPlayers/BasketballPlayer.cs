@@ -155,7 +155,17 @@ namespace Entities
 
         #endregion
 
+        #region Pairing Properties
+
+        public BasketballPlayer PairingPlayer = null;
+
+        #endregion
+
+        #region Focus Passing Properties
+
         public BasketballPlayer TargetPlayer = null;
+
+        #endregion
 
         // Called when the node enters the scene tree for the first time.
         public override void _Ready()
@@ -210,6 +220,7 @@ namespace Entities
         // Called every frame. 'delta' is the elapsed time since the previous frame.
         public override void _Process(double delta)
         {
+            //Human-controlled logic
             if (HasFocus)
             {
                 if (IsOnOffense)
@@ -231,7 +242,7 @@ namespace Entities
 
                         if (TargetPlayer != this)
                         {
-                            if (HasFocus)
+                            if (HasBasketball)
                             {
                                 GetPassBallInput();
                             }
@@ -252,9 +263,32 @@ namespace Entities
                     }
                 }
             }
+            //CPU logic
+            else
+            {
+                if (IsOnOffense)
+                {
+                    MagnetizeCpuToPairedPlayer();
+                }
+                else
+                {
+                    MagnetizeCpuToPairedPlayer();
+                }
+            }
         }
 
-        private void GetSkillStatsData()
+        #region Controller Inputs
+
+        protected void MagnetizeCpuToPairedPlayer()
+        {
+            moveInput = GlobalPosition.DirectionTo(PairingPlayer.GlobalPosition);
+
+            var normalizedMoveInput = moveInput.Normalized();
+
+            moveDirection = new Vector3(normalizedMoveInput.X, 0, normalizedMoveInput.Z);
+        }
+
+        protected void GetSkillStatsData()
         {
             if (Input.IsActionJustPressed($"ShowSkillStats_{TeamIdentifier}"))
             {
@@ -316,13 +350,17 @@ namespace Entities
             if (Vector3.Zero.DistanceTo(moveInput) > moveDeadzone * Math.Sqrt(2.0))
             {
                 //float speed = (float)((float)(100 + CharacterStats.Speed) / 100);
-                var normalizedMoveInput = moveInput.Normalized();
+                //var normalizedMoveInput = moveInput.Normalized();
+
+                var normalizedMoveInput = moveInput;
 
                 moveDirection =  new Vector3(normalizedMoveInput.X, yMoveInput, normalizedMoveInput.Z);
             }
             else
             {
-                var normalizedMoveInput = moveInput.Normalized();
+                //var normalizedMoveInput = moveInput.Normalized();
+
+                var normalizedMoveInput = moveInput;
 
                 moveDirection = new Vector3(normalizedMoveInput.X, yMoveInput, normalizedMoveInput.Z);
             }
@@ -583,14 +621,18 @@ namespace Entities
 
         #endregion
 
+        #endregion
+
         #region Physics Handling - Process
 
         public override void _PhysicsProcess(double delta)
         {
-            if (HasFocus)
-            {
-                MovePlayer();
-            }
+            //if (HasFocus)
+            //{
+
+            //}
+
+            MovePlayer();
 
             if (IsOnFloor() && !_jumpTimer.IsStopped())
             {
@@ -609,7 +651,16 @@ namespace Entities
             {
                 //LookAt((GlobalPosition + moveDirection), Vector3.Up);
 
-                var newAngle = Mathf.LerpAngle(GlobalRotation.Y, Mathf.Atan2(moveDirection.X, moveDirection.Z), .1f);
+                float newAngle = 0;  
+
+                if (IsOnFloor())
+                {
+                    newAngle = Mathf.LerpAngle(GlobalRotation.Y, Mathf.Atan2(moveDirection.X, moveDirection.Z), .1f);
+                }
+                else
+                {
+                    newAngle = Mathf.LerpAngle(GlobalRotation.Y, Mathf.Atan2(moveDirection.X, moveDirection.Z), .01f);
+                }
 
                 GlobalRotation = new Vector3(GlobalRotation.X, newAngle, GlobalRotation.Z);
 
