@@ -1,10 +1,15 @@
-[gd_scene load_steps=9 format=3 uid="uid://67mof4iojay2"]
+[gd_scene load_steps=11 format=3 uid="uid://67mof4iojay2"]
 
 [ext_resource type="Script" path="res://Entities/BasketballPlayers/BasketballPlayer.cs" id="1_kr2bl"]
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_mulv8"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_mc2ct"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_cyc6o"]
+albedo_color = Color(0, 0, 0, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_hv6jr"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_nega0"]
 
@@ -24,6 +29,11 @@ mesh = SubResource("CapsuleMesh_mulv8")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 shape = SubResource("CapsuleShape3D_mc2ct")
+
+[node name="NoseMesh" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.176777, 0, 0.176777, 0, 0.25, 0, -0.176777, 0, 0.176777, 0, 0.443793, 0.426513)
+material_override = SubResource("StandardMaterial3D_cyc6o")
+mesh = SubResource("BoxMesh_hv6jr")
 
 [node name="OmniLight3D" type="OmniLight3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.51982, 0)

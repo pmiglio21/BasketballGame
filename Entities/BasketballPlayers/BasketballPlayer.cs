@@ -627,16 +627,11 @@ namespace Entities
 
         public override void _PhysicsProcess(double delta)
         {
-            //if (HasFocus)
-            //{
-
-            //}
-
             MovePlayer();
 
             if (IsOnFloor() && !_jumpTimer.IsStopped())
             {
-                GD.Print("Is considered on floor");
+                //GD.Print("Is considered on floor");
 
                 _jumpTimer.Stop();
             }

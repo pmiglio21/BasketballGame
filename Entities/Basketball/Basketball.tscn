@@ -6,7 +6,7 @@
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_a7gri"]
 
-[node name="Basketball" type="StaticBody3D" groups=["Basketball"]]
+[node name="Basketball" type="CharacterBody3D" groups=["Basketball"]]
 script = ExtResource("1_bklda")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
@@ -17,3 +17,7 @@ skeleton = NodePath("")
 shape = SubResource("SphereShape3D_a7gri")
 
 [node name="OmniLight3D" type="OmniLight3D" parent="."]
+
+[node name="BounceTimer" type="Timer" parent="."]
+wait_time = 0.25
+one_shot = true
