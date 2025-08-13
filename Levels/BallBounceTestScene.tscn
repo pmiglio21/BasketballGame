@@ -1,0 +1,33 @@
+[gd_scene load_steps=5 format=3 uid="uid://buq1m1ibrhtn4"]
+
+[ext_resource type="PackedScene" uid="uid://dsl88xf2aa6wq" path="res://Entities/Basketball/BouncyBasketball.tscn" id="1_m1mpo"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_xmhes"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ha8q6"]
+albedo_color = Color(0.784314, 0.784314, 0.784314, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_dqp5e"]
+material = SubResource("StandardMaterial3D_ha8q6")
+
+[node name="BallBounceTestScene" type="Node3D"]
+
+[node name="BouncyBasketball" parent="." instance=ExtResource("1_m1mpo")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.91995, 0)
+
+[node name="Ground" type="StaticBody3D" parent="."]
+transform = Transform3D(100, 0, 0, 0, 1, 0, 0, 0, 100, 0, 0, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Ground"]
+shape = SubResource("BoxShape3D_xmhes")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Ground"]
+mesh = SubResource("BoxMesh_dqp5e")
+skeleton = NodePath("../..")
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.866025, 0.5, 0, -0.5, 0.866025, 0, 10.9497, 14.6493)
+
+[node name="OmniLight3D" type="OmniLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.866025, 0.5, 0, -0.5, 0.866025, 0.29451, 6.55034, 1.18265)
+light_energy = 20.0

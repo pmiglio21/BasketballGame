@@ -664,6 +664,7 @@ namespace Entities
 
                 GlobalRotation = new Vector3(GlobalRotation.X, newAngle, GlobalRotation.Z);
 
+
                 //Rotation = GlobalPosition.Rotated(moveDirection, 0);
             }
         }
