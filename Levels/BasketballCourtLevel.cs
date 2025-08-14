@@ -97,13 +97,9 @@ namespace Levels
                 basketballPlayer.HasBasketball = true;
                 basketballPlayer.HasFocus = true;
 
-                //var rotation_euler = (basketballPlayer.GetNode("YourNode3D") as CharacterBody3D).Rotation;
-                //var yaw_in_radians = rotation_euler.Y; // Yaw is typically the angle around the Y-axis
-                                                       //var yaw_in_degrees = Mathf.Rad2Deg(yaw_in_radians);
-
-                //Basketball.Basis = basketballPlayer.Basis;
-
-                Basketball.GlobalPosition = basketballPlayer.Position + new Vector3(0, 0, 1.5f);
+                Vector3 distanceBetweenPlayerAndBall = new Vector3(0, 0, 1.5f);
+                Vector3 rotatedDistance = distanceBetweenPlayerAndBall.Rotated(Vector3.Up, basketballPlayer.GlobalRotation.Y);
+                Basketball.GlobalPosition = basketballPlayer.GlobalPosition + rotatedDistance;
             }
         }
 
