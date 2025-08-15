@@ -5,7 +5,11 @@ namespace Entities
 {
     public partial class Basketball : CharacterBody3D
     {
-        public BasketballPlayer ParentPlayer = null;
+        //public BasketballPlayer ParentPlayer = null;
+
+        public BasketballPlayer PreviousPlayer = null;
+
+        public BasketballPlayer TargetPlayer = null;
 
         public OmniLight3D OmniLight = null;
 
@@ -22,7 +26,6 @@ namespace Entities
         // Called every frame. 'delta' is the elapsed time since the previous frame.
         public override void _Process(double delta)
         {
-
         }
 
         public override void _PhysicsProcess(double delta)
@@ -39,6 +42,18 @@ namespace Entities
             if (Timer.IsStopped() && Timer.TimeLeft <= 0)
             {
                 Velocity = new Vector3(0, -10f, 0);
+            }
+
+
+            if (TargetPlayer != null)
+            {
+                var moveInput = GlobalPosition.DirectionTo(TargetPlayer.GlobalPosition);
+
+                var normalizedMoveInput = moveInput.Normalized();
+
+                var moveDirection = new Vector3(normalizedMoveInput.X, 0, normalizedMoveInput.Z);
+
+                Velocity = moveInput * 40f;
             }
         }
     }

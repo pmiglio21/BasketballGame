@@ -1,10 +1,12 @@
-[gd_scene load_steps=4 format=3 uid="uid://doymmdgdlp6g0"]
+[gd_scene load_steps=5 format=3 uid="uid://doymmdgdlp6g0"]
 
 [ext_resource type="Script" path="res://Entities/Basketball/Basketball.cs" id="1_bklda"]
 
 [sub_resource type="SphereMesh" id="SphereMesh_e87ox"]
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_a7gri"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_o7370"]
 
 [node name="Basketball" type="CharacterBody3D" groups=["Basketball"]]
 script = ExtResource("1_bklda")
@@ -13,7 +15,7 @@ script = ExtResource("1_bklda")
 mesh = SubResource("SphereMesh_e87ox")
 skeleton = NodePath("")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+[node name="BaseCollisionShape" type="CollisionShape3D" parent="."]
 shape = SubResource("SphereShape3D_a7gri")
 
 [node name="OmniLight3D" type="OmniLight3D" parent="."]
@@ -21,3 +23,9 @@ shape = SubResource("SphereShape3D_a7gri")
 [node name="BounceTimer" type="Timer" parent="."]
 wait_time = 0.25
 one_shot = true
+
+[node name="DetectionArea" type="Area3D" parent="." groups=["BasketballDetectionArea"]]
+
+[node name="DetectionCollisionShape" type="CollisionShape3D" parent="DetectionArea"]
+transform = Transform3D(1.5, 0, 0, 0, 1.5, 0, 0, 0, 1.5, 0, 0, 0)
+shape = SubResource("SphereShape3D_o7370")

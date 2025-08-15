@@ -268,11 +268,11 @@ namespace Entities
             {
                 if (IsOnOffense)
                 {
-                    MagnetizeCpuToPairedPlayer();
+                    //MagnetizeCpuToPairedPlayer();
                 }
                 else
                 {
-                    MagnetizeCpuToPairedPlayer();
+                    //MagnetizeCpuToPairedPlayer();
                 }
             }
         }
@@ -605,15 +605,24 @@ namespace Entities
             {
                 GD.Print($"PassBall triggered by player {PlayerIdentifier}");
 
-                TargetPlayer.HasFocus = true;
-                TargetPlayer.HasBasketball = true;
+                //ParentBasketballCourtLevel.Basketball.ParentPlayer = null;
+                ParentBasketballCourtLevel.Basketball.PreviousPlayer = this;
+                ParentBasketballCourtLevel.Basketball.TargetPlayer = TargetPlayer;
+                //TargetPlayer.HasFocus = true;
+                //TargetPlayer.HasBasketball = true;
 
                 this.HasBasketball = false;
                 this.HasFocus = false;
 
-                ParentBasketballCourtLevel.Basketball.Reparent(TargetPlayer);
+                ParentBasketballCourtLevel.Basketball.Reparent(ParentBasketballCourtLevel);
 
-                ParentBasketballCourtLevel.Basketball.GlobalPosition = TargetPlayer.GlobalPosition + new Vector3(0, 0, 1.5f);
+
+
+                //ParentBasketballCourtLevel.Basketball.Reparent(TargetPlayer);
+
+                //Vector3 distanceBetweenPlayerAndBall = new Vector3(0, 0, 1.5f);
+                //Vector3 rotatedDistance = distanceBetweenPlayerAndBall.Rotated(Vector3.Up, TargetPlayer.GlobalPosition.Y);
+                //ParentBasketballCourtLevel.Basketball.GlobalPosition = TargetPlayer.GlobalPosition + rotatedDistance;
 
                 TargetPlayer = this;
             }
@@ -681,6 +690,28 @@ namespace Entities
             if (area.IsInGroup(GroupTags.ThreePointLine))
             {
                 IsInThreePointLine = false;
+            }
+        }
+
+        private void OnBallDetectionAreaEntered(Area3D area)
+        {
+            if (area.IsInGroup(GroupTags.BasketballDetectionArea))
+            {
+                Basketball basketball = area.GetParent() as Basketball;
+
+                if (basketball.GetParent() is BasketballCourtLevel && basketball.PreviousPlayer != this)
+                {
+                    HasFocus = true;
+                    HasBasketball = true;
+
+                    basketball.Reparent(this);
+
+                    Vector3 distanceBetweenPlayerAndBall = new Vector3(0, 0, 1.5f);
+                    Vector3 rotatedDistance = distanceBetweenPlayerAndBall.Rotated(Vector3.Up, this.GlobalPosition.Y);
+                    basketball.GlobalPosition = this.GlobalPosition + rotatedDistance;
+
+                    basketball.TargetPlayer = null;
+                }
             }
         }
 

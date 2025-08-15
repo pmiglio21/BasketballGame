@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://67mof4iojay2"]
+[gd_scene load_steps=12 format=3 uid="uid://67mof4iojay2"]
 
 [ext_resource type="Script" path="res://Entities/BasketballPlayers/BasketballPlayer.cs" id="1_kr2bl"]
 
@@ -20,6 +20,8 @@ albedo_color = Color(0, 0, 0, 1)
 [sub_resource type="SphereMesh" id="SphereMesh_cv76t"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_faggy"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_chckk"]
 
 [node name="BasketballPlayer" type="CharacterBody3D" groups=["BasketballPlayer"]]
 script = ExtResource("1_kr2bl")
@@ -80,5 +82,12 @@ shape = SubResource("CapsuleShape3D_faggy")
 wait_time = 0.2
 one_shot = true
 
+[node name="BallDetectionArea" type="Area3D" parent="."]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="BallDetectionArea"]
+transform = Transform3D(2.5, 0, 0, 0, 1, 0, 0, 0, 2.5, 0, 0, 0)
+shape = SubResource("CapsuleShape3D_chckk")
+
 [connection signal="area_entered" from="BodyDetectionArea" to="." method="OnBodyDetectionAreaEntered"]
 [connection signal="area_exited" from="BodyDetectionArea" to="." method="OnBodyDetectionAreaExited"]
+[connection signal="area_entered" from="BallDetectionArea" to="." method="OnBallDetectionAreaEntered"]

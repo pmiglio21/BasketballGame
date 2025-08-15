@@ -94,6 +94,7 @@ namespace Levels
             if (basketballPlayer != null)
             {
                 Basketball.Reparent(basketballPlayer);
+                //Basketball.ParentPlayer = basketballPlayer;
                 basketballPlayer.HasBasketball = true;
                 basketballPlayer.HasFocus = true;
 
