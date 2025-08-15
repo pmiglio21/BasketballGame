@@ -268,11 +268,11 @@ namespace Entities
             {
                 if (IsOnOffense)
                 {
-                    //MagnetizeCpuToPairedPlayer();
+                    MagnetizeCpuToPairedPlayer();
                 }
                 else
                 {
-                    //MagnetizeCpuToPairedPlayer();
+                    MagnetizeCpuToPairedPlayer();
                 }
             }
         }
@@ -286,6 +286,11 @@ namespace Entities
             var normalizedMoveInput = moveInput.Normalized();
 
             moveDirection = new Vector3(normalizedMoveInput.X, 0, normalizedMoveInput.Z);
+
+            if (this.GlobalPosition.DistanceTo(PairingPlayer.GlobalPosition) <= 3)
+            {
+                moveDirection = Vector3.Zero;
+            }
         }
 
         protected void GetSkillStatsData()
@@ -310,7 +315,7 @@ namespace Entities
         protected void GetMovementInput(double delta)
         {
             var gravity = 80.0f; // Adjust gravity as needed
-            var jumpVelocity = 200.0f; // Adjust jump velocity as needed
+            var jumpVelocity = 100.0f; // Adjust jump velocity as needed
 
             float yMoveInput = 0;
 
@@ -605,24 +610,13 @@ namespace Entities
             {
                 GD.Print($"PassBall triggered by player {PlayerIdentifier}");
 
-                //ParentBasketballCourtLevel.Basketball.ParentPlayer = null;
                 ParentBasketballCourtLevel.Basketball.PreviousPlayer = this;
                 ParentBasketballCourtLevel.Basketball.TargetPlayer = TargetPlayer;
-                //TargetPlayer.HasFocus = true;
-                //TargetPlayer.HasBasketball = true;
 
                 this.HasBasketball = false;
                 this.HasFocus = false;
 
                 ParentBasketballCourtLevel.Basketball.Reparent(ParentBasketballCourtLevel);
-
-
-
-                //ParentBasketballCourtLevel.Basketball.Reparent(TargetPlayer);
-
-                //Vector3 distanceBetweenPlayerAndBall = new Vector3(0, 0, 1.5f);
-                //Vector3 rotatedDistance = distanceBetweenPlayerAndBall.Rotated(Vector3.Up, TargetPlayer.GlobalPosition.Y);
-                //ParentBasketballCourtLevel.Basketball.GlobalPosition = TargetPlayer.GlobalPosition + rotatedDistance;
 
                 TargetPlayer = this;
             }
@@ -699,7 +693,7 @@ namespace Entities
             {
                 Basketball basketball = area.GetParent() as Basketball;
 
-                if (basketball.GetParent() is BasketballCourtLevel && basketball.PreviousPlayer != this)
+                if (basketball.GetParent() is BasketballCourtLevel && basketball.PreviousPlayer != this && basketball.TargetPlayer == this)
                 {
                     HasFocus = true;
                     HasBasketball = true;

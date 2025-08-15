@@ -5,7 +5,6 @@ namespace Entities
 {
     public partial class Basketball : CharacterBody3D
     {
-        //public BasketballPlayer ParentPlayer = null;
 
         public BasketballPlayer PreviousPlayer = null;
 
