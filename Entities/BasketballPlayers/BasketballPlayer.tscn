@@ -93,3 +93,4 @@ shape = SubResource("CapsuleShape3D_chckk")
 [connection signal="area_entered" from="BodyDetectionArea" to="." method="OnBodyDetectionAreaEntered"]
 [connection signal="area_exited" from="BodyDetectionArea" to="." method="OnBodyDetectionAreaExited"]
 [connection signal="area_entered" from="BallDetectionArea" to="." method="OnBallDetectionAreaEntered"]
+[connection signal="area_exited" from="BallDetectionArea" to="." method="OnBallDetectionAreaExited"]

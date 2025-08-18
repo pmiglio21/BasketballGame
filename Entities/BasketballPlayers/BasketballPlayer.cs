@@ -133,6 +133,20 @@ namespace Entities
         }
         private bool _isInThreePointLine = false;
 
+        public bool IsBasketballInDetectionArea
+        {
+            get { return _isBasketballInDetectionArea; }
+            set
+            {
+                if (_isBasketballInDetectionArea != value)
+                {
+                    _isBasketballInDetectionArea = value;
+                    OnPropertyChanged(nameof(IsBasketballInDetectionArea));
+                }
+            }
+        }
+        private bool _isBasketballInDetectionArea = false;
+
         #endregion
 
         #region Skill Properties
@@ -239,15 +253,14 @@ namespace Entities
                     if (HasBasketball)
                     {
                         GetShootBasketballInput();
-
-                        if (TargetPlayer != this)
-                        {
-                            if (HasBasketball)
-                            {
-                                GetPassBallInput();
-                            }
-                        }
                     }
+
+                    //if (TargetPlayer != this)
+                    //{
+                        
+                    //}
+
+                    GetPassBallInput();
                 }
                 else
                 {
@@ -261,6 +274,8 @@ namespace Entities
                     {
                         GetPassFocusInput();
                     }
+
+                    GetStealInput();
                 }
             }
             //CPU logic
@@ -610,15 +625,42 @@ namespace Entities
             {
                 GD.Print($"PassBall triggered by player {PlayerIdentifier}");
 
-                ParentBasketballCourtLevel.Basketball.PreviousPlayer = this;
-                ParentBasketballCourtLevel.Basketball.TargetPlayer = TargetPlayer;
+                if (HasBasketball)
+                {
+                    ParentBasketballCourtLevel.Basketball.PreviousPlayer = this;
+                    ParentBasketballCourtLevel.Basketball.TargetPlayer = TargetPlayer;
 
-                this.HasBasketball = false;
-                this.HasFocus = false;
+                    this.HasBasketball = false;
+                    this.HasFocus = false;
 
-                ParentBasketballCourtLevel.Basketball.Reparent(ParentBasketballCourtLevel);
+                    ParentBasketballCourtLevel.Basketball.Reparent(ParentBasketballCourtLevel);
 
-                TargetPlayer = this;
+                    TargetPlayer = this;
+                }
+                else
+                {
+                    BasketballPlayer cpuPlayerInPossessionOfBall = ParentBasketballCourtLevel.Basketball.GetParent() as BasketballPlayer;
+
+                    ParentBasketballCourtLevel.Basketball.PreviousPlayer = cpuPlayerInPossessionOfBall;
+                    ParentBasketballCourtLevel.Basketball.TargetPlayer = this;
+
+                    cpuPlayerInPossessionOfBall.HasBasketball = false;
+                    cpuPlayerInPossessionOfBall.HasFocus = false;
+
+                    ParentBasketballCourtLevel.Basketball.Reparent(ParentBasketballCourtLevel);
+
+                    cpuPlayerInPossessionOfBall.TargetPlayer = cpuPlayerInPossessionOfBall;
+                }
+            }
+        }
+
+        protected void GetStealInput()
+        {
+            if (Input.IsActionJustPressed($"StealBall_{TeamIdentifier}"))
+            {
+                GD.Print($"StealBall triggered by player {PlayerIdentifier}");
+
+                ReceiveTheBall(ParentBasketballCourtLevel.Basketball);
             }
         }
 
@@ -693,23 +735,46 @@ namespace Entities
             {
                 Basketball basketball = area.GetParent() as Basketball;
 
-                if (basketball.GetParent() is BasketballCourtLevel && basketball.PreviousPlayer != this && basketball.TargetPlayer == this)
+                if (basketball.GetParent() is BasketballCourtLevel)
                 {
-                    HasFocus = true;
-                    HasBasketball = true;
+                    IsBasketballInDetectionArea = true;
 
-                    basketball.Reparent(this);
+                    if (basketball.PreviousPlayer != this && basketball.TargetPlayer == this)
+                    {
+                        ReceiveTheBall(basketball);
+                    }
+                }
+            }
+        }
 
-                    Vector3 distanceBetweenPlayerAndBall = new Vector3(0, 0, 1.5f);
-                    Vector3 rotatedDistance = distanceBetweenPlayerAndBall.Rotated(Vector3.Up, this.GlobalPosition.Y);
-                    basketball.GlobalPosition = this.GlobalPosition + rotatedDistance;
+        private void OnBallDetectionAreaExited(Area3D area)
+        {
+            if (area.IsInGroup(GroupTags.BasketballDetectionArea))
+            {
+                Basketball basketball = area.GetParent() as Basketball;
 
-                    basketball.TargetPlayer = null;
+                if (basketball.GetParent() is BasketballCourtLevel)
+                {
+                    IsBasketballInDetectionArea = false;
                 }
             }
         }
 
         #endregion
+
+        private void ReceiveTheBall(Basketball basketball)
+        {
+            HasFocus = true;
+            HasBasketball = true;
+
+            basketball.Reparent(this);
+
+            Vector3 distanceBetweenPlayerAndBall = new Vector3(0, 0, 1.5f);
+            Vector3 rotatedDistance = distanceBetweenPlayerAndBall.Rotated(Vector3.Up, this.GlobalPosition.Y);
+            basketball.GlobalPosition = this.GlobalPosition + rotatedDistance;
+
+            basketball.TargetPlayer = null;
+        }
     }
 }
 
