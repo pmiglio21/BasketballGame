@@ -142,6 +142,8 @@ namespace Entities
                 {
                     _isBasketballInDetectionArea = value;
                     OnPropertyChanged(nameof(IsBasketballInDetectionArea));
+
+                    //GD.Print("Ball is definitely in detection area");
                 }
             }
         }
@@ -248,19 +250,14 @@ namespace Entities
                     if (TargetPlayer != this)
                     {
                         GetPassFocusInput();
+
+                        GetPassBallInput();
                     }
 
                     if (HasBasketball)
                     {
                         GetShootBasketballInput();
                     }
-
-                    //if (TargetPlayer != this)
-                    //{
-                        
-                    //}
-
-                    GetPassBallInput();
                 }
                 else
                 {
@@ -631,7 +628,7 @@ namespace Entities
                     ParentBasketballCourtLevel.Basketball.TargetPlayer = TargetPlayer;
 
                     this.HasBasketball = false;
-                    this.HasFocus = false;
+                    //this.HasFocus = false;
 
                     ParentBasketballCourtLevel.Basketball.Reparent(ParentBasketballCourtLevel);
 
@@ -660,7 +657,28 @@ namespace Entities
             {
                 GD.Print($"StealBall triggered by player {PlayerIdentifier}");
 
-                ReceiveTheBall(ParentBasketballCourtLevel.Basketball);
+                if (ParentBasketballCourtLevel.Basketball.GetParent() is BasketballCourtLevel)
+                {
+                    IsBasketballInDetectionArea = ParentBasketballCourtLevel.Basketball.GlobalPosition.DistanceTo(GlobalPosition) <= 4.0f;
+
+                    if (IsBasketballInDetectionArea)
+                    {
+                        ReceiveTheBall(ParentBasketballCourtLevel.Basketball);
+
+                        GD.Print($"Ball has been stolen by player {PlayerIdentifier}!");
+
+                        FlipTeamIsOnOffense(TeamIdentifier, true);
+
+                        if (TeamIdentifier == "1")
+                        {
+                            FlipTeamIsOnOffense("2", false);
+                        }
+                        else if (TeamIdentifier == "2")
+                        {
+                            FlipTeamIsOnOffense("1", false);
+                        }
+                    }
+                }
             }
         }
 
@@ -764,6 +782,13 @@ namespace Entities
 
         private void ReceiveTheBall(Basketball basketball)
         {
+            List<BasketballPlayer> playersOnTeam = ParentBasketballCourtLevel.AllBasketballPlayers.Where(player => player.TeamIdentifier == TeamIdentifier).ToList();
+
+            foreach (BasketballPlayer player in playersOnTeam)
+            {
+                player.HasFocus = false;
+            }
+
             HasFocus = true;
             HasBasketball = true;
 
@@ -774,6 +799,25 @@ namespace Entities
             basketball.GlobalPosition = this.GlobalPosition + rotatedDistance;
 
             basketball.TargetPlayer = null;
+        }
+
+        private void FlipTeamIsOnOffense(string teamIdentifier, bool isOnOffense)
+        {
+            List<BasketballPlayer> playersOnTeam = ParentBasketballCourtLevel.AllBasketballPlayers.Where(player => player.TeamIdentifier == teamIdentifier).ToList();
+
+            foreach (BasketballPlayer player in playersOnTeam)
+            {
+                player.IsOnOffense = isOnOffense;
+
+                //if (isOnOffense)
+                //{
+                //    GD.Print($"{player.TeamIdentifier} {player.PlayerIdentifier} is on offense");
+                //}
+                //else
+                //{
+                //    GD.Print($"{player.TeamIdentifier} {player.PlayerIdentifier} is on defense");
+                //}
+            }
         }
     }
 }
