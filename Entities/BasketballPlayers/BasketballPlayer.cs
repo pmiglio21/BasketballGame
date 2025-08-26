@@ -535,6 +535,8 @@ namespace Entities
                     }
                 }
 
+                ParentBasketballCourtLevel.Basketball.IsDribbling = false;
+
                 TargetPlayer = this;
 
                 ParentBasketballCourtLevel.BasketballResetTimer.Start();

@@ -23,7 +23,7 @@ shape = SubResource("SphereShape3D_a7gri")
 [node name="OmniLight3D" type="OmniLight3D" parent="."]
 
 [node name="BounceTimer" type="Timer" parent="."]
-wait_time = 0.25
+wait_time = 0.125
 one_shot = true
 
 [node name="DetectionArea" type="Area3D" parent="." groups=["BasketballDetectionArea"]]
