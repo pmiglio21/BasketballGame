@@ -103,6 +103,8 @@ namespace Levels
                 Basketball.GlobalPosition = basketballPlayer.GlobalPosition + rotatedDistance;
                 Basketball.IsBeingShot = false;
                 Basketball.IsDribbling = true;
+
+                Basketball.PreviousPlayer = basketballPlayer;
             }
         }
 
@@ -205,7 +207,7 @@ namespace Levels
 
             AllBasketballPlayers.ForEach(player => player.HasFocus = false);
 
-            GiveBasketballToPlayer(AllBasketballPlayers.FirstOrDefault());
+            GiveBasketballToPlayer(Basketball.PreviousPlayer);
 
             BasketballPlayer focusedDefensePlayer = AllBasketballPlayers.FirstOrDefault(p => p.TeamIdentifier != "1" && p.PlayerIdentifier == "1");
 

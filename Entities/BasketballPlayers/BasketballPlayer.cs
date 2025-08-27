@@ -390,7 +390,7 @@ namespace Entities
             //TODO: Maybe do something with IsOnFloor() here?
             if (Input.IsActionJustReleased($"Jump_{TeamIdentifier}"))
             {
-                GD.Print($"ShootBall triggered by player {PlayerIdentifier}");
+                //GD.Print($"ShootBall triggered by player {PlayerIdentifier}");
 
                 this.HasBasketball = false;
 
@@ -545,15 +545,10 @@ namespace Entities
                 }
 
                 ParentBasketballCourtLevel.Basketball.Velocity = new Vector3(basketballDestinationGlobalPosition.X - ParentBasketballCourtLevel.Basketball.GlobalPosition.X,
-                                                                             Mathf.Sin(Mathf.Pi / 4) * 20,
-                                                                             //0,
+                                                                             //Mathf.Sin(Mathf.Pi / 4) * 20,
+                                                                             0,
                                                                              basketballDestinationGlobalPosition.Z - ParentBasketballCourtLevel.Basketball.GlobalPosition.Z);
 
-                //var magnitude =  ParentBasketballCourtLevel.Basketball.Velocity.Length();
-
-                //CALCULATE HALFWAY POINT FROM ORIGINAL LAUNCH POINT TO HOOP, THEN APPLY GRAVITY ON SECOND HALF
-
-                //ParentBasketballCourtLevel.Basketball.GlobalPosition = newBasketballGlobalPosition;
                 ParentBasketballCourtLevel.Basketball.OmniLight.LightColor = newBasketballLightColor;
 
                 ParentBasketballCourtLevel.Basketball.IsDribbling = false;
@@ -684,7 +679,7 @@ namespace Entities
         {
             if (Input.IsActionJustPressed($"PassFocus_{TeamIdentifier}"))
             {
-                GD.Print($"PassFocus triggered by player {PlayerIdentifier}");
+                //GD.Print($"PassFocus triggered by player {PlayerIdentifier}");
 
                 TargetPlayer.HasFocus = true;
 
@@ -698,7 +693,7 @@ namespace Entities
         {
             if (Input.IsActionJustPressed($"PassBall_{TeamIdentifier}"))
             {
-                GD.Print($"PassBall triggered by player {PlayerIdentifier}");
+                //GD.Print($"PassBall triggered by player {PlayerIdentifier}");
 
                 if (HasBasketball)
                 {
@@ -886,6 +881,7 @@ namespace Entities
             basketball.IsDribbling = true;
 
             basketball.TargetPlayer = null;
+            basketball.PreviousPlayer = this;
         }
 
         private void FlipTeamIsOnOffense(string teamIdentifier, bool isOnOffense)

@@ -26,6 +26,7 @@ material = SubResource("StandardMaterial3D_syu03")
 [sub_resource type="CylinderMesh" id="CylinderMesh_6i3ce"]
 
 [node name="BasketballCourtLevel" type="Node3D" groups=["BasketballCourtLevel"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.841626, -4.73005, 2.15079)
 script = ExtResource("1_fd8c3")
 
 [node name="BackWall" type="StaticBody3D" parent="."]
@@ -100,7 +101,7 @@ transform = Transform3D(40, 0, 0, 0, -8.74228e-07, -10, 0, 20, -4.37114e-07, 0.2
 mesh = SubResource("CapsuleMesh_a5gyj")
 
 [node name="BasketballHoop" type="StaticBody3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.29451, 1.34636, -48.5165)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.29451, 3.04699, -48.5165)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="BasketballHoop"]
 transform = Transform3D(1, 0, 0, 0, 10, 0, 0, 0, 1, 0, 0, 0)
