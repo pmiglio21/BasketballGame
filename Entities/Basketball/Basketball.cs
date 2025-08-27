@@ -93,21 +93,6 @@ namespace Entities
         {
             if (IsDribbling)
             {
-                if (TargetPlayer != null)   //Used to rotate ball with player
-                {
-                    if (TargetPlayer != GetParent() as BasketballPlayer)
-                    {
-                        var moveInput = GlobalPosition.DirectionTo(TargetPlayer.GlobalPosition);
-
-                        var normalizedMoveInput = moveInput.Normalized();
-
-                        var moveDirection = new Vector3(normalizedMoveInput.X, 0, normalizedMoveInput.Z);
-
-                        Velocity = moveInput * 40f;
-                    }
-                }
-
-
                 if (Timer.IsStopped() && Timer.TimeLeft <= 0)
                 {
                     Velocity = new Vector3(0, -10f, 0);
@@ -127,47 +112,67 @@ namespace Entities
             }
             else if (IsBeingShot)
             {
-                //Velocity = new Vector3(0, -10f, 0);
+                Velocity = new Vector3(Velocity.X, Velocity.Y - .5f, Velocity.Z);
 
-
-                if (Timer.IsStopped() && Timer.TimeLeft <= 0)
-                {
-                    Velocity = new Vector3(0, -10, 0);
-                }
-
-                KinematicCollision3D collisionInfo = MoveAndCollide(Velocity * (float)delta);
-
-                //MoveAndSlide();
-
-                if (collisionInfo != null)
-                {
-                    Velocity = Velocity.Bounce(collisionInfo.GetNormal());
-
-                    Timer.Start();
-
-                    IsBeingShot = false;
-                }
-            }
-            else
-            {
-                Velocity = new Vector3(0, Mathf.Clamp(Velocity.Y + .1f, -10, 0), 0);
 
                 //if (Timer.IsStopped() && Timer.TimeLeft <= 0)
                 //{
-                //    Velocity = new Vector3(0, Mathf.Clamp(Velocity.Y + .1f, -10, 0), 0);
+                //    Velocity = new Vector3(0, -10, 0);
                 //}
 
-                KinematicCollision3D collisionInfo = MoveAndCollide(Velocity * (float)delta);
+                //KinematicCollision3D collisionInfo = MoveAndCollide(Velocity * (float)delta);
 
-                //MoveAndSlide();
+                ////MoveAndSlide();
 
-                if (collisionInfo != null)
-                {
-                    Velocity = Velocity.Bounce(collisionInfo.GetNormal());
+                //if (collisionInfo != null)
+                //{
+                //    Velocity = Velocity.Bounce(collisionInfo.GetNormal());
 
-                    //Timer.Start();
-                }
+                //    Timer.Start();
+
+                //    IsBeingShot = false;
+                //}
+
+                MoveAndSlide();
             }
+            else
+            {
+                if (TargetPlayer != null)   //Used to send ball to player
+                {
+                    if (TargetPlayer != GetParent() as BasketballPlayer)
+                    {
+                        var moveInput = GlobalPosition.DirectionTo(TargetPlayer.GlobalPosition);
+
+                        var normalizedMoveInput = moveInput.Normalized();
+
+                        var moveDirection = new Vector3(normalizedMoveInput.X, 0, normalizedMoveInput.Z);
+
+                        Velocity = moveInput * 40f;
+                    }
+                }
+
+                MoveAndSlide();
+            }
+            //else
+            //{
+            //    Velocity = new Vector3(0, Mathf.Clamp(Velocity.Y + .1f, -10, 0), 0);
+
+            //    //if (Timer.IsStopped() && Timer.TimeLeft <= 0)
+            //    //{
+            //    //    Velocity = new Vector3(0, Mathf.Clamp(Velocity.Y + .1f, -10, 0), 0);
+            //    //}
+
+            //    KinematicCollision3D collisionInfo = MoveAndCollide(Velocity * (float)delta);
+
+            //    //MoveAndSlide();
+
+            //    if (collisionInfo != null)
+            //    {
+            //        Velocity = Velocity.Bounce(collisionInfo.GetNormal());
+
+            //        //Timer.Start();
+            //    }
+            //}
         }
     }
 }

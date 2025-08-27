@@ -394,6 +394,14 @@ namespace Entities
 
                 ParentBasketballCourtLevel.Basketball.Reparent(ParentBasketballCourtLevel.HoopArea);
 
+                ParentBasketballCourtLevel.Basketball.IsBeingShot = true;
+
+                //ParentBasketballCourtLevel.Basketball.Velocity = ;
+
+                Vector3 newBasketballGlobalPosition = ParentBasketballCourtLevel.Basketball.GlobalPosition;
+                Color newBasketballLightColor = ParentBasketballCourtLevel.Basketball.OmniLight.LightColor;
+
+
                 if (IsInThreePointLine)
                 {
                     int chanceOfShotGoingIn = 0;
@@ -402,28 +410,28 @@ namespace Entities
                     {
                         chanceOfShotGoingIn = 5;
 
-                        ParentBasketballCourtLevel.Basketball.GlobalPosition = ParentBasketballCourtLevel.HoopArea.GlobalPosition + new Vector3(0, 1f, 0);
+                        newBasketballGlobalPosition = ParentBasketballCourtLevel.HoopArea.GlobalPosition + new Vector3(0, 1f, 0);
                     }
                     else if (SkillStats.TwoPointShooting == GlobalConstants.SkillStatAverage)
                     {
                         chanceOfShotGoingIn = 35;
 
-                        ParentBasketballCourtLevel.Basketball.GlobalPosition = ParentBasketballCourtLevel.HoopArea.GlobalPosition + new Vector3(0, 1f, 0);
+                        newBasketballGlobalPosition = ParentBasketballCourtLevel.HoopArea.GlobalPosition + new Vector3(0, 1f, 0);
                     }
                     else if (SkillStats.TwoPointShooting == GlobalConstants.SkillStatHigh)
                     {
                         chanceOfShotGoingIn = 95;
 
-                        ParentBasketballCourtLevel.Basketball.GlobalPosition = ParentBasketballCourtLevel.HoopArea.GlobalPosition + new Vector3(0, 1f, 0);
+                        newBasketballGlobalPosition = ParentBasketballCourtLevel.HoopArea.GlobalPosition + new Vector3(0, 1f, 0);
                     }
 
                     int randomValue = ParentBasketballCourtLevel.RandomNumberGenerator.RandiRange(0, 100);
 
                     if (randomValue <= chanceOfShotGoingIn)
                     {
-                        ParentBasketballCourtLevel.Basketball.GlobalPosition = ParentBasketballCourtLevel.HoopArea.GlobalPosition + new Vector3(0, 1f, 0);
+                        newBasketballGlobalPosition = ParentBasketballCourtLevel.HoopArea.GlobalPosition + new Vector3(0, 1f, 0);
 
-                        ParentBasketballCourtLevel.Basketball.OmniLight.LightColor = new Color(0, 1, 0);
+                        newBasketballLightColor = new Color(0, 1, 0);
                     }
                     else if (SkillStats.TwoPointShooting == GlobalConstants.SkillStatAverage)
                     {
@@ -440,9 +448,9 @@ namespace Entities
                             randomXOffset = ParentBasketballCourtLevel.RandomNumberGenerator.RandfRange(-1f, -.5f);
                         }
 
-                        ParentBasketballCourtLevel.Basketball.GlobalPosition = ParentBasketballCourtLevel.HoopArea.GlobalPosition + new Vector3(randomXOffset, 1f, 0);
+                        newBasketballGlobalPosition = ParentBasketballCourtLevel.HoopArea.GlobalPosition + new Vector3(randomXOffset, 1f, 0);
 
-                        ParentBasketballCourtLevel.Basketball.OmniLight.LightColor = new Color(1, 0, 0);
+                        newBasketballLightColor = new Color(1, 0, 0);
                     }
                     else if (SkillStats.TwoPointShooting == GlobalConstants.SkillStatLow)
                     {
@@ -459,9 +467,9 @@ namespace Entities
                             randomXOffset = ParentBasketballCourtLevel.RandomNumberGenerator.RandfRange(-3f, -1.5f);
                         }
 
-                        ParentBasketballCourtLevel.Basketball.GlobalPosition = ParentBasketballCourtLevel.HoopArea.GlobalPosition + new Vector3(randomXOffset, 1f, 0);
+                        newBasketballGlobalPosition = ParentBasketballCourtLevel.HoopArea.GlobalPosition + new Vector3(randomXOffset, 1f, 0);
 
-                        ParentBasketballCourtLevel.Basketball.OmniLight.LightColor = new Color(1, 0, 0);
+                        newBasketballLightColor = new Color(1, 0, 0);
                     }
                 }
                 else
@@ -472,28 +480,28 @@ namespace Entities
                     {
                         chanceOfShotGoingIn = 1;
 
-                        ParentBasketballCourtLevel.Basketball.GlobalPosition = ParentBasketballCourtLevel.HoopArea.GlobalPosition + new Vector3(0, 1f, 0);
+                        newBasketballGlobalPosition = ParentBasketballCourtLevel.HoopArea.GlobalPosition + new Vector3(0, 1f, 0);
                     }
                     else if (SkillStats.ThreePointShooting == GlobalConstants.SkillStatAverage)
                     {
                         chanceOfShotGoingIn = 25;
 
-                        ParentBasketballCourtLevel.Basketball.GlobalPosition = ParentBasketballCourtLevel.HoopArea.GlobalPosition + new Vector3(0, 1f, 0);
+                        newBasketballGlobalPosition = ParentBasketballCourtLevel.HoopArea.GlobalPosition + new Vector3(0, 1f, 0);
                     }
                     else if (SkillStats.ThreePointShooting == GlobalConstants.SkillStatHigh)
                     {
                         chanceOfShotGoingIn = 80;
 
-                        ParentBasketballCourtLevel.Basketball.GlobalPosition = ParentBasketballCourtLevel.HoopArea.GlobalPosition + new Vector3(0, 1f, 0);
+                        newBasketballGlobalPosition = ParentBasketballCourtLevel.HoopArea.GlobalPosition + new Vector3(0, 1f, 0);
                     }
 
                     int randomValue = ParentBasketballCourtLevel.RandomNumberGenerator.RandiRange(0, 100);
 
                     if (randomValue <= chanceOfShotGoingIn)
                     {
-                        ParentBasketballCourtLevel.Basketball.GlobalPosition = ParentBasketballCourtLevel.HoopArea.GlobalPosition + new Vector3(0, 1f, 0);
+                        newBasketballGlobalPosition = ParentBasketballCourtLevel.HoopArea.GlobalPosition + new Vector3(0, 1f, 0);
 
-                        ParentBasketballCourtLevel.Basketball.OmniLight.LightColor = new Color(0, 1, 0); 
+                        newBasketballLightColor = new Color(0, 1, 0); 
                     }
                     else if (SkillStats.ThreePointShooting == GlobalConstants.SkillStatAverage)
                     {
@@ -510,9 +518,9 @@ namespace Entities
                             randomXOffset = ParentBasketballCourtLevel.RandomNumberGenerator.RandfRange(-1f, -.5f);
                         }
 
-                        ParentBasketballCourtLevel.Basketball.GlobalPosition = ParentBasketballCourtLevel.HoopArea.GlobalPosition + new Vector3(randomXOffset, 1f, 0);
+                        newBasketballGlobalPosition = ParentBasketballCourtLevel.HoopArea.GlobalPosition + new Vector3(randomXOffset, 1f, 0);
 
-                        ParentBasketballCourtLevel.Basketball.OmniLight.LightColor = new Color(1, 0, 0);
+                        newBasketballLightColor = new Color(1, 0, 0);
                     }
                     else if (SkillStats.ThreePointShooting == GlobalConstants.SkillStatLow)
                     {
@@ -529,11 +537,22 @@ namespace Entities
                             randomXOffset = ParentBasketballCourtLevel.RandomNumberGenerator.RandfRange(-3f, -1.5f);
                         }
 
-                        ParentBasketballCourtLevel.Basketball.GlobalPosition = ParentBasketballCourtLevel.HoopArea.GlobalPosition + new Vector3(randomXOffset, 1f, 0);
+                        newBasketballGlobalPosition = ParentBasketballCourtLevel.HoopArea.GlobalPosition + new Vector3(randomXOffset, 1f, 0);
 
-                        ParentBasketballCourtLevel.Basketball.OmniLight.LightColor = new Color(1, 0, 0);
+                        newBasketballLightColor = new Color(1, 0, 0);
                     }
                 }
+
+                //float scalarVelocity = CalculateBasketballShotScalarVelocity(ParentBasketballCourtLevel.Basketball);
+
+                ParentBasketballCourtLevel.Basketball.Velocity = new Vector3(ParentBasketballCourtLevel.HoopArea.GlobalPosition.X - ParentBasketballCourtLevel.Basketball.GlobalPosition.X, 
+                                                                             Mathf.Sin(Mathf.Pi/4) * 20, 
+                                                                             ParentBasketballCourtLevel.HoopArea.GlobalPosition.Z - ParentBasketballCourtLevel.Basketball.GlobalPosition.Z);
+
+                //CALCULATE HALFWAY POINT FROM ORIGINAL LAUNCH POINT TO HOOP, THEN APPLY GRAVITY ON SECOND HALF
+
+                //ParentBasketballCourtLevel.Basketball.GlobalPosition = newBasketballGlobalPosition;
+                ParentBasketballCourtLevel.Basketball.OmniLight.LightColor = newBasketballLightColor;
 
                 ParentBasketballCourtLevel.Basketball.IsDribbling = false;
 
@@ -541,6 +560,61 @@ namespace Entities
 
                 ParentBasketballCourtLevel.BasketballResetTimer.Start();
             }
+        }
+
+        private float CalculateBasketballShotScalarVelocity(Basketball basketball)
+        {
+            //Equation of a projectile's velocity such as a basketball shot:
+            // v = sqrt((d^2) + (H - h + (1/2)g(t^2)))/t
+            // H is height of hoop
+            // h is height of player at shot release
+            // d is horizontal distance from player to hoop
+            // t is time, let it be 1 for now
+
+            float velocity = 0;
+
+            float time = 1;
+
+            float diffInX = ParentBasketballCourtLevel.HoopArea.GlobalPosition.X - basketball.GlobalPosition.X;
+            float diffInZ = ParentBasketballCourtLevel.HoopArea.GlobalPosition.Z - basketball.GlobalPosition.Z;
+
+            if (diffInX != 0)
+            {
+                float tanHorizontalAngle = diffInZ / diffInX;
+
+                float horizontalAngle = Mathf.Atan(tanHorizontalAngle);
+
+                float sinHorizontalAngle = Mathf.Sin(horizontalAngle);
+
+                float horizontalDistance = diffInZ / sinHorizontalAngle;
+
+                float heightOfHoop = ParentBasketballCourtLevel.HoopArea.GlobalPosition.Y;
+                float heightOfPlayerAtShotRelease = basketball.GlobalPosition.Y + 2;
+
+                //d^2
+                float dSquared = horizontalDistance * horizontalDistance;
+
+                //(H - h + (1/2)g(t^2))
+                float otherPart = (heightOfHoop - heightOfPlayerAtShotRelease) + (0.5f * 9.81f * (time * time));
+
+                //sqrt(X)
+                float sqrtPart = Mathf.Sqrt(dSquared + otherPart);
+
+                velocity = sqrtPart / time;
+            }
+            else
+            {
+                var a = 0;
+            }
+
+            return velocity;
+        }
+
+        private Vector3 CalculateBasketballShotGlobalRotation()
+        {
+            Vector3 shotGlobalRotation = Vector3.Zero;
+
+            return shotGlobalRotation;
         }
 
         #region Pass Target Input
@@ -633,6 +707,7 @@ namespace Entities
                     //this.HasFocus = false;
 
                     ParentBasketballCourtLevel.Basketball.Reparent(ParentBasketballCourtLevel);
+                    ParentBasketballCourtLevel.Basketball.IsDribbling = false;
 
                     TargetPlayer = this;
                 }
@@ -647,6 +722,7 @@ namespace Entities
                     cpuPlayerInPossessionOfBall.HasFocus = false;
 
                     ParentBasketballCourtLevel.Basketball.Reparent(ParentBasketballCourtLevel);
+                    ParentBasketballCourtLevel.Basketball.IsDribbling = false;
 
                     cpuPlayerInPossessionOfBall.TargetPlayer = cpuPlayerInPossessionOfBall;
                 }
@@ -799,6 +875,8 @@ namespace Entities
             Vector3 distanceBetweenPlayerAndBall = new Vector3(0, 0, 1.5f);
             Vector3 rotatedDistance = distanceBetweenPlayerAndBall.Rotated(Vector3.Up, this.GlobalPosition.Y);
             basketball.GlobalPosition = this.GlobalPosition + rotatedDistance;
+
+            basketball.IsDribbling = true;
 
             basketball.TargetPlayer = null;
         }
