@@ -397,7 +397,14 @@ namespace Entities
                 ParentBasketballCourtLevel.Basketball.Reparent(ParentBasketballCourtLevel.HoopArea);
 
                 ParentBasketballCourtLevel.Basketball.IsBeingShot = true;
+
+                //TODO: Testing, please remove later
+                ParentBasketballCourtLevel.Basketball.GlobalPosition = new Vector3(ParentBasketballCourtLevel.Basketball.GlobalPosition.X,
+                                                                                ParentBasketballCourtLevel.HoopArea.GlobalPosition.Y,
+                                                                                ParentBasketballCourtLevel.Basketball.GlobalPosition.Z);
+
                 ParentBasketballCourtLevel.Basketball.GlobalPositionAtPointOfShot = ParentBasketballCourtLevel.Basketball.GlobalPosition;
+
 
                 Vector3 basketballDestinationGlobalPosition = ParentBasketballCourtLevel.Basketball.GlobalPosition;
                 Color newBasketballLightColor = ParentBasketballCourtLevel.Basketball.OmniLight.LightColor;
@@ -551,61 +558,13 @@ namespace Entities
 
                 ParentBasketballCourtLevel.Basketball.OmniLight.LightColor = newBasketballLightColor;
 
-                ParentBasketballCourtLevel.Basketball.IsDribbling = false;
+                ParentBasketballCourtLevel.Basketball.IsDribbling = false; 
 
                 TargetPlayer = this;
 
                 ParentBasketballCourtLevel.BasketballResetTimer.Start();
             }
         }
-
-        //private float CalculateBasketballShotScalarVelocity(Basketball basketball)
-        //{
-        //    //Equation of a projectile's velocity such as a basketball shot:
-        //    // v = sqrt((d^2) + (H - h + (1/2)g(t^2)))/t
-        //    // H is height of hoop
-        //    // h is height of player at shot release
-        //    // d is horizontal distance from player to hoop
-        //    // t is time, let it be 1 for now
-
-        //    float velocity = 0;
-
-        //    float time = 1;
-
-        //    float diffInX = ParentBasketballCourtLevel.HoopArea.GlobalPosition.X - basketball.GlobalPosition.X;
-        //    float diffInZ = ParentBasketballCourtLevel.HoopArea.GlobalPosition.Z - basketball.GlobalPosition.Z;
-
-        //    if (diffInX != 0)
-        //    {
-        //        float tanHorizontalAngle = diffInZ / diffInX;
-
-        //        float horizontalAngle = Mathf.Atan(tanHorizontalAngle);
-
-        //        float sinHorizontalAngle = Mathf.Sin(horizontalAngle);
-
-        //        float horizontalDistance = diffInZ / sinHorizontalAngle;
-
-        //        float heightOfHoop = ParentBasketballCourtLevel.HoopArea.GlobalPosition.Y;
-        //        float heightOfPlayerAtShotRelease = basketball.GlobalPosition.Y + 2;
-
-        //        //d^2
-        //        float dSquared = horizontalDistance * horizontalDistance;
-
-        //        //(H - h + (1/2)g(t^2))
-        //        float otherPart = (heightOfHoop - heightOfPlayerAtShotRelease) + (0.5f * 9.81f * (time * time));
-
-        //        //sqrt(X)
-        //        float sqrtPart = Mathf.Sqrt(dSquared + otherPart);
-
-        //        velocity = sqrtPart / time;
-        //    }
-        //    else
-        //    {
-        //        var a = 0;
-        //    }
-
-        //    return velocity;
-        //}
 
         private Vector3 CalculateBasketballShotGlobalRotation()
         {
@@ -710,18 +669,23 @@ namespace Entities
                 }
                 else
                 {
-                    BasketballPlayer cpuPlayerInPossessionOfBall = ParentBasketballCourtLevel.Basketball.GetParent() as BasketballPlayer;
+                    Node3D parentNodeOfBasketball = ParentBasketballCourtLevel.Basketball.GetParent() as Node3D;
 
-                    ParentBasketballCourtLevel.Basketball.PreviousPlayer = cpuPlayerInPossessionOfBall;
-                    ParentBasketballCourtLevel.Basketball.TargetPlayer = this;
+                    if (parentNodeOfBasketball is BasketballPlayer)
+                    {
+                        BasketballPlayer cpuPlayerInPossessionOfBall = ParentBasketballCourtLevel.Basketball.GetParent() as BasketballPlayer;
 
-                    cpuPlayerInPossessionOfBall.HasBasketball = false;
-                    cpuPlayerInPossessionOfBall.HasFocus = false;
+                        ParentBasketballCourtLevel.Basketball.PreviousPlayer = cpuPlayerInPossessionOfBall;
+                        ParentBasketballCourtLevel.Basketball.TargetPlayer = this;
 
-                    ParentBasketballCourtLevel.Basketball.Reparent(ParentBasketballCourtLevel);
-                    ParentBasketballCourtLevel.Basketball.IsDribbling = false;
+                        cpuPlayerInPossessionOfBall.HasBasketball = false;
+                        cpuPlayerInPossessionOfBall.HasFocus = false;
 
-                    cpuPlayerInPossessionOfBall.TargetPlayer = cpuPlayerInPossessionOfBall;
+                        ParentBasketballCourtLevel.Basketball.Reparent(ParentBasketballCourtLevel);
+                        ParentBasketballCourtLevel.Basketball.IsDribbling = false;
+
+                        cpuPlayerInPossessionOfBall.TargetPlayer = cpuPlayerInPossessionOfBall;
+                    }
                 }
             }
         }

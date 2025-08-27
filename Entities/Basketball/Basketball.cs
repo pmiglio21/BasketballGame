@@ -1,3 +1,4 @@
+using Constants;
 using Godot;
 using Levels;
 using System;
@@ -117,6 +118,8 @@ namespace Entities
         {
         }
 
+        private int ascensionCount = 0;
+
         public override void _PhysicsProcess(double delta)
         {
             if (IsDribbling)
@@ -144,17 +147,34 @@ namespace Entities
 
                 float currentDistanceToTarget = new Vector3(GlobalPosition.X - BasketballCourtLevel.HoopArea.GlobalPosition.X, 0, GlobalPosition.Z - BasketballCourtLevel.HoopArea.GlobalPosition.Z).Length();
 
-                float changeInGravity = 1f;
+                float changeInGravity = 50f;
+
+                ////Ball should be rising
+                //if (currentDistanceToTarget > fullDistanceToTarget/2)
+                //{
+                //    Velocity = new Vector3(Velocity.X, Mathf.Clamp(Velocity.Y + changeInGravity, float.MinValue, 5), Velocity.Z);
+                //}
+                ////Ball should be falling
+                //else
+                //{
+                //    Velocity = new Vector3(Velocity.X, Mathf.Clamp(Velocity.Y - changeInGravity, float.MinValue, 5), Velocity.Z);
+                //}
 
                 //Ball should be rising
-                if (currentDistanceToTarget > fullDistanceToTarget/2)
+                if (currentDistanceToTarget > fullDistanceToTarget / 2)
                 {
-                    Velocity = new Vector3(Velocity.X, Mathf.Clamp(Velocity.Y + changeInGravity, float.MinValue, 5), Velocity.Z);
+                    ascensionCount++;
+
+                    Velocity = new Vector3(Velocity.X, changeInGravity/ascensionCount, Velocity.Z);
                 }
                 //Ball should be falling
                 else
                 {
-                    Velocity = new Vector3(Velocity.X, Mathf.Clamp(Velocity.Y - changeInGravity, float.MinValue, 5), Velocity.Z);
+                    if (GlobalPosition.Y >= BasketballCourtLevel.HoopArea.GlobalPosition.Y)
+                    {
+                        Velocity = new Vector3(Velocity.X, -changeInGravity / ascensionCount, Velocity.Z);
+                        ascensionCount--;
+                    }
                 }
 
                 if (IsOnFloor())
@@ -182,6 +202,19 @@ namespace Entities
                 }
 
                 MoveAndSlide();
+            }
+        }
+
+        private void OnDetectionAreaEntered(Area3D area)
+        {
+            if (area.IsInGroup(GroupTags.HoopArea))
+            {
+                IsBeingShot = false;
+                ascensionCount = 0;
+
+                GD.Print($"Got into HoopArea.\n" +
+                         $"Starting position was {GlobalPositionAtPointOfShot.X}, {GlobalPositionAtPointOfShot.Y}, {GlobalPositionAtPointOfShot.Z}\n" +
+                         $"Hoop Area position was {area.GlobalPosition.X}, {area.GlobalPosition.Y}, {area.GlobalPosition.Z}");
             }
         }
     }

@@ -31,3 +31,5 @@ one_shot = true
 [node name="DetectionCollisionShape" type="CollisionShape3D" parent="DetectionArea"]
 transform = Transform3D(1.5, 0, 0, 0, 1.5, 0, 0, 0, 1.5, 0, 0, 0)
 shape = SubResource("SphereShape3D_o7370")
+
+[connection signal="area_entered" from="DetectionArea" to="." method="OnDetectionAreaEntered"]

@@ -112,8 +112,9 @@ transform = Transform3D(1, 0, 0, 0, 10, 0, 0, 0, 1, 0, 0, 0)
 mesh = SubResource("BoxMesh_4rm8i")
 skeleton = NodePath("../..")
 
-[node name="HoopArea" type="Area3D" parent="BasketballHoop"]
+[node name="HoopArea" type="Area3D" parent="BasketballHoop" groups=["HoopArea"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.15556, 1.1726)
+collision_mask = 0
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="BasketballHoop/HoopArea"]
 transform = Transform3D(1, 0, 0, 0, 0.3, 0, 0, 0, 1, 0, 0, 0)

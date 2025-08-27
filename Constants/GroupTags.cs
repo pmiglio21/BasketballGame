@@ -15,5 +15,9 @@ namespace Constants
         public const string BasketballDetectionArea = "BasketballDetectionArea";
 
         public const string ThreePointLine = "ThreePointLine";
+
+        public const string BasketballCourtLevel = "BasketballCourtLevel";
+
+        public const string HoopArea = "HoopArea";
     }
 }
