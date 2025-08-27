@@ -25,7 +25,7 @@ material = SubResource("StandardMaterial3D_syu03")
 
 [sub_resource type="CylinderMesh" id="CylinderMesh_6i3ce"]
 
-[node name="BasketballCourtLevel" type="Node3D"]
+[node name="BasketballCourtLevel" type="Node3D" groups=["BasketballCourtLevel"]]
 script = ExtResource("1_fd8c3")
 
 [node name="BackWall" type="StaticBody3D" parent="."]

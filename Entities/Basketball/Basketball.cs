@@ -1,4 +1,5 @@
 using Godot;
+using Levels;
 using System;
 using System.ComponentModel;
 
@@ -11,6 +12,8 @@ namespace Entities
         public BasketballPlayer PreviousPlayer = null;
 
         public BasketballPlayer TargetPlayer = null;
+
+        public BasketballCourtLevel BasketballCourtLevel = null;
 
         #endregion
 
@@ -56,11 +59,36 @@ namespace Entities
         }
         private bool _isBeingShot = false;
 
+        public Vector3 GlobalPositionAtPointOfShot
+        {
+            get { return _globalPositionAtPointOfShot; }
+            set
+            {
+                if (_globalPositionAtPointOfShot != value)
+                {
+                    _globalPositionAtPointOfShot = value;
+                    OnPropertyChanged(nameof(GlobalPositionAtPointOfShot));
+                }
+            }
+        }
+        private Vector3 _globalPositionAtPointOfShot = Vector3.Zero;
+
         #endregion
 
         // Called when the node enters the scene tree for the first time.
         public override void _Ready()
         {
+            Node3D parentNode = GetParent() as Node3D;
+
+            if (parentNode is BasketballPlayer)
+            {
+                BasketballCourtLevel = parentNode.GetParent() as BasketballCourtLevel;
+            }
+            else if (parentNode is BasketballCourtLevel)
+            {
+                BasketballCourtLevel = parentNode as BasketballCourtLevel;
+            }
+
             OmniLight = GetNode("OmniLight3D") as OmniLight3D;
 
             Timer = GetNode("BounceTimer") as Timer;
@@ -112,26 +140,28 @@ namespace Entities
             }
             else if (IsBeingShot)
             {
-                Velocity = new Vector3(Velocity.X, Velocity.Y - .5f, Velocity.Z);
+                float fullDistanceToTarget = new Vector3(GlobalPositionAtPointOfShot.X - BasketballCourtLevel.HoopArea.GlobalPosition.X, 0, GlobalPositionAtPointOfShot.Z - BasketballCourtLevel.HoopArea.GlobalPosition.Z).Length();
 
+                float currentDistanceToTarget = new Vector3(GlobalPosition.X - BasketballCourtLevel.HoopArea.GlobalPosition.X, 0, GlobalPosition.Z - BasketballCourtLevel.HoopArea.GlobalPosition.Z).Length();
 
-                //if (Timer.IsStopped() && Timer.TimeLeft <= 0)
-                //{
-                //    Velocity = new Vector3(0, -10, 0);
-                //}
+                float changeInGravity = 1f;
 
-                //KinematicCollision3D collisionInfo = MoveAndCollide(Velocity * (float)delta);
+                //Ball should be rising
+                if (currentDistanceToTarget > fullDistanceToTarget/2)
+                {
+                    Velocity = new Vector3(Velocity.X, Mathf.Clamp(Velocity.Y + changeInGravity, float.MinValue, 5), Velocity.Z);
+                }
+                //Ball should be falling
+                else
+                {
+                    Velocity = new Vector3(Velocity.X, Mathf.Clamp(Velocity.Y - changeInGravity, float.MinValue, 5), Velocity.Z);
+                }
 
-                ////MoveAndSlide();
-
-                //if (collisionInfo != null)
-                //{
-                //    Velocity = Velocity.Bounce(collisionInfo.GetNormal());
-
-                //    Timer.Start();
-
-                //    IsBeingShot = false;
-                //}
+                if (IsOnFloor())
+                {
+                    IsBeingShot = false;
+                    Velocity = new Vector3(Velocity.X, 0, Velocity.Z);
+                }
 
                 MoveAndSlide();
             }
@@ -153,26 +183,6 @@ namespace Entities
 
                 MoveAndSlide();
             }
-            //else
-            //{
-            //    Velocity = new Vector3(0, Mathf.Clamp(Velocity.Y + .1f, -10, 0), 0);
-
-            //    //if (Timer.IsStopped() && Timer.TimeLeft <= 0)
-            //    //{
-            //    //    Velocity = new Vector3(0, Mathf.Clamp(Velocity.Y + .1f, -10, 0), 0);
-            //    //}
-
-            //    KinematicCollision3D collisionInfo = MoveAndCollide(Velocity * (float)delta);
-
-            //    //MoveAndSlide();
-
-            //    if (collisionInfo != null)
-            //    {
-            //        Velocity = Velocity.Bounce(collisionInfo.GetNormal());
-
-            //        //Timer.Start();
-            //    }
-            //}
         }
     }
 }
