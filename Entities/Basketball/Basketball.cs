@@ -74,6 +74,20 @@ namespace Entities
         }
         private Vector3 _globalPositionAtPointOfShot = Vector3.Zero;
 
+        public Vector3 DestinationGlobalPosition
+        {
+            get { return _destinationGlobalPosition; }
+            set
+            {
+                if (_destinationGlobalPosition != value)
+                {
+                    _destinationGlobalPosition = value;
+                    OnPropertyChanged(nameof(DestinationGlobalPosition));
+                }
+            }
+        }
+        private Vector3 _destinationGlobalPosition = Vector3.Zero;
+
         #endregion
 
         // Called when the node enters the scene tree for the first time.
@@ -143,9 +157,9 @@ namespace Entities
             }
             else if (IsBeingShot)
             {
-                float fullDistanceToTarget = new Vector3(GlobalPositionAtPointOfShot.X - BasketballCourtLevel.HoopArea.GlobalPosition.X, 0, GlobalPositionAtPointOfShot.Z - BasketballCourtLevel.HoopArea.GlobalPosition.Z).Length();
+                float fullDistanceToTarget = new Vector3(GlobalPositionAtPointOfShot.X - DestinationGlobalPosition.X, 0, GlobalPositionAtPointOfShot.Z - DestinationGlobalPosition.Z).Length();
 
-                float currentDistanceToTarget = new Vector3(GlobalPosition.X - BasketballCourtLevel.HoopArea.GlobalPosition.X, 0, GlobalPosition.Z - BasketballCourtLevel.HoopArea.GlobalPosition.Z).Length();
+                float currentDistanceToTarget = new Vector3(GlobalPosition.X - DestinationGlobalPosition.X, 0, GlobalPosition.Z - DestinationGlobalPosition.Z).Length();
 
                 float changeInGravity = 50f;
 
@@ -170,10 +184,21 @@ namespace Entities
                 //Ball should be falling
                 else
                 {
+                    //var newYPosition = Mathf.Lerp(GlobalPosition.Y, DestinationGlobalPosition.Y, .1f);
+
+                    //GlobalPosition = new Vector3(GlobalPosition.X, newYPosition, GlobalPosition.Z);
+
+
+                    //GlobalPosition = GlobalPosition.Lerp(DestinationGlobalPosition, .01f); 
+
+
                     if (GlobalPosition.Y >= BasketballCourtLevel.HoopArea.GlobalPosition.Y)
                     {
-                        Velocity = new Vector3(Velocity.X, -changeInGravity / ascensionCount, Velocity.Z);
-                        ascensionCount--;
+                        if (changeInGravity > 0)
+                        {
+                            Velocity = new Vector3(Velocity.X, -changeInGravity / ascensionCount, Velocity.Z);
+                            ascensionCount--;
+                        }
                     }
                 }
 

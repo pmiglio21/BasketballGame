@@ -556,6 +556,8 @@ namespace Entities
                                                                              0,
                                                                              basketballDestinationGlobalPosition.Z - ParentBasketballCourtLevel.Basketball.GlobalPosition.Z);
 
+                ParentBasketballCourtLevel.Basketball.DestinationGlobalPosition = basketballDestinationGlobalPosition;
+
                 ParentBasketballCourtLevel.Basketball.OmniLight.LightColor = newBasketballLightColor;
 
                 ParentBasketballCourtLevel.Basketball.IsDribbling = false; 
