@@ -102,6 +102,7 @@ namespace Levels
                 Vector3 rotatedDistance = distanceBetweenPlayerAndBall.Rotated(Vector3.Up, basketballPlayer.GlobalRotation.Y);
                 Basketball.GlobalPosition = basketballPlayer.GlobalPosition + rotatedDistance;
                 Basketball.BasketballState = BasketballState.IsBeingDribbled;
+                Basketball.ascensionCount = 1; //TODO: Attach this to touching the ground or being received by a player... later when there isn't a reset timer
 
                 Basketball.PreviousPlayer = basketballPlayer;
             }

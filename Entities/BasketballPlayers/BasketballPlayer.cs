@@ -551,10 +551,12 @@ namespace Entities
                     }
                 }
 
+                float ballSpeed = 1.5f;
+
                 ParentBasketballCourtLevel.Basketball.Velocity = new Vector3(basketballDestinationGlobalPosition.X - ParentBasketballCourtLevel.Basketball.GlobalPosition.X,
                                                                              //Mathf.Sin(Mathf.Pi / 4) * 20,
                                                                              0,
-                                                                             basketballDestinationGlobalPosition.Z - ParentBasketballCourtLevel.Basketball.GlobalPosition.Z);
+                                                                             basketballDestinationGlobalPosition.Z - ParentBasketballCourtLevel.Basketball.GlobalPosition.Z) * ballSpeed;
 
                 ParentBasketballCourtLevel.Basketball.DestinationGlobalPosition = basketballDestinationGlobalPosition;
 

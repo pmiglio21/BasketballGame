@@ -121,16 +121,9 @@ namespace Entities
 
         protected void OnPropertyChanged(string propertyName = null)
         {
-            //if (propertyName == nameof(HasFocus))
+            //if (propertyName == nameof(Parent))
             //{
-            //    if (HasFocus)
-            //    {
-            //        _hasFocusIndicator.Show();
-            //    }
-            //    else
-            //    {
-            //        _hasFocusIndicator.Hide();
-            //    }
+               
             //}
         }
 
@@ -139,7 +132,7 @@ namespace Entities
         {
         }
 
-        private int ascensionCount = 2;
+        public int ascensionCount = 1;
 
         public override void _PhysicsProcess(double delta)
         {
@@ -189,7 +182,7 @@ namespace Entities
                     {
                         if (ascensionCount > 0)
                         {
-                            float newYVelocity = Mathf.Clamp(-(changeInGravity / (float)ascensionCount) * modifier, float.MinValue, float.MaxValue);
+                            float newYVelocity = Mathf.Clamp(-(changeInGravity / (float)ascensionCount) * modifier, -30f, float.MaxValue);
 
                             Velocity = new Vector3(Velocity.X, newYVelocity, Velocity.Z);
                             ascensionCount--;
@@ -304,7 +297,7 @@ namespace Entities
         {
             if (area.IsInGroup(GroupTags.HoopArea))
             {
-                ascensionCount = 2;
+                ascensionCount = 1;
                 BasketballState = BasketballState.IsInBasket;
 
                 GD.Print($"Got into HoopArea.\n" +
@@ -317,6 +310,7 @@ namespace Entities
         {
             if (body.IsInGroup(GroupTags.HoopBody))
             {
+                ascensionCount = 1;
                 BasketballState = BasketballState.IsBouncingOffBasket;
             }
         }
