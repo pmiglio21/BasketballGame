@@ -27,6 +27,8 @@ namespace Entities
 
         public Timer BounceTimer = null;
 
+        
+
         #endregion
 
         #region State Properties
@@ -141,7 +143,7 @@ namespace Entities
 
         public override void _PhysicsProcess(double delta)
         {
-            if (BasketballState == BasketballState.IsBeingDribbled || BasketballState == BasketballState.IsInBasket)
+            if (BasketballState == BasketballState.IsBeingDribbled)
             {
                 if (DribbleTimer.IsStopped() && DribbleTimer.TimeLeft <= 0)
                 {
@@ -157,15 +159,21 @@ namespace Entities
                     DribbleTimer.Start();
                 }
             }
+            else if (BasketballState == BasketballState.IsInBasket)
+            {
+                Velocity = new Vector3(0, -10f, 0);
+
+                MoveAndSlide();
+            }
             else if (BasketballState == BasketballState.IsBeingShot)
             {
                 float fullDistanceToTarget = new Vector3(GlobalPositionAtPointOfShot.X - DestinationGlobalPosition.X, 0, GlobalPositionAtPointOfShot.Z - DestinationGlobalPosition.Z).Length();
 
                 float currentDistanceToTarget = new Vector3(GlobalPosition.X - DestinationGlobalPosition.X, 0, GlobalPosition.Z - DestinationGlobalPosition.Z).Length();
 
-                float changeInGravity = 50f;
+                float changeInGravity = 100f;
 
-                float modifier = 2;
+                float modifier = 1;
 
                 //Ball should be rising
                 if (currentDistanceToTarget > fullDistanceToTarget / 2)
@@ -181,7 +189,7 @@ namespace Entities
                     {
                         if (ascensionCount > 0)
                         {
-                            float newYVelocity = Mathf.Clamp(-(changeInGravity / (float)ascensionCount) * modifier, -10, float.MaxValue);
+                            float newYVelocity = Mathf.Clamp(-(changeInGravity / (float)ascensionCount) * modifier, float.MinValue, float.MaxValue);
 
                             Velocity = new Vector3(Velocity.X, newYVelocity, Velocity.Z);
                             ascensionCount--;
@@ -193,10 +201,10 @@ namespace Entities
             }
             else if (BasketballState == BasketballState.IsBouncingOffBasket)
             {
-                if (BounceTimer.IsStopped() && BounceTimer.TimeLeft <= 0)
-                {
-                    Velocity = new Vector3(Velocity.X, -10f, Velocity.Z);
-                }
+                //if (BounceTimer.IsStopped() && BounceTimer.TimeLeft <= 0)
+                //{
+                //    Velocity = new Vector3(Velocity.X, -10f, Velocity.Z);
+                //}
 
                 KinematicCollision3D collisionInfo = MoveAndCollide(Velocity * (float)delta);
 
@@ -204,22 +212,72 @@ namespace Entities
                 {
                     Velocity = Velocity.Bounce(collisionInfo.GetNormal());
 
+                    //Vector3 directionToDestination = GlobalPosition.DirectionTo(DestinationGlobalPosition);
+
+                    //Velocity = new Vector3(directionToDestination.X, Velocity.Y, directionToDestination.Z);
+
+                    //Velocity = new Vector3(Velocity.X, -10f, Velocity.Z);
+
                     BounceTimer.Start();
                 }
+
+
+
+
+
+                //if (IsDestinedToSucceed)
+                //{
+                //if (BounceTimer.IsStopped() && BounceTimer.TimeLeft <= 0)
+                //{
+                //    Velocity = new Vector3(Velocity.X, -10f, Velocity.Z);
+                //}
+
+                //KinematicCollision3D collisionInfo = MoveAndCollide(Velocity * (float)delta);
+
+                //if (collisionInfo != null)
+                //{
+                //    Velocity = Velocity.Bounce(collisionInfo.GetNormal());
+
+                //    Vector3 directionToDestination = GlobalPosition.DirectionTo(DestinationGlobalPosition);
+
+                //    Velocity = new Vector3(directionToDestination.X, Velocity.Y, directionToDestination.Z);
+
+                //    //Velocity = new Vector3(Velocity.X, -10f, Velocity.Z);
+
+                //    BounceTimer.Start();
+                //}
+                //}
+                //else
+                //{
+                //if (BounceTimer.IsStopped() && BounceTimer.TimeLeft <= 0)
+                //{
+                //    Velocity = new Vector3(Velocity.X, -10f, Velocity.Z);
+                //}
+
+                //KinematicCollision3D collisionInfo = MoveAndCollide(Velocity * (float)delta);
+
+                //if (collisionInfo != null)
+                //{
+                //    Velocity = Velocity.Bounce(collisionInfo.GetNormal());
+
+                //    Vector3 directionToDestination = GlobalPosition.DirectionTo(DestinationGlobalPosition);
+
+                //    Velocity = new Vector3(directionToDestination.X, Velocity.Y, directionToDestination.Z);
+
+                //    //Velocity = new Vector3(Velocity.X, -10f, Velocity.Z);
+
+                //    BounceTimer.Start();
+                //}
+                //}
+
+
                 //else
                 //{
                 //    Vector3 directionToDestination = GlobalPosition.DirectionTo(DestinationGlobalPosition);
 
                 //    Velocity = new Vector3(directionToDestination.X, Velocity.Y, directionToDestination.Z);
 
-                //    //if (IsDestinedToSucceed)
-                //    //{
 
-                //    //}
-                //    //else
-                //    //{
-
-                //    //}
                 //}
             }
             else

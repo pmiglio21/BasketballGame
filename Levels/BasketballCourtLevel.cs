@@ -39,7 +39,7 @@ namespace Levels
         {
             Basketball = GetNode("Basketball") as Basketball;
             BasketballHoop = GetNode("BasketballHoop") as StaticBody3D;
-            HoopArea = BasketballHoop.GetNode("HoopArea") as Area3D;
+            HoopArea = GetNode("HoopArea") as Area3D;
             BasketballResetTimer = GetNode("BasketballResetTimer") as Timer;
             BasketballResetTimer.Timeout += ResetBasketballOnTimeout;
 

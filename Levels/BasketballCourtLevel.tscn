@@ -67,10 +67,10 @@ mesh = SubResource("BoxMesh_4rm8i")
 skeleton = NodePath("../..")
 
 [node name="Camera3D" type="Camera3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 0.866025, 0.5, 0, -0.5, 0.866025, 0, 10.9497, -2.49784)
+transform = Transform3D(1, 0, 0, 0, 0.866025, 0.5, 0, -0.5, 0.866025, 0, 10.9497, -39.1138)
 
 [node name="BasketballPlayer" parent="." instance=ExtResource("1_omy0y")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8, 2, -14.4153)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8, 2, -36.7833)
 
 [node name="BasketballPlayer2" parent="." instance=ExtResource("1_omy0y")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 2, -12.0493)
@@ -120,24 +120,25 @@ transform = Transform3D(1, 0, 0, 0, 10, 0, 0, 0, 1, 0, 0, 0)
 mesh = SubResource("BoxMesh_4rm8i")
 skeleton = NodePath("../..")
 
-[node name="HoopArea" type="Area3D" parent="BasketballHoop" groups=["HoopArea"]]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.15556, 1.1726)
+[node name="HoopArea" type="Area3D" parent="." groups=["HoopArea"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.29451, 7.20255, -47.3439)
 collision_mask = 0
 
-[node name="HoopAreaCollisionShape" type="CollisionShape3D" parent="BasketballHoop/HoopArea"]
-transform = Transform3D(1, 0, 0, 0, 0.025, 0, 0, 0, 1, 0, 0, 0)
+[node name="HoopAreaCollisionShape" type="CollisionShape3D" parent="HoopArea"]
+transform = Transform3D(0.5, 0, 0, 0, 0.013, 0, 0, 0, 0.5, 0, -0.260595, 0)
 shape = SubResource("CylinderShape3D_jtbxx")
 
-[node name="Hoop" type="StaticBody3D" parent="BasketballHoop" groups=["HoopBody"]]
-collision_layer = 2
+[node name="Hoop" type="StaticBody3D" parent="." groups=["HoopBody"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.29451, 3.04699, -48.5165)
+collision_layer = 3
 collision_mask = 0
 
-[node name="HoopMesh" type="MeshInstance3D" parent="BasketballHoop/Hoop"]
+[node name="HoopMesh" type="MeshInstance3D" parent="Hoop"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.15556, 1.1726)
 mesh = SubResource("TorusMesh_l3gl3")
 skeleton = NodePath("../../HoopArea")
 
-[node name="HoopCollisionShape" type="CollisionShape3D" parent="BasketballHoop/Hoop"]
+[node name="HoopCollisionShape" type="CollisionShape3D" parent="Hoop"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.15556, 1.1726)
 shape = SubResource("ConcavePolygonShape3D_mr7dc")
 
