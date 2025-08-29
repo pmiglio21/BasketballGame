@@ -11,6 +11,8 @@ namespace Enums
 
         IsBeingShot,
 
-        IsInBasket
+        IsInBasket,
+
+        IsBouncingOffBasket
     }
 }

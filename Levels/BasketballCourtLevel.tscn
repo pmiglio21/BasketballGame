@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://ckacamuxb6baa"]
+[gd_scene load_steps=13 format=3 uid="uid://ckacamuxb6baa"]
 
 [ext_resource type="Script" path="res://Levels/BasketballCourtLevel.cs" id="1_fd8c3"]
 [ext_resource type="PackedScene" uid="uid://67mof4iojay2" path="res://Entities/BasketballPlayers/BasketballPlayer.tscn" id="1_omy0y"]
@@ -21,9 +21,17 @@ albedo_color = Color(0.352941, 1, 1, 0.486275)
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_a5gyj"]
 material = SubResource("StandardMaterial3D_syu03")
 
-[sub_resource type="CylinderShape3D" id="CylinderShape3D_yw704"]
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_jtbxx"]
+radius = 0.6
 
-[sub_resource type="CylinderMesh" id="CylinderMesh_6i3ce"]
+[sub_resource type="TorusMesh" id="TorusMesh_l3gl3"]
+inner_radius = 0.8
+outer_radius = 1.1
+rings = 8
+ring_segments = 3
+
+[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_mr7dc"]
+data = PackedVector3Array(-0.5657, 0, -0.5657, 0, 0.1299, -1.025, 0, 0, -0.8, -0.5657, 0, -0.5657, -0.7248, 0.1299, -0.7248, 0, 0.1299, -1.025, -0.7248, 0.1299, -0.7248, 0, -0.1299, -1.025, 0, 0.1299, -1.025, -0.7248, 0.1299, -0.7248, -0.7248, -0.1299, -0.7248, 0, -0.1299, -1.025, -0.7248, -0.1299, -0.7248, 0, 0, -0.8, 0, -0.1299, -1.025, -0.7248, -0.1299, -0.7248, -0.5657, 0, -0.5657, 0, 0, -0.8, -0.8, 0, 0, -0.7248, 0.1299, -0.7248, -0.5657, 0, -0.5657, -0.8, 0, 0, -1.025, 0.1299, 0, -0.7248, 0.1299, -0.7248, -1.025, 0.1299, 0, -0.7248, -0.1299, -0.7248, -0.7248, 0.1299, -0.7248, -1.025, 0.1299, 0, -1.025, -0.1299, 0, -0.7248, -0.1299, -0.7248, -1.025, -0.1299, 0, -0.5657, 0, -0.5657, -0.7248, -0.1299, -0.7248, -1.025, -0.1299, 0, -0.8, 0, 0, -0.5657, 0, -0.5657, -0.5657, 0, 0.5657, -1.025, 0.1299, 0, -0.8, 0, 0, -0.5657, 0, 0.5657, -0.7248, 0.1299, 0.7248, -1.025, 0.1299, 0, -0.7248, 0.1299, 0.7248, -1.025, -0.1299, 0, -1.025, 0.1299, 0, -0.7248, 0.1299, 0.7248, -0.7248, -0.1299, 0.7248, -1.025, -0.1299, 0, -0.7248, -0.1299, 0.7248, -0.8, 0, 0, -1.025, -0.1299, 0, -0.7248, -0.1299, 0.7248, -0.5657, 0, 0.5657, -0.8, 0, 0, 0, 0, 0.8, -0.7248, 0.1299, 0.7248, -0.5657, 0, 0.5657, 0, 0, 0.8, 0, 0.1299, 1.025, -0.7248, 0.1299, 0.7248, 0, 0.1299, 1.025, -0.7248, -0.1299, 0.7248, -0.7248, 0.1299, 0.7248, 0, 0.1299, 1.025, 0, -0.1299, 1.025, -0.7248, -0.1299, 0.7248, 0, -0.1299, 1.025, -0.5657, 0, 0.5657, -0.7248, -0.1299, 0.7248, 0, -0.1299, 1.025, 0, 0, 0.8, -0.5657, 0, 0.5657, 0.5657, 0, 0.5657, 0, 0.1299, 1.025, 0, 0, 0.8, 0.5657, 0, 0.5657, 0.7248, 0.1299, 0.7248, 0, 0.1299, 1.025, 0.7248, 0.1299, 0.7248, 0, -0.1299, 1.025, 0, 0.1299, 1.025, 0.7248, 0.1299, 0.7248, 0.7248, -0.1299, 0.7248, 0, -0.1299, 1.025, 0.7248, -0.1299, 0.7248, 0, 0, 0.8, 0, -0.1299, 1.025, 0.7248, -0.1299, 0.7248, 0.5657, 0, 0.5657, 0, 0, 0.8, 0.8, 0, 0, 0.7248, 0.1299, 0.7248, 0.5657, 0, 0.5657, 0.8, 0, 0, 1.025, 0.1299, 0, 0.7248, 0.1299, 0.7248, 1.025, 0.1299, 0, 0.7248, -0.1299, 0.7248, 0.7248, 0.1299, 0.7248, 1.025, 0.1299, 0, 1.025, -0.1299, 0, 0.7248, -0.1299, 0.7248, 1.025, -0.1299, 0, 0.5657, 0, 0.5657, 0.7248, -0.1299, 0.7248, 1.025, -0.1299, 0, 0.8, 0, 0, 0.5657, 0, 0.5657, 0.5657, 0, -0.5657, 1.025, 0.1299, 0, 0.8, 0, 0, 0.5657, 0, -0.5657, 0.7248, 0.1299, -0.7248, 1.025, 0.1299, 0, 0.7248, 0.1299, -0.7248, 1.025, -0.1299, 0, 1.025, 0.1299, 0, 0.7248, 0.1299, -0.7248, 0.7248, -0.1299, -0.7248, 1.025, -0.1299, 0, 0.7248, -0.1299, -0.7248, 0.8, 0, 0, 1.025, -0.1299, 0, 0.7248, -0.1299, -0.7248, 0.5657, 0, -0.5657, 0.8, 0, 0, 0, 0, -0.8, 0.7248, 0.1299, -0.7248, 0.5657, 0, -0.5657, 0, 0, -0.8, 0, 0.1299, -1.025, 0.7248, 0.1299, -0.7248, 0, 0.1299, -1.025, 0.7248, -0.1299, -0.7248, 0.7248, 0.1299, -0.7248, 0, 0.1299, -1.025, 0, -0.1299, -1.025, 0.7248, -0.1299, -0.7248, 0, -0.1299, -1.025, 0.5657, 0, -0.5657, 0.7248, -0.1299, -0.7248, 0, -0.1299, -1.025, 0, 0, -0.8, 0.5657, 0, -0.5657)
 
 [node name="BasketballCourtLevel" type="Node3D" groups=["BasketballCourtLevel"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.841626, -4.73005, 2.15079)
@@ -103,11 +111,11 @@ mesh = SubResource("CapsuleMesh_a5gyj")
 [node name="BasketballHoop" type="StaticBody3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.29451, 3.04699, -48.5165)
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="BasketballHoop"]
+[node name="HoopPoleCollisionShape" type="CollisionShape3D" parent="BasketballHoop"]
 transform = Transform3D(1, 0, 0, 0, 10, 0, 0, 0, 1, 0, 0, 0)
 shape = SubResource("BoxShape3D_cmsn1")
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="BasketballHoop"]
+[node name="HoopPoleMesh" type="MeshInstance3D" parent="BasketballHoop"]
 transform = Transform3D(1, 0, 0, 0, 10, 0, 0, 0, 1, 0, 0, 0)
 mesh = SubResource("BoxMesh_4rm8i")
 skeleton = NodePath("../..")
@@ -116,13 +124,22 @@ skeleton = NodePath("../..")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.15556, 1.1726)
 collision_mask = 0
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="BasketballHoop/HoopArea"]
-transform = Transform3D(1, 0, 0, 0, 0.3, 0, 0, 0, 1, 0, 0, 0)
-shape = SubResource("CylinderShape3D_yw704")
+[node name="HoopAreaCollisionShape" type="CollisionShape3D" parent="BasketballHoop/HoopArea"]
+transform = Transform3D(1, 0, 0, 0, 0.025, 0, 0, 0, 1, 0, 0, 0)
+shape = SubResource("CylinderShape3D_jtbxx")
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="BasketballHoop/HoopArea"]
-transform = Transform3D(1, 0, 0, 0, 0.3, 0, 0, 0, 1, 0, 0, 0)
-mesh = SubResource("CylinderMesh_6i3ce")
+[node name="Hoop" type="StaticBody3D" parent="BasketballHoop" groups=["HoopBody"]]
+collision_layer = 2
+collision_mask = 0
+
+[node name="HoopMesh" type="MeshInstance3D" parent="BasketballHoop/Hoop"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.15556, 1.1726)
+mesh = SubResource("TorusMesh_l3gl3")
+skeleton = NodePath("../../HoopArea")
+
+[node name="HoopCollisionShape" type="CollisionShape3D" parent="BasketballHoop/Hoop"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.15556, 1.1726)
+shape = SubResource("ConcavePolygonShape3D_mr7dc")
 
 [node name="OmniLight3D" type="OmniLight3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.29451, 29.0626, -23.1366)

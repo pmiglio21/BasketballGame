@@ -169,6 +169,22 @@ namespace Entities
 
                 MoveAndSlide();
             }
+            else if (BasketballState == BasketballState.IsBouncingOffBasket)
+            {
+                KinematicCollision3D collisionInfo = MoveAndCollide(Velocity * (float)delta);
+
+                if (collisionInfo != null)
+                {
+                    Velocity = Velocity.Bounce(collisionInfo.GetNormal());
+
+                    Timer.Start();
+                }
+
+                if (Timer.IsStopped() && Timer.TimeLeft <= 0)
+                {
+                    Velocity = new Vector3(0, -10f, 0);
+                }
+            }
             else
             {
                 if (TargetPlayer != null)   //Used to send ball to player
@@ -199,6 +215,14 @@ namespace Entities
                 GD.Print($"Got into HoopArea.\n" +
                          $"Starting position was {GlobalPositionAtPointOfShot.X}, {GlobalPositionAtPointOfShot.Y}, {GlobalPositionAtPointOfShot.Z}\n" +
                          $"Hoop Area position was {area.GlobalPosition.X}, {area.GlobalPosition.Y}, {area.GlobalPosition.Z}");
+            }
+        }
+
+        private void OnDetectionAreaBodyEntered(Node3D body)
+        {
+            if (body.IsInGroup(GroupTags.HoopBody))
+            {
+                BasketballState = BasketballState.IsBouncingOffBasket;
             }
         }
     }
