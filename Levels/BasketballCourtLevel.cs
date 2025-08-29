@@ -101,8 +101,7 @@ namespace Levels
                 Vector3 distanceBetweenPlayerAndBall = new Vector3(0, 0, 1.5f);
                 Vector3 rotatedDistance = distanceBetweenPlayerAndBall.Rotated(Vector3.Up, basketballPlayer.GlobalRotation.Y);
                 Basketball.GlobalPosition = basketballPlayer.GlobalPosition + rotatedDistance;
-                Basketball.IsBeingShot = false;
-                Basketball.IsDribbling = true;
+                Basketball.BasketballState = BasketballState.IsBeingDribbled;
 
                 Basketball.PreviousPlayer = basketballPlayer;
             }

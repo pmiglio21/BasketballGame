@@ -1,4 +1,5 @@
 using Constants;
+using Enums;
 using Godot;
 using Levels;
 using System;
@@ -28,37 +29,19 @@ namespace Entities
 
         #region State Properties
 
-        public bool IsDribbling
+        public BasketballState BasketballState
         {
-            get { return _isDribbling; }
+            get { return _basketballState; }
             set
             {
-                if (_isDribbling != value)
+                if (_basketballState != value)
                 {
-                    _isDribbling = value;
-                    OnPropertyChanged(nameof(IsDribbling));
-
-                    _isBeingShot = false;
+                    _basketballState = value;
+                    OnPropertyChanged(nameof(BasketballState));
                 }
             }
         }
-        private bool _isDribbling = false;
-
-        public bool IsBeingShot
-        {
-            get { return _isBeingShot; }
-            set
-            {
-                if (_isBeingShot != value)
-                {
-                    _isBeingShot = value;
-                    OnPropertyChanged(nameof(IsBeingShot));
-
-                    _isDribbling = false;
-                }
-            }
-        }
-        private bool _isBeingShot = false;
+        private BasketballState _basketballState;
 
         public Vector3 GlobalPositionAtPointOfShot
         {
@@ -132,11 +115,11 @@ namespace Entities
         {
         }
 
-        private int ascensionCount = 0;
+        private int ascensionCount = 2;
 
         public override void _PhysicsProcess(double delta)
         {
-            if (IsDribbling)
+            if (BasketballState == BasketballState.IsBeingDribbled || BasketballState == BasketballState.IsInBasket)
             {
                 if (Timer.IsStopped() && Timer.TimeLeft <= 0)
                 {
@@ -150,12 +133,9 @@ namespace Entities
                     Velocity = Velocity.Bounce(collisionInfo.GetNormal());
 
                     Timer.Start();
-
-                    IsBeingShot = false;
                 }
-
             }
-            else if (IsBeingShot)
+            else if (BasketballState == BasketballState.IsBeingShot)
             {
                 float fullDistanceToTarget = new Vector3(GlobalPositionAtPointOfShot.X - DestinationGlobalPosition.X, 0, GlobalPositionAtPointOfShot.Z - DestinationGlobalPosition.Z).Length();
 
@@ -163,49 +143,28 @@ namespace Entities
 
                 float changeInGravity = 50f;
 
-                ////Ball should be rising
-                //if (currentDistanceToTarget > fullDistanceToTarget/2)
-                //{
-                //    Velocity = new Vector3(Velocity.X, Mathf.Clamp(Velocity.Y + changeInGravity, float.MinValue, 5), Velocity.Z);
-                //}
-                ////Ball should be falling
-                //else
-                //{
-                //    Velocity = new Vector3(Velocity.X, Mathf.Clamp(Velocity.Y - changeInGravity, float.MinValue, 5), Velocity.Z);
-                //}
+                float modifier = 2;
 
                 //Ball should be rising
                 if (currentDistanceToTarget > fullDistanceToTarget / 2)
                 {
                     ascensionCount++;
 
-                    Velocity = new Vector3(Velocity.X, changeInGravity/ascensionCount, Velocity.Z);
+                    Velocity = new Vector3(Velocity.X, (changeInGravity / (float)ascensionCount) * modifier, Velocity.Z);
                 }
                 //Ball should be falling
                 else
                 {
-                    //var newYPosition = Mathf.Lerp(GlobalPosition.Y, DestinationGlobalPosition.Y, .1f);
-
-                    //GlobalPosition = new Vector3(GlobalPosition.X, newYPosition, GlobalPosition.Z);
-
-
-                    //GlobalPosition = GlobalPosition.Lerp(DestinationGlobalPosition, .01f); 
-
-
                     if (GlobalPosition.Y >= BasketballCourtLevel.HoopArea.GlobalPosition.Y)
                     {
-                        if (changeInGravity > 0)
+                        if (ascensionCount > 0)
                         {
-                            Velocity = new Vector3(Velocity.X, -changeInGravity / ascensionCount, Velocity.Z);
+                            float newYVelocity = Mathf.Clamp(-(changeInGravity / (float)ascensionCount) * modifier, -10, float.MaxValue);
+
+                            Velocity = new Vector3(Velocity.X, newYVelocity, Velocity.Z);
                             ascensionCount--;
                         }
                     }
-                }
-
-                if (IsOnFloor())
-                {
-                    IsBeingShot = false;
-                    Velocity = new Vector3(Velocity.X, 0, Velocity.Z);
                 }
 
                 MoveAndSlide();
@@ -234,8 +193,8 @@ namespace Entities
         {
             if (area.IsInGroup(GroupTags.HoopArea))
             {
-                IsBeingShot = false;
-                ascensionCount = 0;
+                ascensionCount = 2;
+                BasketballState = BasketballState.IsInBasket;
 
                 GD.Print($"Got into HoopArea.\n" +
                          $"Starting position was {GlobalPositionAtPointOfShot.X}, {GlobalPositionAtPointOfShot.Y}, {GlobalPositionAtPointOfShot.Z}\n" +

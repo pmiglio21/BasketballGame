@@ -338,7 +338,7 @@ namespace Entities
             {
                 if (HasBasketball)
                 {
-                    ParentBasketballCourtLevel.Basketball.IsDribbling = false;
+                    ParentBasketballCourtLevel.Basketball.BasketballState = BasketballState.IsInAirWithPlayer;
                 }
 
                 yMoveInput = jumpVelocity * (float)delta;
@@ -396,7 +396,7 @@ namespace Entities
 
                 ParentBasketballCourtLevel.Basketball.Reparent(ParentBasketballCourtLevel.HoopArea);
 
-                ParentBasketballCourtLevel.Basketball.IsBeingShot = true;
+                ParentBasketballCourtLevel.Basketball.BasketballState = BasketballState.IsBeingShot;
 
                 //TODO: Testing, please remove later
                 ParentBasketballCourtLevel.Basketball.GlobalPosition = new Vector3(ParentBasketballCourtLevel.Basketball.GlobalPosition.X,
@@ -560,8 +560,6 @@ namespace Entities
 
                 ParentBasketballCourtLevel.Basketball.OmniLight.LightColor = newBasketballLightColor;
 
-                ParentBasketballCourtLevel.Basketball.IsDribbling = false; 
-
                 TargetPlayer = this;
 
                 ParentBasketballCourtLevel.BasketballResetTimer.Start();
@@ -665,7 +663,7 @@ namespace Entities
                     //this.HasFocus = false;
 
                     ParentBasketballCourtLevel.Basketball.Reparent(ParentBasketballCourtLevel);
-                    ParentBasketballCourtLevel.Basketball.IsDribbling = false;
+                    ParentBasketballCourtLevel.Basketball.BasketballState = BasketballState.IsBeingPassed;
 
                     TargetPlayer = this;
                 }
@@ -684,7 +682,7 @@ namespace Entities
                         cpuPlayerInPossessionOfBall.HasFocus = false;
 
                         ParentBasketballCourtLevel.Basketball.Reparent(ParentBasketballCourtLevel);
-                        ParentBasketballCourtLevel.Basketball.IsDribbling = false;
+                        ParentBasketballCourtLevel.Basketball.BasketballState = BasketballState.IsBeingPassed;
 
                         cpuPlayerInPossessionOfBall.TargetPlayer = cpuPlayerInPossessionOfBall;
                     }
@@ -741,7 +739,7 @@ namespace Entities
 
                 if (HasBasketball)
                 {
-                    ParentBasketballCourtLevel.Basketball.IsDribbling = true;
+                    ParentBasketballCourtLevel.Basketball.BasketballState = BasketballState.IsBeingDribbled;
                 }
             }
         }
@@ -844,7 +842,7 @@ namespace Entities
             Vector3 rotatedDistance = distanceBetweenPlayerAndBall.Rotated(Vector3.Up, this.GlobalPosition.Y);
             basketball.GlobalPosition = this.GlobalPosition + rotatedDistance;
 
-            basketball.IsDribbling = true;
+            ParentBasketballCourtLevel.Basketball.BasketballState = BasketballState.IsBeingDribbled;
 
             basketball.TargetPlayer = null;
             basketball.PreviousPlayer = this;
