@@ -23,7 +23,9 @@ namespace Entities
 
         public OmniLight3D OmniLight = null;
 
-        public Timer Timer = null;
+        public Timer DribbleTimer = null;
+
+        public Timer BounceTimer = null;
 
         #endregion
 
@@ -42,6 +44,8 @@ namespace Entities
             }
         }
         private BasketballState _basketballState;
+
+        #region Shot Properties
 
         public Vector3 GlobalPositionAtPointOfShot
         {
@@ -71,6 +75,22 @@ namespace Entities
         }
         private Vector3 _destinationGlobalPosition = Vector3.Zero;
 
+        public bool IsDestinedToSucceed
+        {
+            get { return _isDestinedToSucceed; }
+            set
+            {
+                if (_isDestinedToSucceed != value)
+                {
+                    _isDestinedToSucceed = value;
+                    OnPropertyChanged(nameof(IsDestinedToSucceed));
+                }
+            }
+        }
+        private bool _isDestinedToSucceed;
+
+        #endregion
+
         #endregion
 
         // Called when the node enters the scene tree for the first time.
@@ -89,7 +109,9 @@ namespace Entities
 
             OmniLight = GetNode("OmniLight3D") as OmniLight3D;
 
-            Timer = GetNode("BounceTimer") as Timer;
+            DribbleTimer = GetNode("DribbleTimer") as Timer;
+
+            BounceTimer = GetNode("BounceTimer") as Timer;
         }
 
         //Necessary for INotifyPropertyChanged implementation
@@ -121,7 +143,7 @@ namespace Entities
         {
             if (BasketballState == BasketballState.IsBeingDribbled || BasketballState == BasketballState.IsInBasket)
             {
-                if (Timer.IsStopped() && Timer.TimeLeft <= 0)
+                if (DribbleTimer.IsStopped() && DribbleTimer.TimeLeft <= 0)
                 {
                     Velocity = new Vector3(0, -10f, 0);
                 }
@@ -132,7 +154,7 @@ namespace Entities
                 {
                     Velocity = Velocity.Bounce(collisionInfo.GetNormal());
 
-                    Timer.Start();
+                    DribbleTimer.Start();
                 }
             }
             else if (BasketballState == BasketballState.IsBeingShot)
@@ -171,19 +193,34 @@ namespace Entities
             }
             else if (BasketballState == BasketballState.IsBouncingOffBasket)
             {
+                if (BounceTimer.IsStopped() && BounceTimer.TimeLeft <= 0)
+                {
+                    Velocity = new Vector3(Velocity.X, -10f, Velocity.Z);
+                }
+
                 KinematicCollision3D collisionInfo = MoveAndCollide(Velocity * (float)delta);
 
                 if (collisionInfo != null)
                 {
                     Velocity = Velocity.Bounce(collisionInfo.GetNormal());
 
-                    Timer.Start();
+                    BounceTimer.Start();
                 }
+                //else
+                //{
+                //    Vector3 directionToDestination = GlobalPosition.DirectionTo(DestinationGlobalPosition);
 
-                if (Timer.IsStopped() && Timer.TimeLeft <= 0)
-                {
-                    Velocity = new Vector3(0, -10f, 0);
-                }
+                //    Velocity = new Vector3(directionToDestination.X, Velocity.Y, directionToDestination.Z);
+
+                //    //if (IsDestinedToSucceed)
+                //    //{
+
+                //    //}
+                //    //else
+                //    //{
+
+                //    //}
+                //}
             }
             else
             {

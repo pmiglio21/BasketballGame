@@ -560,6 +560,8 @@ namespace Entities
 
                 ParentBasketballCourtLevel.Basketball.OmniLight.LightColor = newBasketballLightColor;
 
+                ParentBasketballCourtLevel.Basketball.IsDestinedToSucceed = basketballDestinationGlobalPosition == ParentBasketballCourtLevel.HoopArea.GlobalPosition;
+
                 TargetPlayer = this;
 
                 ParentBasketballCourtLevel.BasketballResetTimer.Start();
