@@ -55,7 +55,7 @@ skeleton = NodePath("../..")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 
 [node name="Ground" type="StaticBody3D" parent="." groups=["Bounceable"]]
-transform = Transform3D(100, 0, 0, 0, 1, 0, 0, 0, 100, 0, 0, 0)
+transform = Transform3D(300, 0, 0, 0, 1, 0, 0, 0, 300, 0, 0, 0)
 collision_layer = 3
 collision_mask = 0
 
@@ -147,5 +147,5 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.29451, 29.0626, -23.1366)
 light_energy = 20.0
 
 [node name="BasketballResetTimer" type="Timer" parent="."]
-wait_time = 2.0
+wait_time = 20.0
 one_shot = true

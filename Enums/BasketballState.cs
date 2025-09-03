@@ -13,6 +13,6 @@ namespace Enums
 
         IsInBasket,
 
-        IsBouncing
+        IsUpForGrabs
     }
 }

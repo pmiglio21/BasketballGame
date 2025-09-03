@@ -121,10 +121,14 @@ namespace Entities
 
         protected void OnPropertyChanged(string propertyName = null)
         {
-            //if (propertyName == nameof(Parent))
-            //{
-               
-            //}
+            if (propertyName == nameof(BasketballState))
+            {
+                if (BasketballState != BasketballState.IsUpForGrabs)
+                {
+                    BounceTimer.WaitTime = _bounceTimerMaxTime;
+                    _bounceCount = 0;
+                }
+            }
         }
 
         // Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -134,7 +138,12 @@ namespace Entities
 
         public int ShotAscensionCount = 1;
         public int BounceAscensionCount = 1;
-        //public float BounceRatioNumber = 15;
+
+        private const float _bounceTimerMaxTime = .5f;
+        private const float _bounceTimerMinTime = .05f;
+        public float BounceRatioNumber = 15;
+
+        private int _bounceCount = 0;
 
         public override void _PhysicsProcess(double delta)
         {
@@ -194,7 +203,7 @@ namespace Entities
 
                 MoveAndSlide();
             }
-            else if (BasketballState == BasketballState.IsBouncing)
+            else if (BasketballState == BasketballState.IsUpForGrabs) //Bouncing on floor or rebounding off basket, etc.
             {
                 float changeInGravity = 100f;
 
@@ -202,33 +211,55 @@ namespace Entities
 
                 KinematicCollision3D collisionInfo = MoveAndCollide(Velocity * (float)delta);
 
-                if (collisionInfo != null)
+                if (collisionInfo != null && BounceTimer.WaitTime > .05f)
                 {
                     Velocity = Velocity.Bounce(collisionInfo.GetNormal());
                     BounceAscensionCount = 1;
 
-                    GD.Print($"New normal's velocity's magnitude: {Velocity.Length()}");
+                    float changeInHorizontal = 0f;
+                    float changeInVertical = 5f;
+
+                    GD.Print($"New normal's velocity's magnitude without change: {Velocity.Length()}");
+
+                    //Velocity = new Vector3(Mathf.Clamp(Velocity.X - changeInHorizontal, 0, float.MaxValue), Velocity.Y, Mathf.Clamp(Velocity.Z - changeInHorizontal, 0, float.MaxValue));
+
+                    _bounceCount++;
+
+                    Velocity = new Vector3(Velocity.X, Mathf.Clamp(Velocity.Y/(_bounceCount*2), 0, float.MaxValue), Velocity.Z);
+
+
+                    //BounceTimer.WaitTime = Mathf.Clamp(BounceTimer.WaitTime * (BounceRatioNumber / (BounceRatioNumber + 1)), _bounceTimerMinTime, _bounceTimerMaxTime);
+
+                    BounceTimer.WaitTime = Mathf.Clamp(BounceTimer.WaitTime * (BounceRatioNumber / (BounceRatioNumber + 5)), _bounceTimerMinTime, _bounceTimerMaxTime);
+
+                    //BounceTimer.WaitTime = Mathf.Clamp(BounceTimer.WaitTime * (Velocity.Length() / (BounceRatioNumber)), _bounceTimerMinTime, _bounceTimerMaxTime);
+
+
+                    GD.Print($"New normal's velocity's magnitude with change: {Velocity.Length()}");
+                    GD.Print($"New WaitTime: {BounceTimer.WaitTime}\n");
 
                     BounceTimer.Start();
                 }
-
-                //Dropping
-                if (BounceTimer.IsStopped() && BounceTimer.TimeLeft <= 0)
-                {
-                    if (BounceAscensionCount > 0)
-                    {
-                        float newYVelocity = Mathf.Clamp(-(changeInGravity / (float)BounceAscensionCount) * modifier, -30f, float.MaxValue);
-
-                        Velocity = new Vector3(Velocity.X, newYVelocity, Velocity.Z);
-                        BounceAscensionCount--;
-                    }
-                }
-                //Rising
                 else
                 {
-                    BounceAscensionCount++;
+                    //Dropping
+                    if (BounceTimer.IsStopped() && BounceTimer.TimeLeft <= 0)
+                    {
+                        if (BounceAscensionCount > 0)
+                        {
+                            float newYVelocity = Mathf.Clamp(-(changeInGravity / (float)BounceAscensionCount) * modifier, -30f, float.MaxValue);
 
-                    Velocity = new Vector3(Velocity.X, (changeInGravity / (float)BounceAscensionCount) * modifier, Velocity.Z);
+                            Velocity = new Vector3(Velocity.X, newYVelocity, Velocity.Z);
+                            BounceAscensionCount--;
+                        }
+                    }
+                    //Rising
+                    else
+                    {
+                        BounceAscensionCount++;
+
+                        Velocity = new Vector3(Velocity.X, (changeInGravity / (float)BounceAscensionCount) * modifier, Velocity.Z);
+                    }
                 }
             }
             else
@@ -269,7 +300,7 @@ namespace Entities
             if (body.IsInGroup(GroupTags.Bounceable) && BasketballState != BasketballState.IsBeingDribbled)
             {
                 ShotAscensionCount = 1;
-                BasketballState = BasketballState.IsBouncing;
+                BasketballState = BasketballState.IsUpForGrabs;
             }
         }
     }
