@@ -132,7 +132,9 @@ namespace Entities
         {
         }
 
-        public int ascensionCount = 1;
+        public int ShotAscensionCount = 1;
+        public int BounceAscensionCount = 1;
+        //public float BounceRatioNumber = 15;
 
         public override void _PhysicsProcess(double delta)
         {
@@ -171,107 +173,63 @@ namespace Entities
                 //Ball should be rising
                 if (currentDistanceToTarget > fullDistanceToTarget / 2)
                 {
-                    ascensionCount++;
+                    ShotAscensionCount++;
 
-                    Velocity = new Vector3(Velocity.X, (changeInGravity / (float)ascensionCount) * modifier, Velocity.Z);
+                    Velocity = new Vector3(Velocity.X, (changeInGravity / (float)ShotAscensionCount) * modifier, Velocity.Z);
                 }
                 //Ball should be falling
                 else
                 {
                     if (GlobalPosition.Y >= BasketballCourtLevel.HoopArea.GlobalPosition.Y)
                     {
-                        if (ascensionCount > 0)
+                        if (ShotAscensionCount > 0)
                         {
-                            float newYVelocity = Mathf.Clamp(-(changeInGravity / (float)ascensionCount) * modifier, -30f, float.MaxValue);
+                            float newYVelocity = Mathf.Clamp(-(changeInGravity / (float)ShotAscensionCount) * modifier, -30f, float.MaxValue);
 
                             Velocity = new Vector3(Velocity.X, newYVelocity, Velocity.Z);
-                            ascensionCount--;
+                            ShotAscensionCount--;
                         }
                     }
                 }
 
                 MoveAndSlide();
             }
-            else if (BasketballState == BasketballState.IsBouncingOffBasket)
+            else if (BasketballState == BasketballState.IsBouncing)
             {
-                //if (BounceTimer.IsStopped() && BounceTimer.TimeLeft <= 0)
-                //{
-                //    Velocity = new Vector3(Velocity.X, -10f, Velocity.Z);
-                //}
+                float changeInGravity = 100f;
+
+                float modifier = 1;
 
                 KinematicCollision3D collisionInfo = MoveAndCollide(Velocity * (float)delta);
 
                 if (collisionInfo != null)
                 {
                     Velocity = Velocity.Bounce(collisionInfo.GetNormal());
+                    BounceAscensionCount = 1;
 
-                    //Vector3 directionToDestination = GlobalPosition.DirectionTo(DestinationGlobalPosition);
-
-                    //Velocity = new Vector3(directionToDestination.X, Velocity.Y, directionToDestination.Z);
-
-                    //Velocity = new Vector3(Velocity.X, -10f, Velocity.Z);
+                    GD.Print($"New normal's velocity's magnitude: {Velocity.Length()}");
 
                     BounceTimer.Start();
                 }
 
+                //Dropping
+                if (BounceTimer.IsStopped() && BounceTimer.TimeLeft <= 0)
+                {
+                    if (BounceAscensionCount > 0)
+                    {
+                        float newYVelocity = Mathf.Clamp(-(changeInGravity / (float)BounceAscensionCount) * modifier, -30f, float.MaxValue);
 
+                        Velocity = new Vector3(Velocity.X, newYVelocity, Velocity.Z);
+                        BounceAscensionCount--;
+                    }
+                }
+                //Rising
+                else
+                {
+                    BounceAscensionCount++;
 
-
-
-                //if (IsDestinedToSucceed)
-                //{
-                //if (BounceTimer.IsStopped() && BounceTimer.TimeLeft <= 0)
-                //{
-                //    Velocity = new Vector3(Velocity.X, -10f, Velocity.Z);
-                //}
-
-                //KinematicCollision3D collisionInfo = MoveAndCollide(Velocity * (float)delta);
-
-                //if (collisionInfo != null)
-                //{
-                //    Velocity = Velocity.Bounce(collisionInfo.GetNormal());
-
-                //    Vector3 directionToDestination = GlobalPosition.DirectionTo(DestinationGlobalPosition);
-
-                //    Velocity = new Vector3(directionToDestination.X, Velocity.Y, directionToDestination.Z);
-
-                //    //Velocity = new Vector3(Velocity.X, -10f, Velocity.Z);
-
-                //    BounceTimer.Start();
-                //}
-                //}
-                //else
-                //{
-                //if (BounceTimer.IsStopped() && BounceTimer.TimeLeft <= 0)
-                //{
-                //    Velocity = new Vector3(Velocity.X, -10f, Velocity.Z);
-                //}
-
-                //KinematicCollision3D collisionInfo = MoveAndCollide(Velocity * (float)delta);
-
-                //if (collisionInfo != null)
-                //{
-                //    Velocity = Velocity.Bounce(collisionInfo.GetNormal());
-
-                //    Vector3 directionToDestination = GlobalPosition.DirectionTo(DestinationGlobalPosition);
-
-                //    Velocity = new Vector3(directionToDestination.X, Velocity.Y, directionToDestination.Z);
-
-                //    //Velocity = new Vector3(Velocity.X, -10f, Velocity.Z);
-
-                //    BounceTimer.Start();
-                //}
-                //}
-
-
-                //else
-                //{
-                //    Vector3 directionToDestination = GlobalPosition.DirectionTo(DestinationGlobalPosition);
-
-                //    Velocity = new Vector3(directionToDestination.X, Velocity.Y, directionToDestination.Z);
-
-
-                //}
+                    Velocity = new Vector3(Velocity.X, (changeInGravity / (float)BounceAscensionCount) * modifier, Velocity.Z);
+                }
             }
             else
             {
@@ -297,7 +255,7 @@ namespace Entities
         {
             if (area.IsInGroup(GroupTags.HoopArea))
             {
-                ascensionCount = 1;
+                ShotAscensionCount = 1;
                 BasketballState = BasketballState.IsInBasket;
 
                 GD.Print($"Got into HoopArea.\n" +
@@ -308,10 +266,10 @@ namespace Entities
 
         private void OnDetectionAreaBodyEntered(Node3D body)
         {
-            if (body.IsInGroup(GroupTags.HoopBody))
+            if (body.IsInGroup(GroupTags.Bounceable) && BasketballState != BasketballState.IsBeingDribbled)
             {
-                ascensionCount = 1;
-                BasketballState = BasketballState.IsBouncingOffBasket;
+                ShotAscensionCount = 1;
+                BasketballState = BasketballState.IsBouncing;
             }
         }
     }

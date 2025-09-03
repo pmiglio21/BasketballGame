@@ -15,6 +15,6 @@ namespace Constants
 
         public const string HoopArea = "HoopArea";
 
-        public const string HoopBody = "HoopBody";
+        public const string Bounceable = "Bounceable";
     }
 }
