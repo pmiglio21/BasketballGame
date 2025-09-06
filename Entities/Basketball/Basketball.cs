@@ -211,6 +211,7 @@ namespace Entities
 
                 KinematicCollision3D collisionInfo = MoveAndCollide(Velocity * (float)delta);
 
+                //if (collisionInfo != null && BounceTimer.IsStopped() && BounceTimer.WaitTime > .05f)
                 if (collisionInfo != null && BounceTimer.WaitTime > .05f)
                 {
                     Velocity = Velocity.Bounce(collisionInfo.GetNormal());
@@ -240,6 +241,10 @@ namespace Entities
 
                     BounceTimer.Start();
                 }
+                //else if (collisionInfo != null && !BounceTimer.IsStopped())
+                //{
+                //    Velocity = new Vector3(Velocity.X, 0, Velocity.Z);
+                //}
                 else
                 {
                     //Dropping
