@@ -252,10 +252,9 @@ namespace Entities
                     _isRolling = true;
                     _rollingCount++;
 
-                    Velocity = new Vector3(Mathf.Clamp(Velocity.X - (_rollingCount / 2), 0, float.MaxValue), 0, Mathf.Clamp(Velocity.Z - (_rollingCount / 2), 0, float.MaxValue));
-                    //TODO: Work on this
+                    Velocity = new Vector3(Mathf.Clamp(Velocity.X - ((float)_rollingCount / 100), 0, float.MaxValue), 0, Mathf.Clamp(Velocity.Z - ((float)_rollingCount / 100), 0, float.MaxValue));
 
-                    GD.Print($"New Horizontal Velocity: X: {Velocity.X}, Z: {Velocity.Z}");
+                    //GD.Print($"New Horizontal Velocity: X: {Velocity.X}, Z: {Velocity.Z}");
                 }
                 else
                 {
