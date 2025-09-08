@@ -263,7 +263,7 @@ namespace Entities
                     {
                         if (BounceAscensionCount > 0)
                         {
-                            float newYVelocity = Mathf.Clamp(-(changeInGravity / (float)BounceAscensionCount) * modifier, -30f, float.MaxValue);
+                            float newYVelocity = Mathf.Clamp(-(changeInGravity / (float)(BounceAscensionCount * _bounceCount)) * modifier, -30f, float.MaxValue);
 
                             Velocity = new Vector3(Velocity.X, newYVelocity, Velocity.Z);
                             BounceAscensionCount--;
@@ -274,7 +274,7 @@ namespace Entities
                     {
                         BounceAscensionCount++;
 
-                        Velocity = new Vector3(Velocity.X, (changeInGravity / (float)BounceAscensionCount) * modifier, Velocity.Z);
+                        Velocity = new Vector3(Velocity.X, (changeInGravity / (float)(BounceAscensionCount * _bounceCount)) * modifier, Velocity.Z);
                     }
                 }
             }
