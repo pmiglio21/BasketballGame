@@ -27,8 +27,6 @@ namespace Entities
 
         public Timer BounceTimer = null;
 
-        
-
         #endregion
 
         #region State Properties
@@ -126,7 +124,11 @@ namespace Entities
                 if (BasketballState != BasketballState.IsUpForGrabs)
                 {
                     BounceTimer.WaitTime = _bounceTimerMaxTime;
+                    GD.Print("Bounce wait time was reset");
                     _bounceCount = 0;
+
+                    _isRolling = false;
+                    _rollingCount = 0;
                 }
             }
         }
@@ -142,6 +144,9 @@ namespace Entities
         private const float _bounceTimerMaxTime = .5f;
         private const float _bounceTimerMinTime = .05f;
         public float BounceRatioNumber = 15;
+
+        private bool _isRolling = false;
+        private int _rollingCount = 0;
 
         private int _bounceCount = 0;
 
@@ -220,7 +225,7 @@ namespace Entities
                     float changeInHorizontal = 0f;
                     float changeInVertical = 5f;
 
-                    GD.Print($"New normal's velocity's magnitude without change: {Velocity.Length()}");
+                    GD.Print($"New normal's velocity's Y without change: {Velocity.Y}");
 
                     //Velocity = new Vector3(Mathf.Clamp(Velocity.X - changeInHorizontal, 0, float.MaxValue), Velocity.Y, Mathf.Clamp(Velocity.Z - changeInHorizontal, 0, float.MaxValue));
 
@@ -231,20 +236,27 @@ namespace Entities
 
                     //BounceTimer.WaitTime = Mathf.Clamp(BounceTimer.WaitTime * (BounceRatioNumber / (BounceRatioNumber + 1)), _bounceTimerMinTime, _bounceTimerMaxTime);
 
-                    BounceTimer.WaitTime = Mathf.Clamp(BounceTimer.WaitTime * (BounceRatioNumber / (BounceRatioNumber + 5)), _bounceTimerMinTime, _bounceTimerMaxTime);
+                    //BounceTimer.WaitTime = Mathf.Clamp(BounceTimer.WaitTime * (BounceRatioNumber / (BounceRatioNumber + 5)), _bounceTimerMinTime, _bounceTimerMaxTime);
 
-                    //BounceTimer.WaitTime = Mathf.Clamp(BounceTimer.WaitTime * (Velocity.Length() / (BounceRatioNumber)), _bounceTimerMinTime, _bounceTimerMaxTime);
+                    BounceTimer.WaitTime = Mathf.Clamp(BounceTimer.WaitTime * (Velocity.Y / (BounceRatioNumber)), _bounceTimerMinTime, _bounceTimerMaxTime);
 
 
-                    GD.Print($"New normal's velocity's magnitude with change: {Velocity.Length()}");
+                    GD.Print($"New normal's velocity's Y with change: {Velocity.Y}");
                     GD.Print($"New WaitTime: {BounceTimer.WaitTime}\n");
 
                     BounceTimer.Start();
                 }
-                //else if (collisionInfo != null && !BounceTimer.IsStopped())
-                //{
-                //    Velocity = new Vector3(Velocity.X, 0, Velocity.Z);
-                //}
+                //Is rolling, essentially
+                else if (_isRolling || (collisionInfo != null && BounceTimer.WaitTime <= .05f))
+                {
+                    _isRolling = true;
+                    _rollingCount++;
+
+                    Velocity = new Vector3(Mathf.Clamp(Velocity.X - (_rollingCount / 2), 0, float.MaxValue), 0, Mathf.Clamp(Velocity.Z - (_rollingCount / 2), 0, float.MaxValue));
+                    //TODO: Work on this
+
+                    GD.Print($"New Horizontal Velocity: X: {Velocity.X}, Z: {Velocity.Z}");
+                }
                 else
                 {
                     //Dropping

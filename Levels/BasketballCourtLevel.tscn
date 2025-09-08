@@ -72,7 +72,7 @@ mesh = SubResource("BoxMesh_4rm8i")
 skeleton = NodePath("../..")
 
 [node name="Camera3D" type="Camera3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 0.866025, 0.5, 0, -0.5, 0.866025, 0, 17.1646, -15.8189)
+transform = Transform3D(1, 0, 0, 0, 0.866025, 0.5, 0, -0.5, 0.866025, 0, 17.1646, -8.8283)
 
 [node name="BasketballPlayer" parent="." instance=ExtResource("1_omy0y")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8, 2, -36.7833)
@@ -114,10 +114,6 @@ shape = SubResource("CapsuleShape3D_gt0n7")
 transform = Transform3D(40, 0, 0, 0, -8.74228e-07, -10, 0, 20, -4.37114e-07, 0.237, -0.204848, 55.914)
 mesh = SubResource("CapsuleMesh_a5gyj")
 
-[node name="CollisionPolygon3D" type="CollisionPolygon3D" parent="ThreePointLine"]
-transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, -2.38904, 0.0497193, 44.3755)
-polygon = PackedVector2Array(0, 0)
-
 [node name="BasketballHoop" type="StaticBody3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.29451, 3.04699, -48.5165)
 
@@ -153,7 +149,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.15556, 1.1726)
 shape = SubResource("ConcavePolygonShape3D_mr7dc")
 
 [node name="BasketballResetTimer" type="Timer" parent="."]
-wait_time = 5.0
+wait_time = 3.0
 one_shot = true
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
