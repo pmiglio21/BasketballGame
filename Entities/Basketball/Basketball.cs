@@ -142,7 +142,7 @@ namespace Entities
         public int BounceAscensionCount = 1;
 
         private const float _bounceTimerMaxTime = .5f;
-        private const float _bounceTimerMinTime = .05f;
+        private const float _bounceTimerMinTime = .01f;
         public float BounceRatioNumber = 15;
 
         private bool _isRolling = false;
@@ -171,6 +171,9 @@ namespace Entities
             else if (BasketballState == BasketballState.IsInBasket)
             {
                 Velocity = new Vector3(0, -10f, 0);
+
+                //_bounceCount = 0;
+                //BounceAscensionCount = 1;
 
                 MoveAndSlide();
             }
@@ -216,10 +219,11 @@ namespace Entities
 
                 KinematicCollision3D collisionInfo = MoveAndCollide(Velocity * (float)delta);
 
-                //if (collisionInfo != null && BounceTimer.IsStopped() && BounceTimer.WaitTime > .05f)
-                if (collisionInfo != null && BounceTimer.WaitTime > .05f)
+                if (collisionInfo != null && BounceTimer.WaitTime > _bounceTimerMinTime)
                 {
                     Velocity = Velocity.Bounce(collisionInfo.GetNormal());
+                    //TODO: Bounce off walls here???
+
                     BounceAscensionCount = 1;
 
                     float changeInHorizontal = 0f;
@@ -233,12 +237,8 @@ namespace Entities
 
                     Velocity = new Vector3(Velocity.X, Mathf.Clamp(Velocity.Y/(_bounceCount*2), 0, float.MaxValue), Velocity.Z);
 
-
-                    //BounceTimer.WaitTime = Mathf.Clamp(BounceTimer.WaitTime * (BounceRatioNumber / (BounceRatioNumber + 1)), _bounceTimerMinTime, _bounceTimerMaxTime);
-
-                    //BounceTimer.WaitTime = Mathf.Clamp(BounceTimer.WaitTime * (BounceRatioNumber / (BounceRatioNumber + 5)), _bounceTimerMinTime, _bounceTimerMaxTime);
-
-                    BounceTimer.WaitTime = Mathf.Clamp(BounceTimer.WaitTime * (Velocity.Y / (BounceRatioNumber)), _bounceTimerMinTime, _bounceTimerMaxTime);
+                    //BounceTimer.WaitTime = Mathf.Clamp(BounceTimer.WaitTime * (Velocity.Y / (BounceRatioNumber)), _bounceTimerMinTime, _bounceTimerMaxTime);
+                    BounceTimer.WaitTime = Mathf.Clamp((Velocity.Y / (BounceRatioNumber)), _bounceTimerMinTime, _bounceTimerMaxTime);
 
 
                     GD.Print($"New normal's velocity's Y with change: {Velocity.Y}");
@@ -247,12 +247,27 @@ namespace Entities
                     BounceTimer.Start();
                 }
                 //Is rolling, essentially
-                else if (_isRolling || (collisionInfo != null && BounceTimer.WaitTime <= .05f))
+                else if (_isRolling || (collisionInfo != null && BounceTimer.WaitTime <= _bounceTimerMinTime))
                 {
                     _isRolling = true;
                     _rollingCount++;
 
-                    Velocity = new Vector3(Mathf.Clamp(Velocity.X - ((float)_rollingCount / 100), 0, float.MaxValue), 0, Mathf.Clamp(Velocity.Z - ((float)_rollingCount / 100), 0, float.MaxValue));
+                    if (Velocity.X > 0 && Velocity.Z > 0)
+                    {
+                        Velocity = new Vector3(Mathf.Clamp(Velocity.X - ((float)_rollingCount / 100), 0, float.MaxValue), 0, Mathf.Clamp(Velocity.Z - ((float)_rollingCount / 100), 0, float.MaxValue));
+                    }
+                    else if (Velocity.X < 0 && Velocity.Z > 0)
+                    {
+                        Velocity = new Vector3(Mathf.Clamp(Velocity.X + ((float)_rollingCount / 100), float.MinValue, 0), 0, Mathf.Clamp(Velocity.Z - ((float)_rollingCount / 100), 0, float.MaxValue));
+                    }
+                    else if (Velocity.X < 0 && Velocity.Z < 0)
+                    {
+                        Velocity = new Vector3(Mathf.Clamp(Velocity.X + ((float)_rollingCount / 100), float.MinValue, 0), 0, Mathf.Clamp(Velocity.Z + ((float)_rollingCount / 100), float.MinValue, 0));
+                    }
+                    else if (Velocity.X > 0 && Velocity.Z < 0)
+                    {
+                        Velocity = new Vector3(Mathf.Clamp(Velocity.X - ((float)_rollingCount / 100), 0, float.MaxValue), 0, Mathf.Clamp(Velocity.Z + ((float)_rollingCount / 100), float.MinValue, 0));
+                    }
 
                     //GD.Print($"New Horizontal Velocity: X: {Velocity.X}, Z: {Velocity.Z}");
                 }
@@ -280,7 +295,7 @@ namespace Entities
             }
             else
             {
-                if (TargetPlayer != null)   //Used to send ball to player
+                if (BasketballState == BasketballState.IsBeingPassed && TargetPlayer != null)   //Used to send ball to player
                 {
                     if (TargetPlayer != GetParent() as BasketballPlayer)
                     {
