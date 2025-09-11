@@ -27,7 +27,7 @@ light_energy = 10.0
 wait_time = 0.125
 one_shot = true
 
-[node name="BounceTimer" type="Timer" parent="."]
+[node name="FloorBounceTimer" type="Timer" parent="."]
 wait_time = 0.5
 one_shot = true
 
