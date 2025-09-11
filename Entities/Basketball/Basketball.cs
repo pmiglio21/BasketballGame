@@ -183,6 +183,11 @@ namespace Entities
 
         public override void _PhysicsProcess(double delta)
         {
+            if (BasketballState != BasketballState.IsBeingDribbled)
+            {
+                //GD.Print($"BasketballState: {BasketballState}");
+            }
+
             if (BasketballState == BasketballState.IsBeingDribbled)
             {
                 if (DribbleTimer.IsStopped() && DribbleTimer.TimeLeft <= 0)
@@ -250,8 +255,8 @@ namespace Entities
 
                 KinematicCollision3D collisionInfo = MoveAndCollide(Velocity * (float)delta);
 
-                //Bouncing off of floor
-                if (collisionInfo != null && (collisionInfo.GetCollider() as Node).IsInGroup("Floor") && FloorBounceTimer.WaitTime > _bounceTimerMinTime)
+                //Bouncing off of stuff
+                if (collisionInfo != null) //(collisionInfo.GetCollider() as Node).IsInGroup("Floor") &&     
                 {
                     GD.Print("1");
 
@@ -259,7 +264,10 @@ namespace Entities
 
                     BounceAscensionCount = 1;
 
-                    _floorBounceCount++;
+                    if ((collisionInfo.GetCollider() as Node).IsInGroup("Floor"))
+                    {
+                        _floorBounceCount++;
+                    }
 
                     Velocity = new Vector3(Velocity.X, Mathf.Clamp(Velocity.Y/(_floorBounceCount * 2), 0, float.MaxValue), Velocity.Z);
 
@@ -268,7 +276,10 @@ namespace Entities
 
                     //GD.Print($"New WaitTime: {BounceTimer.WaitTime}\n");
 
-                    FloorBounceTimer.Start();
+                    if ((collisionInfo.GetCollider() as Node).IsInGroup("Floor"))
+                    {
+                        FloorBounceTimer.Start();
+                    }
                 }
                 //Is in air
                 else if (collisionInfo == null && !IsOnFloor())
@@ -295,75 +306,30 @@ namespace Entities
                         Velocity = new Vector3(Velocity.X, (changeInGravity / (float)(BounceAscensionCount * _floorBounceCount)) * modifier, Velocity.Z);
                     }
                 }
-                //Is reaching the point on the floor where it should start rolling
-                else if (collisionInfo != null && IsOnFloor() && FloorBounceTimer.WaitTime <= _bounceTimerMinTime)
-                {
-                    GD.Print("3");
-
-                    _isRolling = true;
-                    _rollingCount++;
-                }
                 //Is rolling
-                else if (_isRolling)
+                else if (collisionInfo == null && IsOnFloor())
                 {
-                    GD.Print("4");
-                    _isRolling = true;
+                    float rollingSlowDownSpeed = ((float)_rollingCount / 100);
+
+                    GD.Print("3");
+                    if (Velocity.X >= 0 && Velocity.Z >= 0)
+                    {
+                        Velocity = new Vector3(Mathf.Clamp(Velocity.X - rollingSlowDownSpeed, 0, float.MaxValue), 0, Mathf.Clamp(Velocity.Z - rollingSlowDownSpeed, 0, float.MaxValue));
+                    }
+                    else if (Velocity.X <= 0 && Velocity.Z >= 0)
+                    {
+                        Velocity = new Vector3(Mathf.Clamp(Velocity.X + rollingSlowDownSpeed, float.MinValue, 0), 0, Mathf.Clamp(Velocity.Z - rollingSlowDownSpeed, 0, float.MaxValue));
+                    }
+                    else if (Velocity.X <= 0 && Velocity.Z <= 0)
+                    {
+                        Velocity = new Vector3(Mathf.Clamp(Velocity.X + rollingSlowDownSpeed, float.MinValue, 0), 0, Mathf.Clamp(Velocity.Z + rollingSlowDownSpeed, float.MinValue, 0));
+                    }
+                    else if (Velocity.X >= 0 && Velocity.Z <= 0)
+                    {
+                        Velocity = new Vector3(Mathf.Clamp(Velocity.X - rollingSlowDownSpeed, 0, float.MaxValue), 0, Mathf.Clamp(Velocity.Z + rollingSlowDownSpeed, float.MinValue, 0));
+                    }
+
                     _rollingCount++;
-
-                    //Is rolling into static body - should bounce off in opposite direction with similar force
-                    if (collisionInfo != null && ((collisionInfo.GetCollider() as Node).IsInGroup("Wall") || (collisionInfo.GetCollider() as Node).IsInGroup("Hoop")))
-                    {
-                        GD.Print("4A");
-                        Vector3 newVelocity = Velocity.Bounce(collisionInfo.GetNormal());
-
-                        float newYVelocity = Mathf.Clamp(-(changeInGravity / (float)(BounceAscensionCount * _floorBounceCount)) * modifier, -30f, float.MaxValue);
-
-                        Velocity = new Vector3(newVelocity.X, newYVelocity, newVelocity.Z);
-                    }
-                    //Is rolling on floor unimpeded - should slow down gradually
-                    else
-                    {
-                        float rollingSlowDownSpeed = ((float)_rollingCount / 100);
-
-                        GD.Print("4B");
-                        if (Velocity.X >= 0 && Velocity.Z >= 0)
-                        {
-                            Velocity = new Vector3(Mathf.Clamp(Velocity.X - rollingSlowDownSpeed, 0, float.MaxValue), 0, Mathf.Clamp(Velocity.Z - rollingSlowDownSpeed, 0, float.MaxValue));
-                        }
-                        else if (Velocity.X <= 0 && Velocity.Z >= 0)
-                        {
-                            Velocity = new Vector3(Mathf.Clamp(Velocity.X + rollingSlowDownSpeed, float.MinValue, 0), 0, Mathf.Clamp(Velocity.Z - rollingSlowDownSpeed, 0, float.MaxValue));
-                        }
-                        else if (Velocity.X <= 0 && Velocity.Z <= 0)
-                        {
-                            Velocity = new Vector3(Mathf.Clamp(Velocity.X + rollingSlowDownSpeed, float.MinValue, 0), 0, Mathf.Clamp(Velocity.Z + rollingSlowDownSpeed, float.MinValue, 0));
-                        }
-                        else if (Velocity.X >= 0 && Velocity.Z <= 0)
-                        {
-                            Velocity = new Vector3(Mathf.Clamp(Velocity.X - rollingSlowDownSpeed, 0, float.MaxValue), 0, Mathf.Clamp(Velocity.Z + rollingSlowDownSpeed, float.MinValue, 0));
-                        }
-                    }
-
-                    //GD.Print($"New Horizontal Velocity: X: {Velocity.X}, Z: {Velocity.Z}");
-                }
-                //Bouncing off of something that isn't floor (hoop, for example)
-                else if (collisionInfo != null && FloorBounceTimer.WaitTime > _bounceTimerMinTime)
-                {
-                    GD.Print("5");
-
-                    Velocity = Velocity.Bounce(collisionInfo.GetNormal());
-
-                    //_bounceCount = 1;
-
-                    //float newYVelocity = Mathf.Clamp(-(changeInGravity / (float)(BounceAscensionCount * _bounceCount)) * modifier, -30f, float.MaxValue);
-
-                    Velocity = new Vector3(Velocity.X, Velocity.Y, Velocity.Z);
-
-                    FloorBounceTimer.WaitTime = Mathf.Clamp((Velocity.Y / (BounceRatioNumber)), _bounceTimerMinTime, _bounceTimerMaxTime);
-
-                    //BounceAscensionCount--;
-
-                    FloorBounceTimer.Start();
                 }
             }
             else
@@ -406,10 +372,10 @@ namespace Entities
                 ShotAscensionCount = 1;
                 BasketballState = BasketballState.IsUpForGrabs;
 
-                if (!FloorBounceTimer.IsStopped())
-                {
-                    FloorBounceTimer.WaitTime = _bounceTimerMaxTime;
-                }
+                //if (!FloorBounceTimer.IsStopped())
+                //{
+                //    FloorBounceTimer.WaitTime = _bounceTimerMaxTime;
+                //}
             }
         }
     }
