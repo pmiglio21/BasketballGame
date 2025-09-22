@@ -276,6 +276,8 @@ namespace Entities
                 {
                     GD.Print("1");
 
+                    GD.Print($"Hit ---------{(collisionInfo.GetCollider() as Node).Name}---------");
+
                     Velocity = Velocity.Bounce(collisionInfo.GetNormal());
 
                     BounceAscensionCount = 1;
@@ -324,14 +326,14 @@ namespace Entities
                 //Is in air
                 else if (collisionInfo == null) // && !IsOnFloor()
                 {
-                    GD.Print("2");
+                    //GD.Print("2");
                     
                     //Dropping
                     if (FloorBounceTimer.IsStopped() && FloorBounceTimer.TimeLeft <= 0)
                     {
                         if (BounceAscensionCount > 0 && _floorBounceCount > 0)
                         {
-                            GD.Print("2A");
+                            //GD.Print("2A");
                             float newYVelocity = Mathf.Clamp(-(changeInGravity / (float)(BounceAscensionCount * _floorBounceCount)) * modifier, -30f, float.MaxValue);
 
                             Velocity = new Vector3(Velocity.X, newYVelocity, Velocity.Z);
@@ -341,7 +343,7 @@ namespace Entities
                     //Rising
                     else
                     {
-                        GD.Print("2B");
+                        //GD.Print("2B");
                         BounceAscensionCount++;
 
                         if (BounceAscensionCount > 0 && _floorBounceCount > 0)

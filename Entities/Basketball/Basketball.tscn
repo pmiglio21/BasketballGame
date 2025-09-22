@@ -10,7 +10,7 @@
 
 [node name="Basketball" type="CharacterBody3D" groups=["Basketball"]]
 collision_layer = 0
-collision_mask = 2
+collision_mask = 3
 script = ExtResource("1_bklda")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
