@@ -255,28 +255,14 @@ namespace Entities
 
                 KinematicCollision3D collisionInfo = MoveAndCollide(Velocity * (float)delta);
 
-
-
-                //for (int i = 0; i < GetSlideCollisionCount(); i++)
-                //{
-                //    KinematicCollision3D collision = GetSlideCollision(i);
-                //    // Access information about the collided object
-                //    Node3D collidedObject = (Node3D)collision.GetCollider();
-
-                //    // Check if the collided object is the one you're interested in
-                //    if (collidedObject.Name == "Floor")
-                //    {
-                //        GD.Print("CharacterBody is still in contact with Floor!");
-                //        // Perform actions while in contact
-                //    }
-                //}
-
-                //Bouncing off of stuff
-                if (collisionInfo != null) //(collisionInfo.GetCollider() as Node).IsInGroup("Floor") &&     
+                //Bouncing off of stuff, including rolling
+                if (collisionInfo != null)   
                 {
                     GD.Print("1");
 
                     GD.Print($"Hit ---------{(collisionInfo.GetCollider() as Node).Name}---------");
+
+                    GD.Print($"CollisionInfo's normal is {collisionInfo.GetNormal()}");
 
                     Velocity = Velocity.Bounce(collisionInfo.GetNormal());
 
@@ -324,7 +310,7 @@ namespace Entities
                     }
                 }
                 //Is in air
-                else if (collisionInfo == null) // && !IsOnFloor()
+                else if (collisionInfo == null)
                 {
                     //GD.Print("2");
                     
@@ -352,31 +338,6 @@ namespace Entities
                         }
                     }
                 }
-                //Is rolling
-                //else if (collisionInfo == null && IsOnFloor())
-                //{
-                //    float rollingSlowDownSpeed = ((float)_rollingCount / 100);
-
-                //    GD.Print("3");
-                //    if (Velocity.X >= 0 && Velocity.Z >= 0)
-                //    {
-                //        Velocity = new Vector3(Mathf.Clamp(Velocity.X - rollingSlowDownSpeed, 0, float.MaxValue), 0, Mathf.Clamp(Velocity.Z - rollingSlowDownSpeed, 0, float.MaxValue));
-                //    }
-                //    else if (Velocity.X <= 0 && Velocity.Z >= 0)
-                //    {
-                //        Velocity = new Vector3(Mathf.Clamp(Velocity.X + rollingSlowDownSpeed, float.MinValue, 0), 0, Mathf.Clamp(Velocity.Z - rollingSlowDownSpeed, 0, float.MaxValue));
-                //    }
-                //    else if (Velocity.X <= 0 && Velocity.Z <= 0)
-                //    {
-                //        Velocity = new Vector3(Mathf.Clamp(Velocity.X + rollingSlowDownSpeed, float.MinValue, 0), 0, Mathf.Clamp(Velocity.Z + rollingSlowDownSpeed, float.MinValue, 0));
-                //    }
-                //    else if (Velocity.X >= 0 && Velocity.Z <= 0)
-                //    {
-                //        Velocity = new Vector3(Mathf.Clamp(Velocity.X - rollingSlowDownSpeed, 0, float.MaxValue), 0, Mathf.Clamp(Velocity.Z + rollingSlowDownSpeed, float.MinValue, 0));
-                //    }
-
-                //    _rollingCount++;
-                //}
             }
             else
             {
@@ -415,8 +376,16 @@ namespace Entities
         {
             if (body.IsInGroup(GroupTags.Bounceable) && BasketballState != BasketballState.IsBeingDribbled)
             {
+                //GD.Print($"Entered body. Should feel collision ---------{body.Name}---------");
+
+                //KinematicCollision3D collisionInfo = MoveAndCollide(Velocity);
+
+                //GD.Print($"CollisionInfo at this point is {collisionInfo}");
+
                 ShotAscensionCount = 1;
                 BasketballState = BasketballState.IsUpForGrabs;
+
+
 
                 //if (!FloorBounceTimer.IsStopped())
                 //{

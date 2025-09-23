@@ -131,6 +131,7 @@ skeleton = NodePath("../..")
 
 [node name="Camera3D" type="Camera3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 0.984808, 0.173648, 0, -0.173648, 0.984808, -4.43442, 10.6896, -10.5106)
+current = true
 
 [node name="BasketballPlayer" parent="." instance=ExtResource("1_omy0y")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8, 2, -36.7833)
@@ -224,7 +225,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.15556, 1.1726)
 shape = SubResource("ConcavePolygonShape3D_mr7dc")
 
 [node name="BasketballResetTimer" type="Timer" parent="."]
-wait_time = 10.0
+wait_time = 6.0
 one_shot = true
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
