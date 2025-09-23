@@ -181,6 +181,8 @@ namespace Entities
         #endregion
 
 
+        public bool IsCollidingWithFloor = false;
+
         public override void _PhysicsProcess(double delta)
         {
             if (BasketballState != BasketballState.IsBeingDribbled)
@@ -256,22 +258,40 @@ namespace Entities
                 KinematicCollision3D collisionInfo = MoveAndCollide(Velocity * (float)delta);
 
                 //Bouncing off of stuff, including rolling
-                if (collisionInfo != null)   
+                if (collisionInfo != null || IsCollidingWithFloor)   
                 {
                     GD.Print("1");
 
-                    GD.Print($"Hit ---------{(collisionInfo.GetCollider() as Node).Name}---------");
-
-                    GD.Print($"CollisionInfo's normal is {collisionInfo.GetNormal()}");
-
-                    Velocity = Velocity.Bounce(collisionInfo.GetNormal());
-
-                    BounceAscensionCount = 1;
-
-                    if ((collisionInfo.GetCollider() as Node).IsInGroup("Floor"))
+                    if (collisionInfo != null && !IsCollidingWithFloor)
                     {
+                        //GD.Print($"Hit ---------{(collisionInfo.GetCollider() as Node).Name}---------");
+
+                        //GD.Print($"CollisionInfo's normal is {collisionInfo.GetNormal()}");
+
+                        Velocity = Velocity.Bounce(collisionInfo.GetNormal());
+                    }
+                    else if (IsCollidingWithFloor)
+                    {
+                        //GD.Print($"++++++++++++++++++++ IsCollidingWithFloor ++++++++++++++++++++");
+
+                        Vector3 groundNormalVector = new Vector3(0, 1, 0);
+
+                        Velocity = Velocity.Bounce(groundNormalVector);
+
                         _floorBounceCount++;
                     }
+
+                    if (Velocity.Y == -0 && this.GlobalPosition.Y < 1) //If ball is at -0 velocity and is near the ground
+                    {
+                        GD.Print("Was -0");
+                        Velocity = new Vector3(Velocity.X, 30f, Velocity.Z);
+
+                        GD.Print($"Current Velocity {Velocity}");
+                    }
+
+                    //GD.Print($"Current Velocity {Velocity}");
+
+                    BounceAscensionCount = 1;
 
                     Vector3 horizontalVelocity = new Vector3(Velocity.X, 0, Velocity.Z);
 
@@ -304,10 +324,12 @@ namespace Entities
 
                     //GD.Print($"New WaitTime: {BounceTimer.WaitTime}\n");
 
-                    if ((collisionInfo.GetCollider() as Node).IsInGroup("Floor"))
+                    if (IsCollidingWithFloor)
                     {
                         FloorBounceTimer.Start();
                     }
+
+                    IsCollidingWithFloor = false;
                 }
                 //Is in air
                 else if (collisionInfo == null)
@@ -385,7 +407,14 @@ namespace Entities
                 ShotAscensionCount = 1;
                 BasketballState = BasketballState.IsUpForGrabs;
 
+                if (body.IsInGroup("Floor"))
+                {
+                    //Vector3 groundNormalVector = new Vector3(0, 1, 0);
 
+                    //Velocity = Velocity.Bounce(groundNormalVector);
+
+                    IsCollidingWithFloor = true;
+                }
 
                 //if (!FloorBounceTimer.IsStopped())
                 //{
