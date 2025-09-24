@@ -260,7 +260,7 @@ namespace Entities
                 //Bouncing off of stuff, including rolling
                 if (collisionInfo != null || IsCollidingWithFloor)   
                 {
-                    GD.Print("1");
+                    //GD.Print("1");
 
                     if (collisionInfo != null && !IsCollidingWithFloor)
                     {
@@ -269,6 +269,8 @@ namespace Entities
                         //GD.Print($"CollisionInfo's normal is {collisionInfo.GetNormal()}");
 
                         Velocity = Velocity.Bounce(collisionInfo.GetNormal());
+
+                        GD.Print($"Bounced velocity from option A: {Velocity}");
                     }
                     else if (IsCollidingWithFloor)
                     {
@@ -278,16 +280,18 @@ namespace Entities
 
                         Velocity = Velocity.Bounce(groundNormalVector);
 
+                        GD.Print($"Bounced velocity from option B: {Velocity}");
+
                         _floorBounceCount++;
                     }
 
-                    if (Velocity.Y == -0 && this.GlobalPosition.Y < 1) //If ball is at -0 velocity and is near the ground
-                    {
-                        GD.Print("Was -0");
-                        Velocity = new Vector3(Velocity.X, 30f, Velocity.Z);
+                    //if (Velocity.Y == -0 && this.GlobalPosition.Y < 1) //If ball is at -0 velocity and is near the ground
+                    //{
+                    //    GD.Print("Was -0");
+                    //    Velocity = new Vector3(Velocity.X, 1f, Velocity.Z);
 
-                        GD.Print($"Current Velocity {Velocity}");
-                    }
+                    //    GD.Print($"Current Velocity {Velocity}");
+                    //}
 
                     //GD.Print($"Current Velocity {Velocity}");
 
@@ -320,14 +324,16 @@ namespace Entities
                     }
 
                     //BounceTimer.WaitTime = Mathf.Clamp(BounceTimer.WaitTime * (Velocity.Y / (BounceRatioNumber)), _bounceTimerMinTime, _bounceTimerMaxTime);
-                    FloorBounceTimer.WaitTime = Mathf.Clamp((Velocity.Y / (BounceRatioNumber)), _bounceTimerMinTime, _bounceTimerMaxTime);
+                    FloorBounceTimer.WaitTime = Mathf.Clamp((Velocity.Y / (_floorBounceCount)), _bounceTimerMinTime, _bounceTimerMaxTime);
 
                     //GD.Print($"New WaitTime: {BounceTimer.WaitTime}\n");
 
-                    if (IsCollidingWithFloor)
-                    {
-                        FloorBounceTimer.Start();
-                    }
+                    //if (IsCollidingWithFloor)
+                    //{
+                    //    FloorBounceTimer.Start();
+                    //}
+
+                    FloorBounceTimer.Start();
 
                     IsCollidingWithFloor = false;
                 }
@@ -416,10 +422,10 @@ namespace Entities
                     IsCollidingWithFloor = true;
                 }
 
-                //if (!FloorBounceTimer.IsStopped())
-                //{
-                //    FloorBounceTimer.WaitTime = _bounceTimerMaxTime;
-                //}
+                if (!FloorBounceTimer.IsStopped())
+                {
+                    FloorBounceTimer.WaitTime = _bounceTimerMaxTime;
+                }
             }
         }
     }
