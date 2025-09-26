@@ -123,8 +123,8 @@ namespace Entities
             {
                 if (BasketballState != BasketballState.IsUpForGrabs)
                 {
-                    FloorBounceTimer.WaitTime = _bounceTimerMaxTime;
-                    GD.Print("Floor bounce wait time was reset");
+                    //FloorBounceTimer.WaitTime = _bounceTimerMaxTime;
+                    //GD.Print("Floor bounce wait time was reset");
                     _floorBounceCount = 0;
 
                     _isRolling = false;
@@ -194,7 +194,7 @@ namespace Entities
             {
                 if (DribbleTimer.IsStopped() && DribbleTimer.TimeLeft <= 0)
                 {
-                    LinearVelocity = new Vector3(0, -10f, 0);
+                    LinearVelocity = new Vector3(0, -3f, 0);
                 }
 
                 KinematicCollision3D collisionInfo = MoveAndCollide(LinearVelocity * (float)delta);
@@ -257,8 +257,8 @@ namespace Entities
 
                 KinematicCollision3D collisionInfo = MoveAndCollide(LinearVelocity * (float)delta);
 
-                //Bouncing off of stuff, including rolling
-                //if (collisionInfo != null || IsCollidingWithFloor)   
+                ////Bouncing off of stuff, including rolling
+                //if (collisionInfo != null || IsCollidingWithFloor)
                 //{
                 //    //GD.Print("1");
 
@@ -387,6 +387,33 @@ namespace Entities
             }
         }
 
+        public const float BounceDampeningFactor = .85f;
+        public const float MinBounceVelocity = .1f;
+
+        public override void _IntegrateForces(PhysicsDirectBodyState3D state)
+        {
+            var velocity = state.LinearVelocity;
+
+
+            //Detect any collision
+            if (state.GetContactCount() > 0)
+            {
+                Vector3 normal = state.GetContactLocalNormal(0);
+
+                //Only adjust if ball is moving into the surface
+                if (velocity.Dot(normal) < 0)
+                {
+                    //Reflect velocity vector
+                    velocity = velocity.Bounce(normal) * BounceDampeningFactor;
+                    
+                    if (velocity.Length() < MinBounceVelocity)
+                    {
+                        velocity = Vector3.Zero;
+                    }
+                }
+            }
+        }
+
         private void OnDetectionAreaEntered(Area3D area)
         {
             if (area.IsInGroup(GroupTags.HoopArea))
@@ -413,19 +440,19 @@ namespace Entities
                 ShotAscensionCount = 1;
                 BasketballState = BasketballState.IsUpForGrabs;
 
-                if (body.IsInGroup("Floor"))
-                {
-                    //Vector3 groundNormalVector = new Vector3(0, 1, 0);
+                //if (body.IsInGroup("Floor"))
+                //{
+                //    //Vector3 groundNormalVector = new Vector3(0, 1, 0);
 
-                    //LinearVelocity = LinearVelocity.Bounce(groundNormalVector);
+                //    //LinearVelocity = LinearVelocity.Bounce(groundNormalVector);
 
-                    IsCollidingWithFloor = true;
-                }
+                //    IsCollidingWithFloor = true;
+                //}
 
-                if (!FloorBounceTimer.IsStopped())
-                {
-                    FloorBounceTimer.WaitTime = _bounceTimerMaxTime;
-                }
+                //if (!FloorBounceTimer.IsStopped())
+                //{
+                //    FloorBounceTimer.WaitTime = _bounceTimerMaxTime;
+                //}
             }
         }
     }
