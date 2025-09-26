@@ -221,7 +221,7 @@ namespace Entities
 
                 float currentDistanceToTarget = new Vector3(GlobalPosition.X - DestinationGlobalPosition.X, 0, GlobalPosition.Z - DestinationGlobalPosition.Z).Length();
 
-                float changeInGravity = 100f;
+                float changeInGravity = 50f;
 
                 float modifier = 1;
 
@@ -239,7 +239,7 @@ namespace Entities
                     {
                         if (ShotAscensionCount > 0)
                         {
-                            float newYLinearVelocity = Mathf.Clamp(-(changeInGravity / (float)ShotAscensionCount) * modifier, -30f, float.MaxValue);
+                            float newYLinearVelocity = Mathf.Clamp(-(changeInGravity / (float)ShotAscensionCount) * modifier, -10f, float.MaxValue);
 
                             LinearVelocity = new Vector3(LinearVelocity.X, newYLinearVelocity, LinearVelocity.Z);
                             ShotAscensionCount--;
@@ -394,7 +394,6 @@ namespace Entities
         {
             var velocity = state.LinearVelocity;
 
-
             //Detect any collision
             if (state.GetContactCount() > 0)
             {
@@ -406,12 +405,14 @@ namespace Entities
                     //Reflect velocity vector
                     velocity = velocity.Bounce(normal) * BounceDampeningFactor;
                     
-                    if (velocity.Length() < MinBounceVelocity)
-                    {
-                        velocity = Vector3.Zero;
-                    }
+                    //if (velocity.Length() < MinBounceVelocity)
+                    //{
+                    //    velocity = Vector3.Zero;
+                    //}
                 }
             }
+
+             state.LinearVelocity = velocity;
         }
 
         private void OnDetectionAreaEntered(Area3D area)
