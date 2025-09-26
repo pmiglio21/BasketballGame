@@ -194,26 +194,26 @@ namespace Entities
             {
                 if (DribbleTimer.IsStopped() && DribbleTimer.TimeLeft <= 0)
                 {
-                    Velocity = new Vector3(0, -10f, 0);
+                    LinearVelocity = new Vector3(0, -10f, 0);
                 }
 
-                KinematicCollision3D collisionInfo = MoveAndCollide(Velocity * (float)delta);
+                KinematicCollision3D collisionInfo = MoveAndCollide(LinearVelocity * (float)delta);
 
                 if (collisionInfo != null)
                 {
-                    Velocity = Velocity.Bounce(collisionInfo.GetNormal());
+                    LinearVelocity = LinearVelocity.Bounce(collisionInfo.GetNormal());
 
                     DribbleTimer.Start();
                 }
             }
             else if (BasketballState == BasketballState.IsInBasket)
             {
-                Velocity = new Vector3(0, -10f, 0);
+                LinearVelocity = new Vector3(0, -10f, 0);
 
                 //_bounceCount = 0;
                 //BounceAscensionCount = 1;
 
-                MoveAndSlide();
+                MoveAndCollide(LinearVelocity * (float)delta);
             }
             else if (BasketballState == BasketballState.IsBeingShot)
             {
@@ -230,7 +230,7 @@ namespace Entities
                 {
                     ShotAscensionCount++;
 
-                    Velocity = new Vector3(Velocity.X, (changeInGravity / (float)ShotAscensionCount) * modifier, Velocity.Z);
+                    LinearVelocity = new Vector3(LinearVelocity.X, (changeInGravity / (float)ShotAscensionCount) * modifier, LinearVelocity.Z);
                 }
                 //Ball should be falling
                 else
@@ -239,15 +239,15 @@ namespace Entities
                     {
                         if (ShotAscensionCount > 0)
                         {
-                            float newYVelocity = Mathf.Clamp(-(changeInGravity / (float)ShotAscensionCount) * modifier, -30f, float.MaxValue);
+                            float newYLinearVelocity = Mathf.Clamp(-(changeInGravity / (float)ShotAscensionCount) * modifier, -30f, float.MaxValue);
 
-                            Velocity = new Vector3(Velocity.X, newYVelocity, Velocity.Z);
+                            LinearVelocity = new Vector3(LinearVelocity.X, newYLinearVelocity, LinearVelocity.Z);
                             ShotAscensionCount--;
                         }
                     }
                 }
 
-                MoveAndSlide();
+                MoveAndCollide(LinearVelocity * (float)delta);
             }
             else if (BasketballState == BasketballState.IsUpForGrabs) //Bouncing on floor or rebounding off basket, etc.
             {
@@ -255,7 +255,7 @@ namespace Entities
 
                 float modifier = 1;
 
-                KinematicCollision3D collisionInfo = MoveAndCollide(Velocity * (float)delta);
+                KinematicCollision3D collisionInfo = MoveAndCollide(LinearVelocity * (float)delta);
 
                 //Bouncing off of stuff, including rolling
                 //if (collisionInfo != null || IsCollidingWithFloor)   
@@ -268,9 +268,9 @@ namespace Entities
 
                 //        //GD.Print($"CollisionInfo's normal is {collisionInfo.GetNormal()}");
 
-                //        Velocity = Velocity.Bounce(collisionInfo.GetNormal());
+                //        LinearVelocity = LinearVelocity.Bounce(collisionInfo.GetNormal());
 
-                //        GD.Print($"Bounced velocity from option A: {Velocity}");
+                //        GD.Print($"Bounced LinearVelocity from option A: {LinearVelocity}");
                 //    }
                 //    else if (IsCollidingWithFloor)
                 //    {
@@ -278,53 +278,53 @@ namespace Entities
 
                 //        Vector3 groundNormalVector = new Vector3(0, 1, 0);
 
-                //        Velocity = Velocity.Bounce(groundNormalVector);
+                //        LinearVelocity = LinearVelocity.Bounce(groundNormalVector);
 
-                //        GD.Print($"Bounced velocity from option B: {Velocity}");
+                //        GD.Print($"Bounced LinearVelocity from option B: {LinearVelocity}");
 
                 //        _floorBounceCount++;
                 //    }
 
-                //    //if (Velocity.Y == -0 && this.GlobalPosition.Y < 1) //If ball is at -0 velocity and is near the ground
+                //    //if (LinearVelocity.Y == -0 && this.GlobalPosition.Y < 1) //If ball is at -0 LinearVelocity and is near the ground
                 //    //{
                 //    //    GD.Print("Was -0");
-                //    //    Velocity = new Vector3(Velocity.X, 1f, Velocity.Z);
+                //    //    LinearVelocity = new Vector3(LinearVelocity.X, 1f, LinearVelocity.Z);
 
-                //    //    GD.Print($"Current Velocity {Velocity}");
+                //    //    GD.Print($"Current LinearVelocity {LinearVelocity}");
                 //    //}
 
-                //    //GD.Print($"Current Velocity {Velocity}");
+                //    //GD.Print($"Current LinearVelocity {LinearVelocity}");
 
                 //    BounceAscensionCount = 1;
 
-                //    Vector3 horizontalVelocity = new Vector3(Velocity.X, 0, Velocity.Z);
+                //    Vector3 horizontalLinearVelocity = new Vector3(LinearVelocity.X, 0, LinearVelocity.Z);
 
                 //    float rollingSlowDownSpeed = ((float)_floorBounceCount / 100);
 
-                //    if (Velocity.X >= 0 && Velocity.Z >= 0)
+                //    if (LinearVelocity.X >= 0 && LinearVelocity.Z >= 0)
                 //    {
-                //        horizontalVelocity = new Vector3(Mathf.Clamp(Velocity.X - rollingSlowDownSpeed, 0, float.MaxValue), 0, Mathf.Clamp(Velocity.Z - rollingSlowDownSpeed, 0, float.MaxValue));
+                //        horizontalLinearVelocity = new Vector3(Mathf.Clamp(LinearVelocity.X - rollingSlowDownSpeed, 0, float.MaxValue), 0, Mathf.Clamp(LinearVelocity.Z - rollingSlowDownSpeed, 0, float.MaxValue));
                 //    }
-                //    else if (Velocity.X <= 0 && Velocity.Z >= 0)
+                //    else if (LinearVelocity.X <= 0 && LinearVelocity.Z >= 0)
                 //    {
-                //        horizontalVelocity = new Vector3(Mathf.Clamp(Velocity.X + rollingSlowDownSpeed, float.MinValue, 0), 0, Mathf.Clamp(Velocity.Z - rollingSlowDownSpeed, 0, float.MaxValue));
+                //        horizontalLinearVelocity = new Vector3(Mathf.Clamp(LinearVelocity.X + rollingSlowDownSpeed, float.MinValue, 0), 0, Mathf.Clamp(LinearVelocity.Z - rollingSlowDownSpeed, 0, float.MaxValue));
                 //    }
-                //    else if (Velocity.X <= 0 && Velocity.Z <= 0)
+                //    else if (LinearVelocity.X <= 0 && LinearVelocity.Z <= 0)
                 //    {
-                //        horizontalVelocity = new Vector3(Mathf.Clamp(Velocity.X + rollingSlowDownSpeed, float.MinValue, 0), 0, Mathf.Clamp(Velocity.Z + rollingSlowDownSpeed, float.MinValue, 0));
+                //        horizontalLinearVelocity = new Vector3(Mathf.Clamp(LinearVelocity.X + rollingSlowDownSpeed, float.MinValue, 0), 0, Mathf.Clamp(LinearVelocity.Z + rollingSlowDownSpeed, float.MinValue, 0));
                 //    }
-                //    else if (Velocity.X >= 0 && Velocity.Z <= 0)
+                //    else if (LinearVelocity.X >= 0 && LinearVelocity.Z <= 0)
                 //    {
-                //        horizontalVelocity = new Vector3(Mathf.Clamp(Velocity.X - rollingSlowDownSpeed, 0, float.MaxValue), 0, Mathf.Clamp(Velocity.Z + rollingSlowDownSpeed, float.MinValue, 0));
+                //        horizontalLinearVelocity = new Vector3(Mathf.Clamp(LinearVelocity.X - rollingSlowDownSpeed, 0, float.MaxValue), 0, Mathf.Clamp(LinearVelocity.Z + rollingSlowDownSpeed, float.MinValue, 0));
                 //    }
 
                 //    if (_floorBounceCount > 0)
                 //    {
-                //        Velocity = new Vector3(horizontalVelocity.X, Mathf.Clamp(Velocity.Y / (_floorBounceCount * 2), 0, float.MaxValue), horizontalVelocity.Z);
+                //        LinearVelocity = new Vector3(horizontalLinearVelocity.X, Mathf.Clamp(LinearVelocity.Y / (_floorBounceCount * 2), 0, float.MaxValue), horizontalLinearVelocity.Z);
                 //    }
 
-                //    //BounceTimer.WaitTime = Mathf.Clamp(BounceTimer.WaitTime * (Velocity.Y / (BounceRatioNumber)), _bounceTimerMinTime, _bounceTimerMaxTime);
-                //    FloorBounceTimer.WaitTime = Mathf.Clamp((Velocity.Y / (_floorBounceCount)), _bounceTimerMinTime, _bounceTimerMaxTime);
+                //    //BounceTimer.WaitTime = Mathf.Clamp(BounceTimer.WaitTime * (LinearVelocity.Y / (BounceRatioNumber)), _bounceTimerMinTime, _bounceTimerMaxTime);
+                //    FloorBounceTimer.WaitTime = Mathf.Clamp((LinearVelocity.Y / (_floorBounceCount)), _bounceTimerMinTime, _bounceTimerMaxTime);
 
                 //    //GD.Print($"New WaitTime: {BounceTimer.WaitTime}\n");
 
@@ -348,9 +348,9 @@ namespace Entities
                 //        if (BounceAscensionCount > 0 && _floorBounceCount > 0)
                 //        {
                 //            //GD.Print("2A");
-                //            float newYVelocity = Mathf.Clamp(-(changeInGravity / (float)(BounceAscensionCount * _floorBounceCount)) * modifier, -30f, float.MaxValue);
+                //            float newYLinearVelocity = Mathf.Clamp(-(changeInGravity / (float)(BounceAscensionCount * _floorBounceCount)) * modifier, -30f, float.MaxValue);
 
-                //            Velocity = new Vector3(Velocity.X, newYVelocity, Velocity.Z);
+                //            LinearVelocity = new Vector3(LinearVelocity.X, newYLinearVelocity, LinearVelocity.Z);
                 //            BounceAscensionCount--;
                 //        }
                 //    }
@@ -362,7 +362,7 @@ namespace Entities
 
                 //        if (BounceAscensionCount > 0 && _floorBounceCount > 0)
                 //        {
-                //            Velocity = new Vector3(Velocity.X, (changeInGravity / (float)(BounceAscensionCount * _floorBounceCount)) * modifier, Velocity.Z);
+                //            LinearVelocity = new Vector3(LinearVelocity.X, (changeInGravity / (float)(BounceAscensionCount * _floorBounceCount)) * modifier, LinearVelocity.Z);
                 //        }
                 //    }
                 //}
@@ -379,11 +379,11 @@ namespace Entities
 
                         var moveDirection = new Vector3(normalizedMoveInput.X, 0, normalizedMoveInput.Z);
 
-                        Velocity = moveInput * 40f;
+                        LinearVelocity = moveInput * 40f;
                     }
                 }
 
-                MoveAndSlide();
+                MoveAndCollide(LinearVelocity * (float)delta);
             }
         }
 
@@ -406,7 +406,7 @@ namespace Entities
             {
                 //GD.Print($"Entered body. Should feel collision ---------{body.Name}---------");
 
-                //KinematicCollision3D collisionInfo = MoveAndCollide(Velocity);
+                //KinematicCollision3D collisionInfo = MoveAndCollide(LinearVelocity);
 
                 //GD.Print($"CollisionInfo at this point is {collisionInfo}");
 
@@ -417,7 +417,7 @@ namespace Entities
                 {
                     //Vector3 groundNormalVector = new Vector3(0, 1, 0);
 
-                    //Velocity = Velocity.Bounce(groundNormalVector);
+                    //LinearVelocity = LinearVelocity.Bounce(groundNormalVector);
 
                     IsCollidingWithFloor = true;
                 }
