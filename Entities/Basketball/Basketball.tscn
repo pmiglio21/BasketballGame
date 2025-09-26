@@ -9,7 +9,7 @@
 [sub_resource type="SphereShape3D" id="SphereShape3D_o7370"]
 
 [node name="Basketball" type="CharacterBody3D" groups=["Basketball"]]
-collision_layer = 2
+collision_layer = 0
 collision_mask = 2
 script = ExtResource("1_bklda")
 

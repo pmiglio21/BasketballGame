@@ -551,7 +551,7 @@ namespace Entities
                     }
                 }
 
-                float ballSpeed = 1.5f;
+                float ballSpeed = .5f;
 
                 ParentBasketballCourtLevel.Basketball.Velocity = new Vector3(basketballDestinationGlobalPosition.X - ParentBasketballCourtLevel.Basketball.GlobalPosition.X,
                                                                              //Mathf.Sin(Mathf.Pi / 4) * 20,

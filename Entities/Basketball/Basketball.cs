@@ -257,12 +257,31 @@ namespace Entities
 
                 KinematicCollision3D collisionInfo = MoveAndCollide(Velocity * (float)delta);
 
-                //Bouncing off of stuff, including rolling
-                if (collisionInfo != null || IsCollidingWithFloor)   
-                {
-                    //GD.Print("1");
+                //try
+                //{
+                //    for (int i = 0; i < 4; i++)
+                //    {
+                //        collisionInfo = MoveAndCollide(Velocity * (float)delta);
 
-                    if (collisionInfo != null && !IsCollidingWithFloor)
+                //        if (collisionInfo == null)
+                //        {
+                //            break;
+                //        }
+
+                //        Velocity = Velocity.Bounce(collisionInfo.GetNormal());
+                //    }
+                //}
+                //catch (Exception ex)
+                //{
+                //    GD.PrintErr($"Exception in Basketball._PhysicsProcess while checking for multiple collisions: {ex.Message}");
+                //}
+
+                //Bouncing off of stuff, including rolling
+                if (collisionInfo != null)// || IsCollidingWithFloor)   
+                {
+                    GD.Print("1");
+
+                    if (collisionInfo != null)//&& !IsCollidingWithFloor)
                     {
                         //GD.Print($"Hit ---------{(collisionInfo.GetCollider() as Node).Name}---------");
 
@@ -270,28 +289,38 @@ namespace Entities
 
                         Velocity = Velocity.Bounce(collisionInfo.GetNormal());
 
-                        GD.Print($"Bounced velocity from option A: {Velocity}");
+                        //GD.Print($"Bounced velocity from option A: {Velocity}");
                     }
-                    else if (IsCollidingWithFloor)
-                    {
-                        //GD.Print($"++++++++++++++++++++ IsCollidingWithFloor ++++++++++++++++++++");
-
-                        Vector3 groundNormalVector = new Vector3(0, 1, 0);
-
-                        Velocity = Velocity.Bounce(groundNormalVector);
-
-                        GD.Print($"Bounced velocity from option B: {Velocity}");
-
-                        _floorBounceCount++;
-                    }
-
-                    //if (Velocity.Y == -0 && this.GlobalPosition.Y < 1) //If ball is at -0 velocity and is near the ground
+                    //else if (IsCollidingWithFloor)
                     //{
-                    //    GD.Print("Was -0");
-                    //    Velocity = new Vector3(Velocity.X, 1f, Velocity.Z);
+                    //    //GD.Print($"++++++++++++++++++++ IsCollidingWithFloor ++++++++++++++++++++");
 
-                    //    GD.Print($"Current Velocity {Velocity}");
+                    //    Vector3 groundNormalVector = new Vector3(0, 1, 0);
+
+                    //    Velocity = Velocity.Bounce(groundNormalVector);
+
+                    //    //GD.Print($"Bounced velocity from option B: {Velocity}");
+
+                    //    //_floorBounceCount++;
                     //}
+
+                    _floorBounceCount++;
+
+                    //if (_floorBounceCount < 20)
+                    //{
+                    //    if (collisionInfo != null && !IsCollidingWithFloor)
+                    //    {
+                    //        //GD.Print($"CollisionInfo's normal is {collisionInfo.GetNormal()}");
+                    //        //GD.Print($"Bounced velocity from option A: {Velocity}");
+                    //    }
+                    //    //else if (IsCollidingWithFloor)
+                    //    //{
+                    //    //    GD.Print($"Bounced velocity from option B: {Velocity}");
+                    //    //}
+
+                    //    GD.Print($"Floor Bounce {_floorBounceCount}");
+                    //}
+
 
                     //GD.Print($"Current Velocity {Velocity}");
 
@@ -323,15 +352,7 @@ namespace Entities
                         Velocity = new Vector3(horizontalVelocity.X, Mathf.Clamp(Velocity.Y / (_floorBounceCount * 2), 0, float.MaxValue), horizontalVelocity.Z);
                     }
 
-                    //BounceTimer.WaitTime = Mathf.Clamp(BounceTimer.WaitTime * (Velocity.Y / (BounceRatioNumber)), _bounceTimerMinTime, _bounceTimerMaxTime);
-                    FloorBounceTimer.WaitTime = Mathf.Clamp((Velocity.Y / (_floorBounceCount)), _bounceTimerMinTime, _bounceTimerMaxTime);
-
-                    //GD.Print($"New WaitTime: {BounceTimer.WaitTime}\n");
-
-                    //if (IsCollidingWithFloor)
-                    //{
-                    //    FloorBounceTimer.Start();
-                    //}
+                    FloorBounceTimer.WaitTime = Mathf.Clamp((Velocity.Y / (BounceRatioNumber)), _bounceTimerMinTime, _bounceTimerMaxTime);
 
                     FloorBounceTimer.Start();
 
@@ -404,21 +425,11 @@ namespace Entities
         {
             if (body.IsInGroup(GroupTags.Bounceable) && BasketballState != BasketballState.IsBeingDribbled)
             {
-                //GD.Print($"Entered body. Should feel collision ---------{body.Name}---------");
-
-                //KinematicCollision3D collisionInfo = MoveAndCollide(Velocity);
-
-                //GD.Print($"CollisionInfo at this point is {collisionInfo}");
-
                 ShotAscensionCount = 1;
                 BasketballState = BasketballState.IsUpForGrabs;
 
-                if (body.IsInGroup("Floor"))
+                if (body.IsInGroup(GroupTags.Floor))
                 {
-                    //Vector3 groundNormalVector = new Vector3(0, 1, 0);
-
-                    //Velocity = Velocity.Bounce(groundNormalVector);
-
                     IsCollidingWithFloor = true;
                 }
 
