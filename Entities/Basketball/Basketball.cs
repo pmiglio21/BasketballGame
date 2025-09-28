@@ -252,6 +252,15 @@ namespace Entities
                          $"Starting position was {GlobalPositionAtPointOfShot.X}, {GlobalPositionAtPointOfShot.Y}, {GlobalPositionAtPointOfShot.Z}\n" +
                          $"Hoop Area position was {area.GlobalPosition.X}, {area.GlobalPosition.Y}, {area.GlobalPosition.Z}");
             }
+            else if (area.IsInGroup(GroupTags.ForceShotDownArea))
+            {
+                if (IsDestinedToSucceed)
+                {
+                    LinearVelocity = new Vector3(0, -10f, 0);
+
+                    GD.Print($"Got into ForceShotDownArea");
+                }
+            }
         }
 
         private void OnDetectionAreaBodyEntered(Node3D body)

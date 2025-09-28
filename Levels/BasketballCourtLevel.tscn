@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3 uid="uid://ckacamuxb6baa"]
+[gd_scene load_steps=16 format=3 uid="uid://ckacamuxb6baa"]
 
 [ext_resource type="Script" path="res://Levels/BasketballCourtLevel.cs" id="1_fd8c3"]
 [ext_resource type="PackedScene" uid="uid://67mof4iojay2" path="res://Entities/BasketballPlayers/BasketballPlayer.tscn" id="1_omy0y"]
@@ -28,7 +28,11 @@ albedo_color = Color(0.352941, 1, 1, 0.486275)
 material = SubResource("StandardMaterial3D_syu03")
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_jtbxx"]
-radius = 0.6
+radius = 2.0
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_rhyar"]
+height = 50.0
+radius = 0.2
 
 [sub_resource type="TorusMesh" id="TorusMesh_l3gl3"]
 inner_radius = 0.8
@@ -211,8 +215,17 @@ collision_layer = 3
 collision_mask = 0
 
 [node name="HoopAreaCollisionShape" type="CollisionShape3D" parent="HoopArea"]
-transform = Transform3D(0.5, 0, 0, 0, 0.013, 0, 0, 0, 0.5, 0, -0.260595, 0)
+transform = Transform3D(0.5, 0, 0, 0, 0.013, 0, 0, 0, 0.5, 0, -0.261, 0)
 shape = SubResource("CylinderShape3D_jtbxx")
+
+[node name="ForceShotDownArea" type="Area3D" parent="." groups=["ForceShotDownArea"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.295, 8, -46.967)
+collision_layer = 3
+collision_mask = 0
+
+[node name="ForceShotDownShape" type="CollisionShape3D" parent="ForceShotDownArea"]
+transform = Transform3D(0.5, 0, 0, 0, 0.013, 0, 0, 0, 0.5, 0, -0.28278, 0)
+shape = SubResource("CylinderShape3D_rhyar")
 
 [node name="Hoop" type="StaticBody3D" parent="." groups=["Bounceable", "Hoop"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.29451, 3.04699, -48.14)
