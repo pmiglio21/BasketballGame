@@ -158,7 +158,7 @@ namespace Entities
 
                 float currentDistanceToTarget = new Vector3(GlobalPosition.X - DestinationGlobalPosition.X, 0, GlobalPosition.Z - DestinationGlobalPosition.Z).Length();
 
-                float changeInGravity = 50f;
+                float changeInGravity = 60f;
 
                 float modifier = 1;
 
@@ -176,7 +176,7 @@ namespace Entities
                     {
                         if (_shotAscensionCount > 0)
                         {
-                            float newYLinearVelocity = Mathf.Clamp(-(changeInGravity / (float)_shotAscensionCount) * modifier, -10f, float.MaxValue);
+                            float newYLinearVelocity = Mathf.Clamp(-(changeInGravity / (float)_shotAscensionCount) * modifier, -20f, float.MaxValue);
 
                             LinearVelocity = new Vector3(LinearVelocity.X, newYLinearVelocity, LinearVelocity.Z);
                             _shotAscensionCount--;
