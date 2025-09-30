@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿
 namespace Constants
 {
     public class GroupTags
@@ -19,5 +14,11 @@ namespace Constants
         public const string BasketballCourtLevel = "BasketballCourtLevel";
 
         public const string HoopArea = "HoopArea";
+
+        public const string ForceShotDownArea = "ForceShotDownArea";
+
+        public const string Bounceable = "Bounceable";
+
+        public const string Floor = "Floor";
     }
 }

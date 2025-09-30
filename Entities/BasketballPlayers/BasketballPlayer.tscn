@@ -41,6 +41,7 @@ mesh = SubResource("BoxMesh_hv6jr")
 
 [node name="OmniLight3D" type="OmniLight3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.51982, 0)
+visible = false
 omni_range = 10.0
 
 [node name="HasFocusIndicator" type="StaticBody3D" parent="."]

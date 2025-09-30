@@ -1,5 +1,4 @@
-﻿using Constants;
-
+﻿
 namespace Enums
 {
     public enum SkillStatType

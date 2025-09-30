@@ -1,4 +1,5 @@
 using Constants;
+using Enums;
 using Godot;
 using Levels;
 using System;
@@ -6,7 +7,7 @@ using System.ComponentModel;
 
 namespace Entities
 {
-    public partial class Basketball : CharacterBody3D, INotifyPropertyChanged
+    public partial class Basketball : RigidBody3D, INotifyPropertyChanged
     {
         #region Player Relations
 
@@ -22,43 +23,27 @@ namespace Entities
 
         public OmniLight3D OmniLight = null;
 
-        public Timer Timer = null;
+        public Timer DribbleTimer = null;
 
         #endregion
 
         #region State Properties
 
-        public bool IsDribbling
+        public BasketballState BasketballState
         {
-            get { return _isDribbling; }
+            get { return _basketballState; }
             set
             {
-                if (_isDribbling != value)
+                if (_basketballState != value)
                 {
-                    _isDribbling = value;
-                    OnPropertyChanged(nameof(IsDribbling));
-
-                    _isBeingShot = false;
+                    _basketballState = value;
+                    OnPropertyChanged(nameof(BasketballState));
                 }
             }
         }
-        private bool _isDribbling = false;
+        private BasketballState _basketballState;
 
-        public bool IsBeingShot
-        {
-            get { return _isBeingShot; }
-            set
-            {
-                if (_isBeingShot != value)
-                {
-                    _isBeingShot = value;
-                    OnPropertyChanged(nameof(IsBeingShot));
-
-                    _isDribbling = false;
-                }
-            }
-        }
-        private bool _isBeingShot = false;
+        #region Shot Properties
 
         public Vector3 GlobalPositionAtPointOfShot
         {
@@ -88,6 +73,24 @@ namespace Entities
         }
         private Vector3 _destinationGlobalPosition = Vector3.Zero;
 
+        public bool IsDestinedToSucceed
+        {
+            get { return _isDestinedToSucceed; }
+            set
+            {
+                if (_isDestinedToSucceed != value)
+                {
+                    _isDestinedToSucceed = value;
+                    OnPropertyChanged(nameof(IsDestinedToSucceed));
+                }
+            }
+        }
+        private bool _isDestinedToSucceed;
+
+        public int _shotAscensionCount = 1;
+
+        #endregion
+
         #endregion
 
         // Called when the node enters the scene tree for the first time.
@@ -106,7 +109,7 @@ namespace Entities
 
             OmniLight = GetNode("OmniLight3D") as OmniLight3D;
 
-            Timer = GetNode("BounceTimer") as Timer;
+            DribbleTimer = GetNode("DribbleTimer") as Timer;
         }
 
         //Necessary for INotifyPropertyChanged implementation
@@ -114,16 +117,9 @@ namespace Entities
 
         protected void OnPropertyChanged(string propertyName = null)
         {
-            //if (propertyName == nameof(HasFocus))
+            //if (propertyName == nameof(BasketballState))
             //{
-            //    if (HasFocus)
-            //    {
-            //        _hasFocusIndicator.Show();
-            //    }
-            //    else
-            //    {
-            //        _hasFocusIndicator.Hide();
-            //    }
+                
             //}
         }
 
@@ -132,114 +128,147 @@ namespace Entities
         {
         }
 
-        private int ascensionCount = 0;
-
         public override void _PhysicsProcess(double delta)
         {
-            if (IsDribbling)
+            if (BasketballState == BasketballState.IsBeingDribbled)
             {
-                if (Timer.IsStopped() && Timer.TimeLeft <= 0)
+                if (DribbleTimer.IsStopped() && DribbleTimer.TimeLeft <= 0)
                 {
-                    Velocity = new Vector3(0, -10f, 0);
+                    LinearVelocity = new Vector3(0, -3f, 0);
                 }
 
-                KinematicCollision3D collisionInfo = MoveAndCollide(Velocity * (float)delta);
+                KinematicCollision3D collisionInfo = MoveAndCollide(LinearVelocity * (float)delta);
 
                 if (collisionInfo != null)
                 {
-                    Velocity = Velocity.Bounce(collisionInfo.GetNormal());
+                    LinearVelocity = LinearVelocity.Bounce(collisionInfo.GetNormal());
 
-                    Timer.Start();
-
-                    IsBeingShot = false;
+                    DribbleTimer.Start();
                 }
-
             }
-            else if (IsBeingShot)
+            else if (BasketballState == BasketballState.IsInBasket)
+            {
+                LinearVelocity = new Vector3(0, -10f, 0);
+
+                MoveAndCollide(LinearVelocity * (float)delta);
+            }
+            else if (BasketballState == BasketballState.IsBeingShot)
             {
                 float fullDistanceToTarget = new Vector3(GlobalPositionAtPointOfShot.X - DestinationGlobalPosition.X, 0, GlobalPositionAtPointOfShot.Z - DestinationGlobalPosition.Z).Length();
 
                 float currentDistanceToTarget = new Vector3(GlobalPosition.X - DestinationGlobalPosition.X, 0, GlobalPosition.Z - DestinationGlobalPosition.Z).Length();
 
-                float changeInGravity = 50f;
+                float changeInGravity = 60f;
 
-                ////Ball should be rising
-                //if (currentDistanceToTarget > fullDistanceToTarget/2)
-                //{
-                //    Velocity = new Vector3(Velocity.X, Mathf.Clamp(Velocity.Y + changeInGravity, float.MinValue, 5), Velocity.Z);
-                //}
-                ////Ball should be falling
-                //else
-                //{
-                //    Velocity = new Vector3(Velocity.X, Mathf.Clamp(Velocity.Y - changeInGravity, float.MinValue, 5), Velocity.Z);
-                //}
+                float modifier = 1;
 
                 //Ball should be rising
                 if (currentDistanceToTarget > fullDistanceToTarget / 2)
                 {
-                    ascensionCount++;
+                    _shotAscensionCount++;
 
-                    Velocity = new Vector3(Velocity.X, changeInGravity/ascensionCount, Velocity.Z);
+                    LinearVelocity = new Vector3(LinearVelocity.X, (changeInGravity / (float)_shotAscensionCount) * modifier, LinearVelocity.Z);
                 }
                 //Ball should be falling
                 else
                 {
-                    //var newYPosition = Mathf.Lerp(GlobalPosition.Y, DestinationGlobalPosition.Y, .1f);
-
-                    //GlobalPosition = new Vector3(GlobalPosition.X, newYPosition, GlobalPosition.Z);
-
-
-                    //GlobalPosition = GlobalPosition.Lerp(DestinationGlobalPosition, .01f); 
-
-
                     if (GlobalPosition.Y >= BasketballCourtLevel.HoopArea.GlobalPosition.Y)
                     {
-                        if (changeInGravity > 0)
+                        if (_shotAscensionCount > 0)
                         {
-                            Velocity = new Vector3(Velocity.X, -changeInGravity / ascensionCount, Velocity.Z);
-                            ascensionCount--;
+                            float newYLinearVelocity = Mathf.Clamp(-(changeInGravity / (float)_shotAscensionCount) * modifier, -20f, float.MaxValue);
+
+                            LinearVelocity = new Vector3(LinearVelocity.X, newYLinearVelocity, LinearVelocity.Z);
+                            _shotAscensionCount--;
                         }
                     }
                 }
 
-                if (IsOnFloor())
+                MoveAndCollide(LinearVelocity * (float)delta);
+            }
+            else if (BasketballState == BasketballState.IsUpForGrabs) //Bouncing on floor or rebounding off basket, etc.
+            {
+                KinematicCollision3D collisionInfo = MoveAndCollide(LinearVelocity * (float)delta);
+            }
+            else if (BasketballState == BasketballState.IsBeingPassed)//Used to send ball to player
+            {
+                if (TargetPlayer != null && TargetPlayer != GetParent() as BasketballPlayer)
                 {
-                    IsBeingShot = false;
-                    Velocity = new Vector3(Velocity.X, 0, Velocity.Z);
+                    var moveInput = GlobalPosition.DirectionTo(TargetPlayer.GlobalPosition);
+
+                    var normalizedMoveInput = moveInput.Normalized();
+
+                    var moveDirection = new Vector3(normalizedMoveInput.X, 0, normalizedMoveInput.Z);
+
+                    LinearVelocity = moveInput * 40f;
                 }
 
-                MoveAndSlide();
+                MoveAndCollide(LinearVelocity * (float)delta);
             }
             else
             {
-                if (TargetPlayer != null)   //Used to send ball to player
-                {
-                    if (TargetPlayer != GetParent() as BasketballPlayer)
-                    {
-                        var moveInput = GlobalPosition.DirectionTo(TargetPlayer.GlobalPosition);
+                
 
-                        var normalizedMoveInput = moveInput.Normalized();
-
-                        var moveDirection = new Vector3(normalizedMoveInput.X, 0, normalizedMoveInput.Z);
-
-                        Velocity = moveInput * 40f;
-                    }
-                }
-
-                MoveAndSlide();
+                MoveAndCollide(LinearVelocity * (float)delta);
             }
+        }
+
+        public const float BounceDampeningFactor = .85f;
+        public const float MinBounceVelocity = .1f;
+
+        public override void _IntegrateForces(PhysicsDirectBodyState3D state)
+        {
+            var velocity = state.LinearVelocity;
+
+            //Detect any collision
+            if (state.GetContactCount() > 0)
+            {
+                Vector3 normal = state.GetContactLocalNormal(0);
+
+                //Only adjust if ball is moving into the surface
+                if (velocity.Dot(normal) < 0)
+                {
+                    //Reflect velocity vector
+                    velocity = velocity.Bounce(normal) * BounceDampeningFactor;
+                    
+                    //if (velocity.Length() < MinBounceVelocity)
+                    //{
+                    //    velocity = Vector3.Zero;
+                    //}
+                }
+            }
+
+             state.LinearVelocity = velocity;
         }
 
         private void OnDetectionAreaEntered(Area3D area)
         {
             if (area.IsInGroup(GroupTags.HoopArea))
             {
-                IsBeingShot = false;
-                ascensionCount = 0;
+                _shotAscensionCount = 1;
+                BasketballState = BasketballState.IsInBasket;
 
                 GD.Print($"Got into HoopArea.\n" +
                          $"Starting position was {GlobalPositionAtPointOfShot.X}, {GlobalPositionAtPointOfShot.Y}, {GlobalPositionAtPointOfShot.Z}\n" +
                          $"Hoop Area position was {area.GlobalPosition.X}, {area.GlobalPosition.Y}, {area.GlobalPosition.Z}");
+            }
+            else if (area.IsInGroup(GroupTags.ForceShotDownArea))
+            {
+                if (IsDestinedToSucceed)
+                {
+                    LinearVelocity = new Vector3(0, -10f, 0);
+
+                    GD.Print($"Got into ForceShotDownArea");
+                }
+            }
+        }
+
+        private void OnDetectionAreaBodyEntered(Node3D body)
+        {
+            if (body.IsInGroup(GroupTags.Bounceable) && BasketballState != BasketballState.IsBeingDribbled)
+            {
+                _shotAscensionCount = 1;
+                BasketballState = BasketballState.IsUpForGrabs;
             }
         }
     }

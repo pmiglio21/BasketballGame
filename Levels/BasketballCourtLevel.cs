@@ -39,7 +39,7 @@ namespace Levels
         {
             Basketball = GetNode("Basketball") as Basketball;
             BasketballHoop = GetNode("BasketballHoop") as StaticBody3D;
-            HoopArea = BasketballHoop.GetNode("HoopArea") as Area3D;
+            HoopArea = GetNode("HoopArea") as Area3D;
             BasketballResetTimer = GetNode("BasketballResetTimer") as Timer;
             BasketballResetTimer.Timeout += ResetBasketballOnTimeout;
 
@@ -101,8 +101,8 @@ namespace Levels
                 Vector3 distanceBetweenPlayerAndBall = new Vector3(0, 0, 1.5f);
                 Vector3 rotatedDistance = distanceBetweenPlayerAndBall.Rotated(Vector3.Up, basketballPlayer.GlobalRotation.Y);
                 Basketball.GlobalPosition = basketballPlayer.GlobalPosition + rotatedDistance;
-                Basketball.IsBeingShot = false;
-                Basketball.IsDribbling = true;
+                Basketball.BasketballState = BasketballState.IsBeingDribbled;
+                Basketball._shotAscensionCount = 1; //TODO: Attach this to touching the ground or being received by a player... later when there isn't a reset timer
 
                 Basketball.PreviousPlayer = basketballPlayer;
             }
