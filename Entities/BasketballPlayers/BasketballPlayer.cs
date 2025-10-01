@@ -25,6 +25,10 @@ namespace Entities
         
         private StaticBody3D _passTargetIndicator = new StaticBody3D();
 
+        private StaticBody3D _shotBlockBody = new StaticBody3D();
+
+        private CollisionShape3D _shotBlockCollisionShape = new CollisionShape3D();
+
         private Timer _jumpTimer = new Timer();
 
         #endregion
@@ -207,6 +211,10 @@ namespace Entities
 
             _passTargetIndicator = GetNode("PassTargetIndicator") as StaticBody3D;
 
+            _shotBlockBody = GetNode("ShotBlockBody") as StaticBody3D;
+
+            _shotBlockCollisionShape = _shotBlockBody.GetNode("CollisionShape3D") as CollisionShape3D;
+
             _jumpTimer = GetNode("JumpTimer") as Timer;
 
             //Start target on the current player so TargetBasketballPlayer has something to go off of on the first target-selection input
@@ -229,6 +237,13 @@ namespace Entities
                     _hasFocusIndicator.Hide();
                 }
             }
+            //else if (propertyName == nameof(IsOnOffense))
+            //{
+            //    if (IsOnOffense)
+            //    {
+            //        _shotBlockBody.Hide();
+            //    }
+            //}
         }
 
         #region Input Handling - Process
@@ -347,11 +362,25 @@ namespace Entities
             // Apply gravity if not on floor
             else if (!IsOnFloor() && _jumpTimer.IsStopped())
             {
+                if (!IsOnOffense)
+                {
+                    _shotBlockBody.Hide();
+
+                    _shotBlockCollisionShape.Disabled = false;
+                }
+
                 yMoveInput = -gravity * (float)delta;
             }
             //Is in air and continues to hold jump
             else if (!IsOnFloor() && !_jumpTimer.IsStopped() && Input.IsActionPressed($"Jump_{TeamIdentifier}"))
             {
+                if (!IsOnOffense)
+                {
+                    _shotBlockBody.Show();
+
+                    _shotBlockCollisionShape.Disabled = true;
+                }
+
                 yMoveInput = jumpVelocity * (float)delta;
 
                 if (HasBasketball)
@@ -581,6 +610,8 @@ namespace Entities
                 ParentBasketballCourtLevel.BasketballResetTimer.Start();
             }
         }
+
+        //Ball is maybe bumping into own player's shot block body and indicator bodies???????????
 
         private Vector3 CalculateBasketballShotGlobalRotation()
         {
