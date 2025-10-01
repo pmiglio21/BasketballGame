@@ -186,10 +186,6 @@ namespace Entities
 
                 MoveAndCollide(LinearVelocity * (float)delta);
             }
-            else if (BasketballState == BasketballState.IsUpForGrabs) //Bouncing on floor or rebounding off basket, etc.
-            {
-                KinematicCollision3D collisionInfo = MoveAndCollide(LinearVelocity * (float)delta);
-            }
             else if (BasketballState == BasketballState.IsBeingPassed)//Used to send ball to player
             {
                 if (TargetPlayer != null && TargetPlayer != GetParent() as BasketballPlayer)
@@ -205,10 +201,12 @@ namespace Entities
 
                 MoveAndCollide(LinearVelocity * (float)delta);
             }
+            else if (BasketballState == BasketballState.IsUpForGrabs) //Bouncing on floor or rebounding off basket, etc.
+            {
+                KinematicCollision3D collisionInfo = MoveAndCollide(LinearVelocity * (float)delta);
+            }
             else
             {
-                
-
                 MoveAndCollide(LinearVelocity * (float)delta);
             }
         }
@@ -265,7 +263,7 @@ namespace Entities
 
         private void OnDetectionAreaBodyEntered(Node3D body)
         {
-            if (body.IsInGroup(GroupTags.Bounceable) && BasketballState != BasketballState.IsBeingDribbled)
+            if (body.IsInGroup(GroupTags.Bounceable) && BasketballState != BasketballState.IsBeingDribbled && BasketballState != BasketballState.IsBeingPassed)
             {
                 _shotAscensionCount = 1;
                 BasketballState = BasketballState.IsUpForGrabs;
