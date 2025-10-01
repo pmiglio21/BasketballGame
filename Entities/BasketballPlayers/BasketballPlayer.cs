@@ -339,14 +339,26 @@ namespace Entities
             }
         }
 
+        private const float _normaljumpTime = .2f;
+        private const float _superJumpTime = 1f;
+
         protected void GetMovementInput(double delta)
         {
             var gravity = 80.0f; // Adjust gravity as needed
             var jumpVelocity = 100.0f; // Adjust jump velocity as needed
+            var superJumpVelocity = 200.0f; // Adjust jump velocity as needed
 
             float yMoveInput = 0;
 
             #region Jumping Logic
+
+            //bool conditionsForSuperBlockAreMet = SkillStats.Blocking == GlobalConstants.SkillStatHigh && GlobalPosition.DistanceTo(ParentBasketballCourtLevel.Basketball.GlobalPosition) <= 100 && ParentBasketballCourtLevel.Basketball.BasketballState == BasketballState.IsBeingShot;
+
+            //bool conditionsForSuperReboundAreMet = SkillStats.Rebounding == GlobalConstants.SkillStatHigh && GlobalPosition.DistanceTo(ParentBasketballCourtLevel.Basketball.GlobalPosition) <= 100 && ParentBasketballCourtLevel.Basketball.BasketballState == BasketballState.IsUpForGrabs;
+
+            bool conditionsForSuperBlockAreMet = SkillStats.Blocking == GlobalConstants.SkillStatHigh && ParentBasketballCourtLevel.Basketball.BasketballState == BasketballState.IsBeingShot;
+
+            bool conditionsForSuperReboundAreMet = SkillStats.Rebounding == GlobalConstants.SkillStatHigh && ParentBasketballCourtLevel.Basketball.BasketballState == BasketballState.IsUpForGrabs;
 
             //Is on floor and begins to jump
             if (IsOnFloor() && _jumpTimer.IsStopped() && Input.IsActionPressed($"Jump_{TeamIdentifier}"))
@@ -357,9 +369,30 @@ namespace Entities
                 }
 
                 yMoveInput = jumpVelocity * (float)delta;
+
+                if (conditionsForSuperBlockAreMet || conditionsForSuperReboundAreMet)
+                {
+                    _jumpTimer.WaitTime = _superJumpTime;
+                }
+                else
+                {
+                    _jumpTimer.WaitTime = _normaljumpTime;
+                }
+
                 _jumpTimer.Start();
             }
             // Apply gravity if not on floor
+            else if (!IsOnFloor() && !_jumpTimer.IsStopped() && !Input.IsActionPressed($"Jump_{TeamIdentifier}"))
+            {
+                if (!IsOnOffense)
+                {
+                    _shotBlockBody.Hide();
+
+                    _shotBlockCollisionShape.Disabled = false;
+                }
+
+                yMoveInput = -gravity * (float)delta;
+            }
             else if (!IsOnFloor() && _jumpTimer.IsStopped())
             {
                 if (!IsOnOffense)
@@ -394,23 +427,21 @@ namespace Entities
             moveInput.X = Input.GetActionStrength($"MoveEast_{TeamIdentifier}") - Input.GetActionStrength($"MoveWest_{TeamIdentifier}");
             moveInput.Z = Input.GetActionStrength($"MoveSouth_{TeamIdentifier}") - Input.GetActionStrength($"MoveNorth_{TeamIdentifier}");
 
-            //TODO: Do I need this if statement?
-            if (Vector3.Zero.DistanceTo(moveInput) > moveDeadzone * Math.Sqrt(2.0))
+            if (yMoveInput > 0 && conditionsForSuperBlockAreMet)
             {
-                //float speed = (float)((float)(100 + CharacterStats.Speed) / 100);
-                //var normalizedMoveInput = moveInput.Normalized();
+                Vector3 directionToBall = GlobalPosition.DirectionTo(ParentBasketballCourtLevel.Basketball.GlobalPosition);
 
-                var normalizedMoveInput = moveInput;
+                moveDirection = directionToBall * superJumpVelocity * (float)delta;
+            }
+            else if (yMoveInput > 0 && conditionsForSuperReboundAreMet)
+            {
+                Vector3 directionToBall = GlobalPosition.DirectionTo(ParentBasketballCourtLevel.Basketball.GlobalPosition);
 
-                moveDirection =  new Vector3(normalizedMoveInput.X, yMoveInput, normalizedMoveInput.Z);
+                moveDirection = directionToBall * superJumpVelocity * (float)delta;
             }
             else
             {
-                //var normalizedMoveInput = moveInput.Normalized();
-
-                var normalizedMoveInput = moveInput;
-
-                moveDirection = new Vector3(normalizedMoveInput.X, yMoveInput, normalizedMoveInput.Z);
+                moveDirection = new Vector3(moveInput.X, yMoveInput, moveInput.Z);
             }
         }
 
@@ -465,9 +496,6 @@ namespace Entities
                     }
 
                     int randomValue = ParentBasketballCourtLevel.RandomNumberGenerator.RandiRange(0, 100);
-
-                    //REMOVE!!!!!! USING FOR TESTING
-                    //chanceOfShotGoingIn = 101;
 
                     if (randomValue <= chanceOfShotGoingIn)
                     {
@@ -540,9 +568,6 @@ namespace Entities
                     }
 
                     int randomValue = ParentBasketballCourtLevel.RandomNumberGenerator.RandiRange(0, 100);
-
-                    //REMOVE!!!!!! USING FOR TESTING
-                    //chanceOfShotGoingIn = 101;
 
                     if (randomValue <= chanceOfShotGoingIn)
                     {
