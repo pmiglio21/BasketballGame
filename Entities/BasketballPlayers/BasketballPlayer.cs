@@ -357,6 +357,7 @@ namespace Entities
             //bool conditionsForSuperReboundAreMet = SkillStats.Rebounding == GlobalConstants.SkillStatHigh && GlobalPosition.DistanceTo(ParentBasketballCourtLevel.Basketball.GlobalPosition) <= 100 && ParentBasketballCourtLevel.Basketball.BasketballState == BasketballState.IsUpForGrabs;
 
             bool conditionsForSuperBlockAreMet = SkillStats.Blocking == GlobalConstants.SkillStatHigh && ParentBasketballCourtLevel.Basketball.BasketballState == BasketballState.IsBeingShot;
+            // && !ParentBasketballCourtLevel.Basketball.IsOnFloor();
 
             bool conditionsForSuperReboundAreMet = SkillStats.Rebounding == GlobalConstants.SkillStatHigh && ParentBasketballCourtLevel.Basketball.BasketballState == BasketballState.IsUpForGrabs;
 
@@ -454,7 +455,7 @@ namespace Entities
 
                 this.HasBasketball = false;
 
-                ParentBasketballCourtLevel.Basketball.Reparent(ParentBasketballCourtLevel.HoopArea);
+                ParentBasketballCourtLevel.Basketball.Reparent(ParentBasketballCourtLevel);
 
                 ParentBasketballCourtLevel.Basketball.BasketballState = BasketballState.IsBeingShot;
 
@@ -869,11 +870,19 @@ namespace Entities
             {
                 Basketball basketball = area.GetParent() as Basketball;
 
+                var parent = basketball.GetParent();
+
+                GD.Print($"Parent is {parent.Name}");
+
                 if (basketball.GetParent() is BasketballCourtLevel)
                 {
                     IsBasketballInDetectionArea = true;
 
-                    if (basketball.PreviousPlayer != this && basketball.TargetPlayer == this)
+                    if (basketball.BasketballState == BasketballState.IsBeingPassed && basketball.PreviousPlayer != this && basketball.TargetPlayer == this)
+                    {
+                        ReceiveTheBall(basketball);
+                    }
+                    else if (basketball.BasketballState == BasketballState.IsUpForGrabs)
                     {
                         ReceiveTheBall(basketball);
                     }

@@ -9,10 +9,16 @@ namespace Enums
 
         IsBeingPassed,
 
-        IsBeingShot,
+        IsBeingShot, //Remove
+
+        IsBeingShotAscending,
+
+        IsBeingShotDescending,
 
         IsInBasket,
 
-        IsUpForGrabs
+        IsReboundable,
+
+        IsUpForGrabs //IsUpForGrabsOnGround
     }
 }

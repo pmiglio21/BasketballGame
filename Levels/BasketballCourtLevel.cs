@@ -91,7 +91,7 @@ namespace Levels
 
         private void GiveBasketballToPlayer(BasketballPlayer basketballPlayer)
         {
-            if (basketballPlayer != null)
+            if (basketballPlayer != null && Basketball.GetParent() is not BasketballPlayer)
             {
                 Basketball.Reparent(basketballPlayer);
                 //Basketball.ParentPlayer = basketballPlayer;
