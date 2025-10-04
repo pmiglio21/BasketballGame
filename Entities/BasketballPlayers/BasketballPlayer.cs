@@ -356,7 +356,7 @@ namespace Entities
 
             //bool conditionsForSuperReboundAreMet = SkillStats.Rebounding == GlobalConstants.SkillStatHigh && GlobalPosition.DistanceTo(ParentBasketballCourtLevel.Basketball.GlobalPosition) <= 100 && ParentBasketballCourtLevel.Basketball.BasketballState == BasketballState.IsUpForGrabs;
 
-            bool conditionsForSuperBlockAreMet = SkillStats.Blocking == GlobalConstants.SkillStatHigh && ParentBasketballCourtLevel.Basketball.BasketballState == BasketballState.IsBeingShot;
+            bool conditionsForSuperBlockAreMet = SkillStats.Blocking == GlobalConstants.SkillStatHigh && ParentBasketballCourtLevel.Basketball.BasketballState == BasketballState.IsBeingShotAscending;
             // && !ParentBasketballCourtLevel.Basketball.IsOnFloor();
 
             bool conditionsForSuperReboundAreMet = SkillStats.Rebounding == GlobalConstants.SkillStatHigh && ParentBasketballCourtLevel.Basketball.BasketballState == BasketballState.IsReboundable;
@@ -457,7 +457,7 @@ namespace Entities
 
                 ParentBasketballCourtLevel.Basketball.Reparent(ParentBasketballCourtLevel);
 
-                ParentBasketballCourtLevel.Basketball.BasketballState = BasketballState.IsBeingShot;
+                ParentBasketballCourtLevel.Basketball.BasketballState = BasketballState.IsBeingShotAscending;
 
                 //TODO: Testing, please remove later
                 ParentBasketballCourtLevel.Basketball.GlobalPosition = new Vector3(ParentBasketballCourtLevel.Basketball.GlobalPosition.X,

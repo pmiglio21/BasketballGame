@@ -152,7 +152,7 @@ namespace Entities
 
                 MoveAndCollide(LinearVelocity * (float)delta);
             }
-            else if (BasketballState == BasketballState.IsBeingShot)
+            else if (BasketballState == BasketballState.IsBeingShotAscending)
             {
                 float fullDistanceToTarget = new Vector3(GlobalPositionAtPointOfShot.X - DestinationGlobalPosition.X, 0, GlobalPositionAtPointOfShot.Z - DestinationGlobalPosition.Z).Length();
 
@@ -172,6 +172,8 @@ namespace Entities
                 //Ball should be falling
                 else
                 {
+                    BasketballState = BasketballState.IsBeingShotDescending;
+
                     if (GlobalPosition.Y >= BasketballCourtLevel.HoopArea.GlobalPosition.Y)
                     {
                         if (_shotAscensionCount > 0)
@@ -181,6 +183,25 @@ namespace Entities
                             LinearVelocity = new Vector3(LinearVelocity.X, newYLinearVelocity, LinearVelocity.Z);
                             _shotAscensionCount--;
                         }
+                    }
+                }
+
+                MoveAndCollide(LinearVelocity * (float)delta);
+            }
+            else if (BasketballState == BasketballState.IsBeingShotDescending)
+            {
+                float changeInGravity = 60f;
+
+                float modifier = 1;
+
+                if (GlobalPosition.Y >= BasketballCourtLevel.HoopArea.GlobalPosition.Y)
+                {
+                    if (_shotAscensionCount > 0)
+                    {
+                        float newYLinearVelocity = Mathf.Clamp(-(changeInGravity / (float)_shotAscensionCount) * modifier, -20f, float.MaxValue);
+
+                        LinearVelocity = new Vector3(LinearVelocity.X, newYLinearVelocity, LinearVelocity.Z);
+                        _shotAscensionCount--;
                     }
                 }
 

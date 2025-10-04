@@ -9,8 +9,6 @@ namespace Enums
 
         IsBeingPassed,
 
-        IsBeingShot, //Remove
-
         IsBeingShotAscending,
 
         IsBeingShotDescending,
@@ -19,6 +17,6 @@ namespace Enums
 
         IsReboundable,
 
-        IsUpForGrabsOnGround //IsUpForGrabsOnGround
+        IsUpForGrabsOnGround
     }
 }
