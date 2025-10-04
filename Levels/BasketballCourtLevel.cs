@@ -203,18 +203,18 @@ namespace Levels
 
         private void ResetBasketballOnTimeout()
         {
-            Basketball.OmniLight.LightColor = new Color(1, 1, 1); // Reset light color to white
+            //Basketball.OmniLight.LightColor = new Color(1, 1, 1); // Reset light color to white
 
-            AllBasketballPlayers.ForEach(player => player.HasFocus = false);
+            //AllBasketballPlayers.ForEach(player => player.HasFocus = false);
 
-            GiveBasketballToPlayer(Basketball.PreviousPlayer);
+            //GiveBasketballToPlayer(Basketball.PreviousPlayer);
 
-            BasketballPlayer focusedDefensePlayer = AllBasketballPlayers.FirstOrDefault(p => p.TeamIdentifier != "1" && p.PlayerIdentifier == "1");
+            //BasketballPlayer focusedDefensePlayer = AllBasketballPlayers.FirstOrDefault(p => p.TeamIdentifier != "1" && p.PlayerIdentifier == "1");
 
-            if (focusedDefensePlayer != null)
-            {
-                focusedDefensePlayer.HasFocus = true;
-            }
+            //if (focusedDefensePlayer != null)
+            //{
+            //    focusedDefensePlayer.HasFocus = true;
+            //}
         }
     }
 }

@@ -171,7 +171,15 @@ namespace Entities
         protected Vector3 moveDirection = Vector3.Zero;
         protected float moveAngle = 0;
 
-        float speed = 20.0f;
+        float movementSpeed = 20.0f;
+
+        #region Jump Properties
+
+        private const float _normaljumpTime = .6f;
+        private const float _superJumpTime = 1f;
+        private int _jumpAscensionCount = 1;
+
+        #endregion
 
         #endregion
 
@@ -339,25 +347,15 @@ namespace Entities
             }
         }
 
-        private const float _normaljumpTime = .2f;
-        private const float _superJumpTime = 1f;
-
         protected void GetMovementInput(double delta)
         {
-            var gravity = 80.0f; // Adjust gravity as needed
-            var jumpVelocity = 100.0f; // Adjust jump velocity as needed
             var superJumpVelocity = 200.0f; // Adjust jump velocity as needed
 
             float yMoveInput = 0;
 
             #region Jumping Logic
 
-            //bool conditionsForSuperBlockAreMet = SkillStats.Blocking == GlobalConstants.SkillStatHigh && GlobalPosition.DistanceTo(ParentBasketballCourtLevel.Basketball.GlobalPosition) <= 100 && ParentBasketballCourtLevel.Basketball.BasketballState == BasketballState.IsBeingShot;
-
-            //bool conditionsForSuperReboundAreMet = SkillStats.Rebounding == GlobalConstants.SkillStatHigh && GlobalPosition.DistanceTo(ParentBasketballCourtLevel.Basketball.GlobalPosition) <= 100 && ParentBasketballCourtLevel.Basketball.BasketballState == BasketballState.IsUpForGrabs;
-
             bool conditionsForSuperBlockAreMet = SkillStats.Blocking == GlobalConstants.SkillStatHigh && ParentBasketballCourtLevel.Basketball.BasketballState == BasketballState.IsBeingShotAscending;
-            // && !ParentBasketballCourtLevel.Basketball.IsOnFloor();
 
             bool conditionsForSuperReboundAreMet = SkillStats.Rebounding == GlobalConstants.SkillStatHigh && ParentBasketballCourtLevel.Basketball.BasketballState == BasketballState.IsReboundable;
 
@@ -369,7 +367,11 @@ namespace Entities
                     ParentBasketballCourtLevel.Basketball.BasketballState = BasketballState.IsInAirWithPlayer;
                 }
 
-                yMoveInput = jumpVelocity * (float)delta;
+                _jumpAscensionCount = 1;
+
+                yMoveInput = GetStandardJumpYValue((float)delta);
+
+                //yMoveInput = jumpVelocity * (float)delta;
 
                 if (conditionsForSuperBlockAreMet || conditionsForSuperReboundAreMet)
                 {
@@ -392,7 +394,11 @@ namespace Entities
                     _shotBlockCollisionShape.Disabled = false;
                 }
 
-                yMoveInput = -gravity * (float)delta;
+                yMoveInput = Mathf.Clamp(-GetStandardJumpYValue((float)delta), -20f, float.MaxValue);
+
+                _jumpAscensionCount--;
+
+                //yMoveInput = -gravity * (float)delta;
             }
             else if (!IsOnFloor() && _jumpTimer.IsStopped())
             {
@@ -403,7 +409,9 @@ namespace Entities
                     _shotBlockCollisionShape.Disabled = false;
                 }
 
-                yMoveInput = -gravity * (float)delta;
+                yMoveInput = Mathf.Clamp(-GetStandardJumpYValue((float)delta), -20f, float.MaxValue);
+
+                _jumpAscensionCount--;
             }
             //Is in air and continues to hold jump
             else if (!IsOnFloor() && !_jumpTimer.IsStopped() && Input.IsActionPressed($"Jump_{TeamIdentifier}"))
@@ -415,7 +423,11 @@ namespace Entities
                     _shotBlockCollisionShape.Disabled = true;
                 }
 
-                yMoveInput = jumpVelocity * (float)delta;
+                _jumpAscensionCount++;
+
+                yMoveInput = GetStandardJumpYValue((float)delta);
+
+                //yMoveInput = jumpVelocity * (float)delta;
 
                 if (HasBasketball)
                 {
@@ -444,6 +456,14 @@ namespace Entities
             {
                 moveDirection = new Vector3(moveInput.X, yMoveInput, moveInput.Z);
             }
+        }
+
+        private float GetStandardJumpYValue(float delta)
+        {
+            var jumpVelocity = 100.0f; // Adjust jump velocity as needed
+            var modifier = 1;
+
+            return ((jumpVelocity * 2) / _jumpAscensionCount) * modifier * (float)delta;
         }
 
         protected void GetShootBasketballInput()
@@ -819,7 +839,7 @@ namespace Entities
 
         private void MovePlayer()
         {
-            Velocity = moveDirection * speed;
+            Velocity = moveDirection * movementSpeed;
             MoveAndSlide();
 
             if (moveDirection != Vector3.Zero)
