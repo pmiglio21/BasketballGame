@@ -181,7 +181,7 @@ shape = SubResource("CapsuleShape3D_gt0n7")
 transform = Transform3D(40, 0, 0, 0, -8.74228e-07, -10, 0, 20, -4.37114e-07, 0.237, -0.204848, 55.914)
 mesh = SubResource("CapsuleMesh_a5gyj")
 
-[node name="BasketballHoop" type="StaticBody3D" parent="." groups=["Bounceable", "Hoop"]]
+[node name="BasketballHoop" type="StaticBody3D" parent="." groups=["Bounceable", "HoopBody"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.29451, 3.04699, -48.6729)
 collision_layer = 3
 collision_mask = 0
@@ -195,7 +195,7 @@ transform = Transform3D(1, 0, 0, 0, 10, 0, 0, 0, 1, 0, 0, 0)
 mesh = SubResource("BoxMesh_4rm8i")
 skeleton = NodePath("../..")
 
-[node name="HoopBackboard" type="StaticBody3D" parent="." groups=["Bounceable", "Hoop"]]
+[node name="HoopBackboard" type="StaticBody3D" parent="." groups=["Bounceable", "HoopBody"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.29451, 8.30389, -48.0975)
 collision_layer = 3
 collision_mask = 0
@@ -227,7 +227,7 @@ collision_mask = 0
 transform = Transform3D(0.5, 0, 0, 0, 0.013, 0, 0, 0, 0.5, 0, -0.28278, 0)
 shape = SubResource("CylinderShape3D_rhyar")
 
-[node name="Hoop" type="StaticBody3D" parent="." groups=["Bounceable", "Hoop"]]
+[node name="Hoop" type="StaticBody3D" parent="." groups=["Bounceable", "HoopBody"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.29451, 3.04699, -48.14)
 collision_layer = 3
 collision_mask = 0

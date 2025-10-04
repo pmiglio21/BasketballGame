@@ -19,6 +19,6 @@ namespace Enums
 
         IsReboundable,
 
-        IsUpForGrabs //IsUpForGrabsOnGround
+        IsUpForGrabsOnGround //IsUpForGrabsOnGround
     }
 }

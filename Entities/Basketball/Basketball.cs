@@ -201,7 +201,7 @@ namespace Entities
 
                 MoveAndCollide(LinearVelocity * (float)delta);
             }
-            else if (BasketballState == BasketballState.IsUpForGrabs) //Bouncing on floor or rebounding off basket, etc.
+            else if (BasketballState == BasketballState.IsUpForGrabsOnGround || BasketballState == BasketballState.IsReboundable) //Bouncing on floor or rebounding off basket, etc.
             {
                 KinematicCollision3D collisionInfo = MoveAndCollide(LinearVelocity * (float)delta);
             }
@@ -263,10 +263,15 @@ namespace Entities
 
         private void OnDetectionAreaBodyEntered(Node3D body)
         {
-            if (body.IsInGroup(GroupTags.Bounceable) && BasketballState != BasketballState.IsBeingDribbled && BasketballState != BasketballState.IsBeingPassed)
+            if (body.IsInGroup(GroupTags.HoopBody) && BasketballState != BasketballState.IsBeingDribbled && BasketballState != BasketballState.IsBeingPassed)
             {
                 _shotAscensionCount = 1;
-                BasketballState = BasketballState.IsUpForGrabs;
+                BasketballState = BasketballState.IsReboundable;
+            }
+            else if (body.IsInGroup(GroupTags.Bounceable) && BasketballState != BasketballState.IsBeingDribbled && BasketballState != BasketballState.IsBeingPassed)
+            {
+                _shotAscensionCount = 1;
+                BasketballState = BasketballState.IsUpForGrabsOnGround;
             }
         }
     }

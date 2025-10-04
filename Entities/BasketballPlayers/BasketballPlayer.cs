@@ -359,7 +359,7 @@ namespace Entities
             bool conditionsForSuperBlockAreMet = SkillStats.Blocking == GlobalConstants.SkillStatHigh && ParentBasketballCourtLevel.Basketball.BasketballState == BasketballState.IsBeingShot;
             // && !ParentBasketballCourtLevel.Basketball.IsOnFloor();
 
-            bool conditionsForSuperReboundAreMet = SkillStats.Rebounding == GlobalConstants.SkillStatHigh && ParentBasketballCourtLevel.Basketball.BasketballState == BasketballState.IsUpForGrabs;
+            bool conditionsForSuperReboundAreMet = SkillStats.Rebounding == GlobalConstants.SkillStatHigh && ParentBasketballCourtLevel.Basketball.BasketballState == BasketballState.IsReboundable;
 
             //Is on floor and begins to jump
             if (IsOnFloor() && _jumpTimer.IsStopped() && Input.IsActionPressed($"Jump_{TeamIdentifier}"))
@@ -882,7 +882,7 @@ namespace Entities
                     {
                         ReceiveTheBall(basketball);
                     }
-                    else if (basketball.BasketballState == BasketballState.IsUpForGrabs)
+                    else if (basketball.BasketballState == BasketballState.IsUpForGrabsOnGround || basketball.BasketballState == BasketballState.IsReboundable)
                     {
                         ReceiveTheBall(basketball);
                     }

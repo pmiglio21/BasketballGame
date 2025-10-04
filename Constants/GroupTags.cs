@@ -13,6 +13,8 @@ namespace Constants
 
         public const string BasketballCourtLevel = "BasketballCourtLevel";
 
+        public const string HoopBody = "HoopBody";
+
         public const string HoopArea = "HoopArea";
 
         public const string ForceShotDownArea = "ForceShotDownArea";
