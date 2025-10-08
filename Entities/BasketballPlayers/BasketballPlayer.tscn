@@ -89,7 +89,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 [node name="CollisionShape3D" type="CollisionShape3D" parent="BodyDetectionArea"]
 shape = SubResource("CapsuleShape3D_faggy")
 
-[node name="JumpTimer" type="Timer" parent="."]
+[node name="JumpAscensionTimer" type="Timer" parent="."]
 wait_time = 0.6
 one_shot = true
 

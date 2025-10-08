@@ -267,9 +267,9 @@ namespace Entities
                 _shotAscensionCount = 1;
                 BasketballState = BasketballState.IsInBasket;
 
-                GD.Print($"Got into HoopArea.\n" +
-                         $"Starting position was {GlobalPositionAtPointOfShot.X}, {GlobalPositionAtPointOfShot.Y}, {GlobalPositionAtPointOfShot.Z}\n" +
-                         $"Hoop Area position was {area.GlobalPosition.X}, {area.GlobalPosition.Y}, {area.GlobalPosition.Z}");
+                //GD.Print($"Got into HoopArea.\n" +
+                //         $"Starting position was {GlobalPositionAtPointOfShot.X}, {GlobalPositionAtPointOfShot.Y}, {GlobalPositionAtPointOfShot.Z}\n" +
+                //         $"Hoop Area position was {area.GlobalPosition.X}, {area.GlobalPosition.Y}, {area.GlobalPosition.Z}");
             }
             else if (area.IsInGroup(GroupTags.ForceShotDownArea))
             {
@@ -277,7 +277,7 @@ namespace Entities
                 {
                     LinearVelocity = new Vector3(0, -10f, 0);
 
-                    GD.Print($"Got into ForceShotDownArea");
+                    //GD.Print($"Got into ForceShotDownArea");
                 }
             }
         }

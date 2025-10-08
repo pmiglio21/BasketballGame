@@ -29,7 +29,7 @@ namespace Entities
 
         private CollisionShape3D _shotBlockCollisionShape = new CollisionShape3D();
 
-        private Timer _jumpTimer = new Timer();
+        private Timer _jumpAscensionTimer = new Timer();
 
         #endregion
 
@@ -223,7 +223,7 @@ namespace Entities
 
             _shotBlockCollisionShape = _shotBlockBody.GetNode("CollisionShape3D") as CollisionShape3D;
 
-            _jumpTimer = GetNode("JumpTimer") as Timer;
+            _jumpAscensionTimer = GetNode("JumpAscensionTimer") as Timer;
 
             //Start target on the current player so TargetBasketballPlayer has something to go off of on the first target-selection input
             TargetPlayer = this;
@@ -360,7 +360,7 @@ namespace Entities
             bool conditionsForSuperReboundAreMet = SkillStats.Rebounding == GlobalConstants.SkillStatHigh && ParentBasketballCourtLevel.Basketball.BasketballState == BasketballState.IsReboundable;
 
             //Is on floor and begins to jump
-            if (IsOnFloor() && _jumpTimer.IsStopped() && Input.IsActionPressed($"Jump_{TeamIdentifier}"))
+            if (IsOnFloor() && Input.IsActionPressed($"Jump_{TeamIdentifier}"))
             {
                 if (HasBasketball)
                 {
@@ -371,50 +371,21 @@ namespace Entities
 
                 yMoveInput = GetStandardJumpYValue((float)delta);
 
-                //yMoveInput = jumpVelocity * (float)delta;
-
                 if (conditionsForSuperBlockAreMet || conditionsForSuperReboundAreMet)
                 {
-                    _jumpTimer.WaitTime = _superJumpTime;
+                    _jumpAscensionTimer.WaitTime = _superJumpTime;
                 }
                 else
                 {
-                    _jumpTimer.WaitTime = _normaljumpTime;
+                    _jumpAscensionTimer.WaitTime = _normaljumpTime;
                 }
 
-                _jumpTimer.Start();
+                GD.Print($"Ascending 1 - yMoveInput: {yMoveInput}; jumpAscensionCount: {_jumpAscensionCount}");
+
+                _jumpAscensionTimer.Start();
             }
-            // Apply gravity if not on floor
-            else if (!IsOnFloor() && !_jumpTimer.IsStopped() && !Input.IsActionPressed($"Jump_{TeamIdentifier}"))
-            {
-                if (!IsOnOffense)
-                {
-                    _shotBlockBody.Hide();
-
-                    _shotBlockCollisionShape.Disabled = false;
-                }
-
-                yMoveInput = Mathf.Clamp(-GetStandardJumpYValue((float)delta), -20f, float.MaxValue);
-
-                _jumpAscensionCount--;
-
-                //yMoveInput = -gravity * (float)delta;
-            }
-            else if (!IsOnFloor() && _jumpTimer.IsStopped())
-            {
-                if (!IsOnOffense)
-                {
-                    _shotBlockBody.Hide();
-
-                    _shotBlockCollisionShape.Disabled = false;
-                }
-
-                yMoveInput = Mathf.Clamp(-GetStandardJumpYValue((float)delta), -20f, float.MaxValue);
-
-                _jumpAscensionCount--;
-            }
-            //Is in air and continues to hold jump
-            else if (!IsOnFloor() && !_jumpTimer.IsStopped() && Input.IsActionPressed($"Jump_{TeamIdentifier}"))
+            //Is in air and continues to hold jump while ascending is still allowed (jumpAscensionTimer is not stopped yet)
+            else if (!IsOnFloor() && !_jumpAscensionTimer.IsStopped() && Input.IsActionPressed($"Jump_{TeamIdentifier}"))
             {
                 if (!IsOnOffense)
                 {
@@ -427,12 +398,44 @@ namespace Entities
 
                 yMoveInput = GetStandardJumpYValue((float)delta);
 
-                //yMoveInput = jumpVelocity * (float)delta;
-
                 if (HasBasketball)
                 {
                     ParentBasketballCourtLevel.Basketball.GlobalPosition = GlobalPosition + new Vector3(0, 1.5f, 0);
                 }
+
+                GD.Print($"Ascending 2 - yMoveInput: {yMoveInput}; jumpAscensionCount: {_jumpAscensionCount}");
+            }
+            //Is in air and jump button is released before ascending is finished
+            else if (!IsOnFloor() && !_jumpAscensionTimer.IsStopped() && !Input.IsActionPressed($"Jump_{TeamIdentifier}"))
+            {
+                if (!IsOnOffense)
+                {
+                    _shotBlockBody.Hide();
+
+                    _shotBlockCollisionShape.Disabled = false;
+                }
+
+                yMoveInput = Mathf.Clamp(-GetStandardJumpYValue((float)delta), -10f, float.MaxValue);
+
+                GD.Print($"Descending 1 - yMoveInput: {yMoveInput}; jumpAscensionCount: {_jumpAscensionCount}");
+
+                _jumpAscensionCount = Mathf.Clamp(_jumpAscensionCount - 1, 1, int.MaxValue);
+            }
+            //Is in air and ascending is finished. Falls whether jump button is held or not
+            else if (!IsOnFloor() && _jumpAscensionTimer.IsStopped())
+            {
+                if (!IsOnOffense)
+                {
+                    _shotBlockBody.Hide();
+
+                    _shotBlockCollisionShape.Disabled = false;
+                }
+
+                yMoveInput = Mathf.Clamp(-GetStandardJumpYValue((float)delta), -10f, float.MaxValue);
+
+                GD.Print($"Descending 2 - yMoveInput: {yMoveInput}; jumpAscensionCount: {_jumpAscensionCount}");
+
+                _jumpAscensionCount = Mathf.Clamp(_jumpAscensionCount - 1, 1, int.MaxValue);
             }
 
             #endregion
@@ -460,10 +463,10 @@ namespace Entities
 
         private float GetStandardJumpYValue(float delta)
         {
-            var jumpVelocity = 100.0f; // Adjust jump velocity as needed
+            var jumpVelocity = 150.0f; // Adjust jump velocity as needed
             var modifier = 1;
 
-            return ((jumpVelocity * 2) / _jumpAscensionCount) * modifier * (float)delta;
+            return ((jumpVelocity * 2) / (_jumpAscensionCount)) * modifier * (float)delta;
         }
 
         protected void GetShootBasketballInput()
@@ -824,11 +827,11 @@ namespace Entities
         {
             MovePlayer();
 
-            if (IsOnFloor() && !_jumpTimer.IsStopped())
+            if (IsOnFloor() && !_jumpAscensionTimer.IsStopped())
             {
                 //GD.Print("Is considered on floor");
 
-                _jumpTimer.Stop();
+                _jumpAscensionTimer.Stop();
 
                 if (HasBasketball)
                 {
@@ -892,7 +895,7 @@ namespace Entities
 
                 var parent = basketball.GetParent();
 
-                GD.Print($"Parent is {parent.Name}");
+                //GD.Print($"Parent is {parent.Name}");
 
                 if (basketball.GetParent() is BasketballCourtLevel)
                 {
