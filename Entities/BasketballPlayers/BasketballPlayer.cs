@@ -175,7 +175,7 @@ namespace Entities
 
         #region Jump Properties
 
-        private const float _normaljumpTime = .6f;
+        private const float _normaljumpTime = .4f;
         private const float _superJumpTime = 1f;
         private int _jumpAscensionCount = 1;
 
@@ -347,6 +347,11 @@ namespace Entities
             }
         }
 
+        private const float _minimumFallVelocity = -4f;
+        private const float _maximumFallVelocity = -.5f;
+        private const float _maximumRiseVelocity = 4f;
+        private const float _minimumRiseVelocity = .5f;
+
         protected void GetMovementInput(double delta)
         {
             var superJumpVelocity = 200.0f; // Adjust jump velocity as needed
@@ -369,7 +374,7 @@ namespace Entities
 
                 _jumpAscensionCount = 1;
 
-                yMoveInput = GetStandardJumpYValue((float)delta);
+                yMoveInput = Mathf.Clamp(GetStandardJumpYValue((float)delta), _minimumRiseVelocity, _maximumRiseVelocity);
 
                 if (conditionsForSuperBlockAreMet || conditionsForSuperReboundAreMet)
                 {
@@ -396,7 +401,7 @@ namespace Entities
 
                 _jumpAscensionCount++;
 
-                yMoveInput = GetStandardJumpYValue((float)delta);
+                yMoveInput = Mathf.Clamp(GetStandardJumpYValue((float)delta), _minimumRiseVelocity, _maximumRiseVelocity);
 
                 if (HasBasketball)
                 {
@@ -415,7 +420,7 @@ namespace Entities
                     _shotBlockCollisionShape.Disabled = false;
                 }
 
-                yMoveInput = Mathf.Clamp(-GetStandardJumpYValue((float)delta), -10f, float.MaxValue);
+                yMoveInput = Mathf.Clamp(-GetStandardJumpYValue((float)delta), _minimumFallVelocity, _maximumFallVelocity);
 
                 GD.Print($"Descending 1 - yMoveInput: {yMoveInput}; jumpAscensionCount: {_jumpAscensionCount}");
 
@@ -431,7 +436,7 @@ namespace Entities
                     _shotBlockCollisionShape.Disabled = false;
                 }
 
-                yMoveInput = Mathf.Clamp(-GetStandardJumpYValue((float)delta), -10f, float.MaxValue);
+                yMoveInput = Mathf.Clamp(-GetStandardJumpYValue((float)delta), _minimumFallVelocity, _maximumFallVelocity);
 
                 GD.Print($"Descending 2 - yMoveInput: {yMoveInput}; jumpAscensionCount: {_jumpAscensionCount}");
 
@@ -458,15 +463,22 @@ namespace Entities
             else
             {
                 moveDirection = new Vector3(moveInput.X, yMoveInput, moveInput.Z);
+
+                //if (HasBasketball && yMoveInput != 0)
+                //{
+                //    moveDirection = new Vector3(moveDirection.X/10, yMoveInput, moveDirection.Z/10);
+                //}
             }
         }
 
         private float GetStandardJumpYValue(float delta)
         {
             var jumpVelocity = 150.0f; // Adjust jump velocity as needed
-            var modifier = 1;
 
-            return ((jumpVelocity * 2) / (_jumpAscensionCount)) * modifier * (float)delta;
+            //float jumpVelocity = Velocity.Y == 0 ? 2f : Velocity.Y; // Adjust jump velocity as needed
+
+            return ((jumpVelocity) / (_jumpAscensionCount)) * (float)delta;
+            //return (((jumpVelocity) - _jumpAscensionCount)/100) * (float)delta;
         }
 
         protected void GetShootBasketballInput()
@@ -941,6 +953,8 @@ namespace Entities
             HasBasketball = true;
 
             basketball.Reparent(this);
+
+            basketball.LinearVelocity = Vector3.Zero;
 
             Vector3 distanceBetweenPlayerAndBall = new Vector3(0, 0, 1.5f);
             Vector3 rotatedDistance = distanceBetweenPlayerAndBall.Rotated(Vector3.Up, this.GlobalPosition.Y);
