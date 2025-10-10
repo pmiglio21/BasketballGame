@@ -1,6 +1,7 @@
-[gd_scene load_steps=14 format=3 uid="uid://67mof4iojay2"]
+[gd_scene load_steps=15 format=3 uid="uid://67mof4iojay2"]
 
 [ext_resource type="Script" path="res://Entities/BasketballPlayers/BasketballPlayer.cs" id="1_kr2bl"]
+[ext_resource type="PackedScene" uid="uid://f8100ldjgx8q" path="res://Entities/EntityShadow.tscn" id="2_35xjf"]
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_mulv8"]
 
@@ -116,6 +117,9 @@ skeleton = NodePath("../..")
 
 [node name="OmniLight3D" type="OmniLight3D" parent="ShotBlockBody"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+
+[node name="EntityShadow" parent="." node_paths=PackedStringArray("ParentObject") instance=ExtResource("2_35xjf")]
+ParentObject = NodePath("..")
 
 [connection signal="area_entered" from="BodyDetectionArea" to="." method="OnBodyDetectionAreaEntered"]
 [connection signal="area_exited" from="BodyDetectionArea" to="." method="OnBodyDetectionAreaExited"]
