@@ -385,7 +385,7 @@ namespace Entities
                     _jumpAscensionTimer.WaitTime = _normaljumpTime;
                 }
 
-                GD.Print($"Ascending 1 - yMoveInput: {yMoveInput}; jumpAscensionCount: {_jumpAscensionCount}");
+                //GD.Print($"Ascending 1 - yMoveInput: {yMoveInput}; jumpAscensionCount: {_jumpAscensionCount}");
 
                 _jumpAscensionTimer.Start();
             }
@@ -408,7 +408,7 @@ namespace Entities
                     ParentBasketballCourtLevel.Basketball.GlobalPosition = GlobalPosition + new Vector3(0, 1.5f, 0);
                 }
 
-                GD.Print($"Ascending 2 - yMoveInput: {yMoveInput}; jumpAscensionCount: {_jumpAscensionCount}");
+                //GD.Print($"Ascending 2 - yMoveInput: {yMoveInput}; jumpAscensionCount: {_jumpAscensionCount}");
             }
             //Is in air and jump button is released before ascending is finished
             else if (!IsOnFloor() && !_jumpAscensionTimer.IsStopped() && !Input.IsActionPressed($"Jump_{TeamIdentifier}"))
@@ -422,7 +422,7 @@ namespace Entities
 
                 yMoveInput = Mathf.Clamp(-GetStandardJumpYValue((float)delta), _minimumFallVelocity, _maximumFallVelocity);
 
-                GD.Print($"Descending 1 - yMoveInput: {yMoveInput}; jumpAscensionCount: {_jumpAscensionCount}");
+                //GD.Print($"Descending 1 - yMoveInput: {yMoveInput}; jumpAscensionCount: {_jumpAscensionCount}");
 
                 _jumpAscensionCount = Mathf.Clamp(_jumpAscensionCount - 1, 1, int.MaxValue);
             }
@@ -438,7 +438,7 @@ namespace Entities
 
                 yMoveInput = Mathf.Clamp(-GetStandardJumpYValue((float)delta), _minimumFallVelocity, _maximumFallVelocity);
 
-                GD.Print($"Descending 2 - yMoveInput: {yMoveInput}; jumpAscensionCount: {_jumpAscensionCount}");
+                //GD.Print($"Descending 2 - yMoveInput: {yMoveInput}; jumpAscensionCount: {_jumpAscensionCount}");
 
                 _jumpAscensionCount = Mathf.Clamp(_jumpAscensionCount - 1, 1, int.MaxValue);
             }
