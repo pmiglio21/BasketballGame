@@ -152,61 +152,61 @@ namespace Entities
 
                 MoveAndCollide(LinearVelocity * (float)delta);
             }
-            else if (BasketballState == BasketballState.IsBeingShotAscending)
-            {
-                float fullDistanceToTarget = new Vector3(GlobalPositionAtPointOfShot.X - DestinationGlobalPosition.X, 0, GlobalPositionAtPointOfShot.Z - DestinationGlobalPosition.Z).Length();
+            //else if (BasketballState == BasketballState.IsBeingShotAscending)
+            //{
+            //    float fullDistanceToTarget = new Vector3(GlobalPositionAtPointOfShot.X - DestinationGlobalPosition.X, 0, GlobalPositionAtPointOfShot.Z - DestinationGlobalPosition.Z).Length();
 
-                float currentDistanceToTarget = new Vector3(GlobalPosition.X - DestinationGlobalPosition.X, 0, GlobalPosition.Z - DestinationGlobalPosition.Z).Length();
+            //    float currentDistanceToTarget = new Vector3(GlobalPosition.X - DestinationGlobalPosition.X, 0, GlobalPosition.Z - DestinationGlobalPosition.Z).Length();
 
-                float changeInGravity = 60f;
+            //    float changeInGravity = 60f;
 
-                float modifier = 1;
+            //    float modifier = 1;
 
-                //Ball should be rising
-                if (currentDistanceToTarget > fullDistanceToTarget / 2)
-                {
-                    _shotAscensionCount++;
+            //    //Ball should be rising
+            //    if (currentDistanceToTarget > fullDistanceToTarget / 2)
+            //    {
+            //        _shotAscensionCount++;
 
-                    LinearVelocity = new Vector3(LinearVelocity.X, (changeInGravity / (float)_shotAscensionCount) * modifier, LinearVelocity.Z);
-                }
-                //Ball should be falling
-                else
-                {
-                    BasketballState = BasketballState.IsBeingShotDescending;
+            //        LinearVelocity = new Vector3(LinearVelocity.X, (changeInGravity / (float)_shotAscensionCount) * modifier, LinearVelocity.Z);
+            //    }
+            //    //Ball should be falling
+            //    else
+            //    {
+            //        BasketballState = BasketballState.IsBeingShotDescending;
 
-                    if (GlobalPosition.Y >= BasketballCourtLevel.HoopArea.GlobalPosition.Y)
-                    {
-                        if (_shotAscensionCount > 0)
-                        {
-                            float newYLinearVelocity = Mathf.Clamp(-(changeInGravity / (float)_shotAscensionCount) * modifier, -20f, float.MaxValue);
+            //        if (GlobalPosition.Y >= BasketballCourtLevel.HoopArea.GlobalPosition.Y)
+            //        {
+            //            if (_shotAscensionCount > 0)
+            //            {
+            //                float newYLinearVelocity = Mathf.Clamp(-(changeInGravity / (float)_shotAscensionCount) * modifier, -20f, float.MaxValue);
 
-                            LinearVelocity = new Vector3(LinearVelocity.X, newYLinearVelocity, LinearVelocity.Z);
-                            _shotAscensionCount--;
-                        }
-                    }
-                }
+            //                LinearVelocity = new Vector3(LinearVelocity.X, newYLinearVelocity, LinearVelocity.Z);
+            //                _shotAscensionCount--;
+            //            }
+            //        }
+            //    }
 
-                MoveAndCollide(LinearVelocity * (float)delta);
-            }
-            else if (BasketballState == BasketballState.IsBeingShotDescending)
-            {
-                float changeInGravity = 60f;
+            //    MoveAndCollide(LinearVelocity * (float)delta);
+            //}
+            //else if (BasketballState == BasketballState.IsBeingShotDescending)
+            //{
+            //    float changeInGravity = 60f;
 
-                float modifier = 1;
+            //    float modifier = 1;
 
-                if (GlobalPosition.Y >= BasketballCourtLevel.HoopArea.GlobalPosition.Y)
-                {
-                    if (_shotAscensionCount > 0)
-                    {
-                        float newYLinearVelocity = Mathf.Clamp(-(changeInGravity / (float)_shotAscensionCount) * modifier, -20f, float.MaxValue);
+            //    if (GlobalPosition.Y >= BasketballCourtLevel.HoopArea.GlobalPosition.Y)
+            //    {
+            //        if (_shotAscensionCount > 0)
+            //        {
+            //            float newYLinearVelocity = Mathf.Clamp(-(changeInGravity / (float)_shotAscensionCount) * modifier, -20f, float.MaxValue);
 
-                        LinearVelocity = new Vector3(LinearVelocity.X, newYLinearVelocity, LinearVelocity.Z);
-                        _shotAscensionCount--;
-                    }
-                }
+            //            LinearVelocity = new Vector3(LinearVelocity.X, newYLinearVelocity, LinearVelocity.Z);
+            //            _shotAscensionCount--;
+            //        }
+            //    }
 
-                MoveAndCollide(LinearVelocity * (float)delta);
-            }
+            //    MoveAndCollide(LinearVelocity * (float)delta);
+            //}
             else if (BasketballState == BasketballState.IsBeingPassed)//Used to send ball to player
             {
                 if (TargetPlayer != null && TargetPlayer != GetParent() as BasketballPlayer)

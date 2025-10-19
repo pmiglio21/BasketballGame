@@ -494,10 +494,10 @@ namespace Entities
 
                 ParentBasketballCourtLevel.Basketball.BasketballState = BasketballState.IsBeingShotAscending;
 
-                //TODO: Testing, please remove later
-                ParentBasketballCourtLevel.Basketball.GlobalPosition = new Vector3(ParentBasketballCourtLevel.Basketball.GlobalPosition.X,
-                                                                                ParentBasketballCourtLevel.HoopArea.GlobalPosition.Y,
-                                                                                ParentBasketballCourtLevel.Basketball.GlobalPosition.Z);
+                ////TODO: Testing, please remove later
+                //ParentBasketballCourtLevel.Basketball.GlobalPosition = new Vector3(ParentBasketballCourtLevel.Basketball.GlobalPosition.X,
+                //                                                                ParentBasketballCourtLevel.HoopArea.GlobalPosition.Y,
+                //                                                                ParentBasketballCourtLevel.Basketball.GlobalPosition.Z);
 
                 ParentBasketballCourtLevel.Basketball.GlobalPositionAtPointOfShot = ParentBasketballCourtLevel.Basketball.GlobalPosition;
 
@@ -653,11 +653,26 @@ namespace Entities
                     }
                 }
 
-                float ballSpeed = .5f;
+                float ballSpeed = 1f;
+
+                float heightOfHoop = ParentBasketballCourtLevel.HoopArea.GlobalPosition.Y;
+                float heightOfBallAtShot = ParentBasketballCourtLevel.Basketball.GlobalPosition.Y;
+                float gravity = 6f;
+                float horizontalDistanceToHoop = new Vector3(ParentBasketballCourtLevel.HoopArea.GlobalPosition.X - ParentBasketballCourtLevel.Basketball.GlobalPosition.X,
+                                                             0,
+                                                             ParentBasketballCourtLevel.HoopArea.GlobalPosition.Z - ParentBasketballCourtLevel.Basketball.GlobalPosition.Z).Length();
+                float timeOfFlight = ParentBasketballCourtLevel.RandomNumberGenerator.RandfRange(1f, 2f);
+                float angleOfShotInRadians = Mathf.Pi / 4; // 45 degrees
+
+                // (theta) = arctan((H-h+(1/2)g(t^2))/d)
+                //float angleOfShot = Mathf.Atan(((heightOfHoop - heightOfBallAtShot) + (.5f * gravity * Mathf.Pow(timeOfFlight,2)))/horizontalDistanceToHoop);
+
+                // (vertical velocity) = (H-h+(1/2)g(t^2))/(t*sin(theta))
+                float verticalVelocityOfShot = ((heightOfHoop - heightOfBallAtShot) + (.5f * gravity * Mathf.Pow(timeOfFlight, 2)))/(timeOfFlight);
 
                 ParentBasketballCourtLevel.Basketball.LinearVelocity = new Vector3(basketballDestinationGlobalPosition.X - ParentBasketballCourtLevel.Basketball.GlobalPosition.X,
-                                                                             //Mathf.Sin(Mathf.Pi / 4) * 20,
-                                                                             0,
+                                                                             verticalVelocityOfShot,
+                                                                             //0,
                                                                              basketballDestinationGlobalPosition.Z - ParentBasketballCourtLevel.Basketball.GlobalPosition.Z) * ballSpeed;
 
                 ParentBasketballCourtLevel.Basketball.DestinationGlobalPosition = basketballDestinationGlobalPosition;
