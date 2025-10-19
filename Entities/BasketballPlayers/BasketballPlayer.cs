@@ -356,6 +356,8 @@ namespace Entities
         {
             var superJumpVelocity = 200.0f; // Adjust jump velocity as needed
 
+            var normalReboundJumpVelocity = 40f;
+
             float yMoveInput = 0;
 
             #region Jumping Logic
@@ -460,6 +462,14 @@ namespace Entities
 
                 moveDirection = directionToBall * superJumpVelocity * (float)delta;
             }
+            //TODO: This doesn't work for some reason.
+            ////Make them move towards rebound a little more aggressively
+            //else if (yMoveInput > 0 && (ParentBasketballCourtLevel.Basketball.BasketballState == BasketballState.IsReboundable || ParentBasketballCourtLevel.Basketball.BasketballState == BasketballState.IsReboundable) && ParentBasketballCourtLevel.Basketball.GlobalPosition.DistanceTo(GlobalPosition) <= 100)
+            //{
+            //    Vector3 directionToBall = GlobalPosition.DirectionTo(ParentBasketballCourtLevel.Basketball.GlobalPosition);
+
+            //    moveDirection = directionToBall * yMoveInput * (float)delta;
+            //}
             else
             {
                 moveDirection = new Vector3(moveInput.X, yMoveInput, moveInput.Z);
@@ -654,6 +664,8 @@ namespace Entities
                 }
 
                 float ballSpeed = .5f;
+
+                ParentBasketballCourtLevel.Basketball.SetShotAsensionCountModifier(this);
 
                 ParentBasketballCourtLevel.Basketball.LinearVelocity = new Vector3(basketballDestinationGlobalPosition.X - ParentBasketballCourtLevel.Basketball.GlobalPosition.X,
                                                                              //Mathf.Sin(Mathf.Pi / 4) * 20,
@@ -915,10 +927,12 @@ namespace Entities
 
                     if (basketball.BasketballState == BasketballState.IsBeingPassed && basketball.PreviousPlayer != this && basketball.TargetPlayer == this)
                     {
+                        //GD.Print($"Player {PlayerIdentifier} is receiving the ball from a pass");
                         ReceiveTheBall(basketball);
                     }
                     else if (basketball.BasketballState == BasketballState.IsUpForGrabsOnGround || basketball.BasketballState == BasketballState.IsReboundable)
                     {
+                        //GD.Print($"Player {PlayerIdentifier} is receiving the ball from the ground/reboundable state");
                         ReceiveTheBall(basketball);
                     }
                 }
