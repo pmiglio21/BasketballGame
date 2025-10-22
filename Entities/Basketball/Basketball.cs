@@ -2,7 +2,6 @@ using Constants;
 using Enums;
 using Godot;
 using Levels;
-using System;
 using System.ComponentModel;
 
 namespace Entities
@@ -87,7 +86,9 @@ namespace Entities
         }
         private bool _isDestinedToSucceed;
 
-        public float _shotAscensionCount = 1;
+        private float _shotAscensionCount = 1;
+
+        private float _shotAscensionCountModifier = 1f;
 
         #endregion
 
@@ -128,8 +129,6 @@ namespace Entities
         {
         }
 
-        public float ShotAscensionCountModifier = 1f;
-
         public void SetShotAsensionCountModifier(BasketballPlayer shootingPlayer)
         {
             float distanceXBetweenPlayerAndHoop = Mathf.Abs(shootingPlayer.GlobalPosition.X - BasketballCourtLevel.HoopArea.GlobalPosition.X);
@@ -137,11 +136,11 @@ namespace Entities
 
             if (Mathf.Sqrt(Mathf.Pow(distanceXBetweenPlayerAndHoop,2) + Mathf.Pow(distanceZBetweenPlayerAndHoop, 2)) <= 10)
             {
-                ShotAscensionCountModifier = BasketballCourtLevel.RandomNumberGenerator.RandfRange(1.8f, 2.5f);
+                _shotAscensionCountModifier = BasketballCourtLevel.RandomNumberGenerator.RandfRange(1.8f, 2.5f);
             }
             else
             {
-                ShotAscensionCountModifier = BasketballCourtLevel.RandomNumberGenerator.RandfRange(.5f, 1.2f);
+                _shotAscensionCountModifier = BasketballCourtLevel.RandomNumberGenerator.RandfRange(.5f, 1.2f);
             }
         }
 
@@ -182,7 +181,7 @@ namespace Entities
                 //Ball should be rising
                 if (currentDistanceToTarget > fullDistanceToTarget / 2)
                 {
-                    _shotAscensionCount = _shotAscensionCount + ShotAscensionCountModifier;
+                    _shotAscensionCount = _shotAscensionCount + _shotAscensionCountModifier;
 
                     LinearVelocity = new Vector3(LinearVelocity.X, (changeInGravity / (float)_shotAscensionCount) * modifier, LinearVelocity.Z);
                 }
@@ -198,7 +197,7 @@ namespace Entities
                             float newYLinearVelocity = Mathf.Clamp(-(changeInGravity / (float)_shotAscensionCount) * modifier, -20f, float.MaxValue);
 
                             LinearVelocity = new Vector3(LinearVelocity.X, newYLinearVelocity, LinearVelocity.Z);
-                            _shotAscensionCount = _shotAscensionCount - ShotAscensionCountModifier;
+                            _shotAscensionCount = _shotAscensionCount - _shotAscensionCountModifier;
                         }
                     }
                 }
@@ -218,7 +217,7 @@ namespace Entities
                         float newYLinearVelocity = Mathf.Clamp(-(changeInGravity / (float)_shotAscensionCount) * modifier, -20f, float.MaxValue);
 
                         LinearVelocity = new Vector3(LinearVelocity.X, newYLinearVelocity, LinearVelocity.Z);
-                        _shotAscensionCount = _shotAscensionCount - ShotAscensionCountModifier;
+                        _shotAscensionCount = _shotAscensionCount - _shotAscensionCountModifier;
                     }
                 }
 

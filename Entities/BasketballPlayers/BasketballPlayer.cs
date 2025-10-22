@@ -1,8 +1,8 @@
 using Constants;
 using Enums;
 using Godot;
+using Helpers;
 using Levels;
-using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -100,6 +100,20 @@ namespace Entities
         }
         private bool _hasBasketball = false;
 
+        public PlayerState PlayerState
+        {
+            get { return _playerState; }
+            set
+            {
+                if (_playerState != value)
+                {
+                    _playerState = value;
+                    OnPropertyChanged(nameof(PlayerState));
+                }
+            }
+        }
+        private PlayerState _playerState = PlayerState.IsIdle;
+
         public bool IsTargeted
         {
             get { return _isTargeted; }
@@ -152,6 +166,8 @@ namespace Entities
             }
         }
         private bool _isBasketballInDetectionArea = false;
+
+        private bool _isSuperJumpComplete = false;
 
         #endregion
 
@@ -243,6 +259,13 @@ namespace Entities
                 else
                 {
                     _hasFocusIndicator.Hide();
+                }
+            }
+            else if (propertyName == nameof(HasBasketball))
+            {
+                if (HasBasketball && PlayerState == PlayerState.IsRebounding && SkillStats.Rebounding == GlobalConstants.SkillStatHigh && !IsOnFloor())
+                {
+                    _isSuperJumpComplete = true;
                 }
             }
             //else if (propertyName == nameof(IsOnOffense))
@@ -362,12 +385,28 @@ namespace Entities
 
             #region Jumping Logic
 
-            bool conditionsForSuperBlockAreMet = SkillStats.Blocking == GlobalConstants.SkillStatHigh && ParentBasketballCourtLevel.Basketball.BasketballState == BasketballState.IsBeingShotAscending;
+            bool conditionsForSuperBlockAreMet = SkillStats.Blocking == GlobalConstants.SkillStatHigh && ParentBasketballCourtLevel.Basketball.BasketballState == BasketballState.IsBeingShotAscending && PhysicsMathHelper.GetHorizontalDistance(this.GlobalPosition, ParentBasketballCourtLevel.BasketballHoop.GlobalPosition) <= 10;
 
-            bool conditionsForSuperReboundAreMet = SkillStats.Rebounding == GlobalConstants.SkillStatHigh && ParentBasketballCourtLevel.Basketball.BasketballState == BasketballState.IsReboundable;
+            bool conditionsForSuperReboundAreMet = SkillStats.Rebounding == GlobalConstants.SkillStatHigh && ParentBasketballCourtLevel.Basketball.BasketballState == BasketballState.IsReboundable && PhysicsMathHelper.GetHorizontalDistance(this.GlobalPosition, ParentBasketballCourtLevel.BasketballHoop.GlobalPosition) <= 10;
 
+            //Is finished with super jump (ball has been blocked or rebounded) and must descend now
+            if (_isSuperJumpComplete)
+            {
+                if (!IsOnOffense)
+                {
+                    _shotBlockBody.Hide();
+
+                    _shotBlockCollisionShape.Disabled = false;
+                }
+
+                yMoveInput = Mathf.Clamp(-GetStandardJumpYValue((float)delta), _minimumFallVelocity, _maximumFallVelocity) * .33f;
+
+                //GD.Print($"Descending 2 - yMoveInput: {yMoveInput}; jumpAscensionCount: {_jumpAscensionCount}");
+
+                _jumpAscensionCount = Mathf.Clamp(_jumpAscensionCount - 1, 1, int.MaxValue);
+            }
             //Is on floor and begins to jump
-            if (IsOnFloor() && Input.IsActionPressed($"Jump_{TeamIdentifier}"))
+            else if (IsOnFloor() && Input.IsActionPressed($"Jump_{TeamIdentifier}"))
             {
                 if (HasBasketball)
                 {
@@ -415,6 +454,8 @@ namespace Entities
             //Is in air and jump button is released before ascending is finished
             else if (!IsOnFloor() && !_jumpAscensionTimer.IsStopped() && !Input.IsActionPressed($"Jump_{TeamIdentifier}"))
             {
+                PlayerState = PlayerState.IsIdle;
+
                 if (!IsOnOffense)
                 {
                     _shotBlockBody.Hide();
@@ -460,6 +501,8 @@ namespace Entities
             {
                 Vector3 directionToBall = GlobalPosition.DirectionTo(ParentBasketballCourtLevel.Basketball.GlobalPosition);
 
+                PlayerState = PlayerState.IsRebounding;
+
                 moveDirection = directionToBall * superJumpVelocity * (float)delta;
             }
             //TODO: This doesn't work for some reason.
@@ -467,6 +510,8 @@ namespace Entities
             //else if (yMoveInput > 0 && (ParentBasketballCourtLevel.Basketball.BasketballState == BasketballState.IsReboundable || ParentBasketballCourtLevel.Basketball.BasketballState == BasketballState.IsReboundable) && ParentBasketballCourtLevel.Basketball.GlobalPosition.DistanceTo(GlobalPosition) <= 100)
             //{
             //    Vector3 directionToBall = GlobalPosition.DirectionTo(ParentBasketballCourtLevel.Basketball.GlobalPosition);
+
+            //    PlayerState = PlayerState.IsRebounding;
 
             //    moveDirection = directionToBall * yMoveInput * (float)delta;
             //}
@@ -494,7 +539,7 @@ namespace Entities
         protected void GetShootBasketballInput()
         {
             //TODO: Maybe do something with IsOnFloor() here?
-            if (Input.IsActionJustReleased($"Jump_{TeamIdentifier}"))
+            if (PlayerState != PlayerState.IsRebounding && Input.IsActionJustReleased($"Jump_{TeamIdentifier}"))
             {
                 //GD.Print($"ShootBall triggered by player {PlayerIdentifier}");
 
@@ -851,16 +896,24 @@ namespace Entities
         {
             MovePlayer();
 
-            if (IsOnFloor() && !_jumpAscensionTimer.IsStopped())
+            if (IsOnFloor())
             {
                 //GD.Print("Is considered on floor");
 
-                _jumpAscensionTimer.Stop();
-
-                if (HasBasketball)
+                if (!_jumpAscensionTimer.IsStopped())
                 {
-                    ParentBasketballCourtLevel.Basketball.BasketballState = BasketballState.IsBeingDribbled;
+                    _jumpAscensionTimer.Stop();
+
+                    if (HasBasketball)
+                    {
+                        ParentBasketballCourtLevel.Basketball.BasketballState = BasketballState.IsBeingDribbled;
+                    }
                 }
+
+                //TODO: Move this to when the player makes contact with the floor, not every frame they are on the floor
+                PlayerState = PlayerState.IsIdle;
+
+                _isSuperJumpComplete = false;
             }
         }
 
