@@ -31,6 +31,8 @@ namespace Entities
 
         private Timer _jumpAscensionTimer = new Timer();
 
+        private Timer _jumpStartupTimer = new Timer();
+
         #endregion
 
         #region Player Identification Properties
@@ -194,6 +196,7 @@ namespace Entities
         private const float _normaljumpTime = .4f;
         private const float _superJumpTime = 1f;
         private int _jumpAscensionCount = 1;
+        private bool _isJumpStartupFinished = false;
 
         #endregion
 
@@ -240,6 +243,13 @@ namespace Entities
             _shotBlockCollisionShape = _shotBlockBody.GetNode("CollisionShape3D") as CollisionShape3D;
 
             _jumpAscensionTimer = GetNode("JumpAscensionTimer") as Timer;
+
+            _jumpStartupTimer = GetNode("JumpStartupTimer") as Timer;
+
+            _jumpStartupTimer.Timeout += () =>
+            {
+                _isJumpStartupFinished = true;
+            };
 
             //Start target on the current player so TargetBasketballPlayer has something to go off of on the first target-selection input
             TargetPlayer = this;
@@ -405,9 +415,21 @@ namespace Entities
 
                 _jumpAscensionCount = Mathf.Clamp(_jumpAscensionCount - 1, 1, int.MaxValue);
             }
-            //Is on floor and begins to jump
-            else if (IsOnFloor() && Input.IsActionPressed($"Jump_{TeamIdentifier}"))
+            //Is on floor and begins jump startup
+            else if (_jumpStartupTimer.IsStopped() && IsOnFloor() && Input.IsActionPressed($"Jump_{TeamIdentifier}"))
             {
+                _jumpStartupTimer.Start();
+            }
+            //Is on floor still when jump startup finishes but player decides not to continue with jump
+            else if (_jumpStartupTimer.IsStopped() && IsOnFloor() && !Input.IsActionPressed($"Jump_{TeamIdentifier}"))
+            {
+                _isJumpStartupFinished = false;
+            }
+            //Is on floor and jump startup completes, continuing to jump
+            else if (_isJumpStartupFinished && IsOnFloor() && Input.IsActionPressed($"Jump_{TeamIdentifier}"))
+            {
+                _isJumpStartupFinished = false;
+
                 if (HasBasketball)
                 {
                     ParentBasketballCourtLevel.Basketball.BasketballState = BasketballState.IsInAirWithPlayer;
@@ -895,26 +917,6 @@ namespace Entities
         public override void _PhysicsProcess(double delta)
         {
             MovePlayer();
-
-            if (IsOnFloor())
-            {
-                //GD.Print("Is considered on floor");
-
-                if (!_jumpAscensionTimer.IsStopped())
-                {
-                    _jumpAscensionTimer.Stop();
-
-                    if (HasBasketball)
-                    {
-                        ParentBasketballCourtLevel.Basketball.BasketballState = BasketballState.IsBeingDribbled;
-                    }
-                }
-
-                //TODO: Move this to when the player makes contact with the floor, not every frame they are on the floor
-                PlayerState = PlayerState.IsIdle;
-
-                _isSuperJumpComplete = false;
-            }
         }
 
         private void MovePlayer()
@@ -1002,6 +1004,27 @@ namespace Entities
                 {
                     IsBasketballInDetectionArea = false;
                 }
+            }
+        }
+
+        private void OnBodyDetectionAreaBodyEntered(Node3D body)
+        {
+            //This all should happen if player touches the ground
+            if (body.IsInGroup(GroupTags.Floor))
+            {
+                if (!_jumpAscensionTimer.IsStopped())
+                {
+                    _jumpAscensionTimer.Stop();
+
+                    if (HasBasketball)
+                    {
+                        ParentBasketballCourtLevel.Basketball.BasketballState = BasketballState.IsBeingDribbled;
+                    }
+                }
+
+                PlayerState = PlayerState.IsIdle;
+
+                _isSuperJumpComplete = false;
             }
         }
 

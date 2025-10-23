@@ -86,6 +86,7 @@ skeleton = NodePath("../..")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 
 [node name="BodyDetectionArea" type="Area3D" parent="."]
+transform = Transform3D(1.1, 0, 0, 0, 1.1, 0, 0, 0, 1.1, 0, 0, 0)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="BodyDetectionArea"]
 shape = SubResource("CapsuleShape3D_faggy")
@@ -121,7 +122,12 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 [node name="EntityShadow" parent="." node_paths=PackedStringArray("ParentObject") instance=ExtResource("2_35xjf")]
 ParentObject = NodePath("..")
 
+[node name="JumpStartupTimer" type="Timer" parent="."]
+wait_time = 0.1
+one_shot = true
+
 [connection signal="area_entered" from="BodyDetectionArea" to="." method="OnBodyDetectionAreaEntered"]
 [connection signal="area_exited" from="BodyDetectionArea" to="." method="OnBodyDetectionAreaExited"]
+[connection signal="body_entered" from="BodyDetectionArea" to="." method="OnBodyDetectionAreaBodyEntered"]
 [connection signal="area_entered" from="BallDetectionArea" to="." method="OnBallDetectionAreaEntered"]
 [connection signal="area_exited" from="BallDetectionArea" to="." method="OnBallDetectionAreaExited"]
