@@ -393,8 +393,6 @@ namespace Entities
         {
             var superJumpVelocity = 200.0f; // Adjust jump velocity as needed
 
-            var normalReboundJumpVelocity = 40f;
-
             float yMoveInput = 0;
 
             #region Jumping Logic
@@ -558,11 +556,6 @@ namespace Entities
                 //    moveDirection = new Vector3(moveDirection.X/10, yMoveInput, moveDirection.Z/10);
                 //}
             }
-
-            //if (IsTargeted)
-            //{
-            //    moveDirection = new Vector3(moveDirection.X, 0, moveDirection.Z);
-            //}
         }
 
         private float GetStandardJumpYValue(float delta)
@@ -578,7 +571,7 @@ namespace Entities
         protected void GetShootBasketballInput()
         {
             //TODO: Maybe do something with IsOnFloor() here?
-            if (PlayerState != PlayerState.IsRebounding && Input.IsActionJustReleased($"Jump_{TeamIdentifier}"))
+            if (_isJumpStartupFinished && PlayerState != PlayerState.IsRebounding && Input.IsActionJustReleased($"Jump_{TeamIdentifier}"))
             {
                 //GD.Print($"ShootBall triggered by player {PlayerIdentifier}");
 
