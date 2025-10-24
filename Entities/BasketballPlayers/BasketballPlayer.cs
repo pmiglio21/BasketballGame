@@ -331,6 +331,10 @@ namespace Entities
                     GetStealInput();
                 }
             }
+            else if (IsTargeted)
+            {
+                GetMovementInput(delta);
+            }
             //CPU logic
             else
             {
@@ -400,7 +404,7 @@ namespace Entities
             bool conditionsForSuperReboundAreMet = SkillStats.Rebounding == GlobalConstants.SkillStatHigh && ParentBasketballCourtLevel.Basketball.BasketballState == BasketballState.IsReboundable && PhysicsMathHelper.GetHorizontalDistance(this.GlobalPosition, ParentBasketballCourtLevel.BasketballHoop.GlobalPosition) <= 10;
 
             //Is finished with super jump (ball has been blocked or rebounded) and must descend now
-            if (_isSuperJumpComplete)
+            if (HasFocus && _isSuperJumpComplete)
             {
                 if (!IsOnOffense)
                 {
@@ -416,17 +420,17 @@ namespace Entities
                 _jumpAscensionCount = Mathf.Clamp(_jumpAscensionCount - 1, 1, int.MaxValue);
             }
             //Is on floor and begins jump startup
-            else if (_jumpStartupTimer.IsStopped() && IsOnFloor() && Input.IsActionPressed($"Jump_{TeamIdentifier}"))
+            else if (HasFocus && _jumpStartupTimer.IsStopped() && IsOnFloor() && Input.IsActionPressed($"Jump_{TeamIdentifier}"))
             {
                 _jumpStartupTimer.Start();
             }
             //Is on floor still when jump startup finishes but player decides not to continue with jump
-            else if (_jumpStartupTimer.IsStopped() && IsOnFloor() && !Input.IsActionPressed($"Jump_{TeamIdentifier}"))
+            else if (HasFocus && _jumpStartupTimer.IsStopped() && IsOnFloor() && !Input.IsActionPressed($"Jump_{TeamIdentifier}"))
             {
                 _isJumpStartupFinished = false;
             }
             //Is on floor and jump startup completes, continuing to jump
-            else if (_isJumpStartupFinished && IsOnFloor() && Input.IsActionPressed($"Jump_{TeamIdentifier}"))
+            else if (HasFocus && _isJumpStartupFinished && IsOnFloor() && Input.IsActionPressed($"Jump_{TeamIdentifier}"))
             {
                 _isJumpStartupFinished = false;
 
@@ -453,7 +457,7 @@ namespace Entities
                 _jumpAscensionTimer.Start();
             }
             //Is in air and continues to hold jump while ascending is still allowed (jumpAscensionTimer is not stopped yet)
-            else if (!IsOnFloor() && !_jumpAscensionTimer.IsStopped() && Input.IsActionPressed($"Jump_{TeamIdentifier}"))
+            else if (HasFocus && !IsOnFloor() && !_jumpAscensionTimer.IsStopped() && Input.IsActionPressed($"Jump_{TeamIdentifier}"))
             {
                 if (!IsOnOffense)
                 {
@@ -510,8 +514,16 @@ namespace Entities
 
             #endregion
 
-            moveInput.X = Input.GetActionStrength($"MoveEast_{TeamIdentifier}") - Input.GetActionStrength($"MoveWest_{TeamIdentifier}");
-            moveInput.Z = Input.GetActionStrength($"MoveSouth_{TeamIdentifier}") - Input.GetActionStrength($"MoveNorth_{TeamIdentifier}");
+            if (HasFocus)
+            {
+                moveInput.X = Input.GetActionStrength($"MoveEast_{TeamIdentifier}") - Input.GetActionStrength($"MoveWest_{TeamIdentifier}");
+                moveInput.Z = Input.GetActionStrength($"MoveSouth_{TeamIdentifier}") - Input.GetActionStrength($"MoveNorth_{TeamIdentifier}");
+            }
+            else if (IsTargeted)
+            {
+                moveInput.X = Input.GetActionStrength($"MoveTargetEast_{TeamIdentifier}") - Input.GetActionStrength($"MoveTargetWest_{TeamIdentifier}");
+                moveInput.Z = Input.GetActionStrength($"MoveTargetSouth_{TeamIdentifier}") - Input.GetActionStrength($"MoveTargetNorth_{TeamIdentifier}");
+            }
 
             if (yMoveInput > 0 && conditionsForSuperBlockAreMet)
             {
@@ -546,6 +558,11 @@ namespace Entities
                 //    moveDirection = new Vector3(moveDirection.X/10, yMoveInput, moveDirection.Z/10);
                 //}
             }
+
+            //if (IsTargeted)
+            //{
+            //    moveDirection = new Vector3(moveDirection.X, 0, moveDirection.Z);
+            //}
         }
 
         private float GetStandardJumpYValue(float delta)
