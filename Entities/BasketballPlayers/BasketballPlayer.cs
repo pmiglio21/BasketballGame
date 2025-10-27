@@ -202,6 +202,10 @@ namespace Entities
         private bool _isJumpStartupFinished = false;
         private bool _isJumpFinished = true;
 
+        private const float _jumpStartupTimeNoBall = .05f;
+        private const float _jumpStartupTimeBlocking = .1f;
+        private const float _jumpStartupTimeShooting = .15f;
+
         #endregion
 
         #endregion
@@ -427,6 +431,19 @@ namespace Entities
             //else if (HasFocus && _isShotButtonReleased && _jumpStartupTimer.IsStopped() && IsOnFloor() && Input.IsActionPressed($"Jump_{TeamIdentifier}"))
             else if (HasFocus && _isJumpFinished && _jumpStartupTimer.IsStopped() && IsOnFloor() && Input.IsActionPressed($"Jump_{TeamIdentifier}"))
             {
+                if (HasBasketball)
+                {
+                    _jumpStartupTimer.WaitTime = _jumpStartupTimeShooting;
+                }
+                else if (!IsOnOffense) //TODO: And actively defending/near player with ball
+                {
+                    _jumpStartupTimer.WaitTime = _jumpStartupTimeBlocking;
+                }
+                else
+                {
+                    _jumpStartupTimer.WaitTime = _jumpStartupTimeNoBall;
+                }
+                
                 _jumpStartupTimer.Start();
 
                 if (HasBasketball)
