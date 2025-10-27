@@ -192,12 +192,15 @@ namespace Entities
 
         float movementSpeed = 20.0f;
 
+        bool _isStuckOnFloor = false;
+
         #region Jump Properties
 
         private const float _normaljumpTime = .4f;
         private const float _superJumpTime = 1f;
         private int _jumpAscensionCount = 1;
         private bool _isJumpStartupFinished = false;
+        private bool _isJumpFinished = true;
 
         #endregion
 
@@ -402,6 +405,8 @@ namespace Entities
 
             bool conditionsForSuperReboundAreMet = SkillStats.Rebounding == GlobalConstants.SkillStatHigh && ParentBasketballCourtLevel.Basketball.BasketballState == BasketballState.IsReboundable && PhysicsMathHelper.GetHorizontalDistance(this.GlobalPosition, ParentBasketballCourtLevel.BasketballHoop.GlobalPosition) <= 10;
 
+            
+
             //Is finished with super jump (ball has been blocked or rebounded) and must descend now
             if (HasFocus && _isSuperJumpComplete)
             {
@@ -419,9 +424,15 @@ namespace Entities
                 _jumpAscensionCount = Mathf.Clamp(_jumpAscensionCount - 1, 1, int.MaxValue);
             }
             //Is on floor and begins jump startup
-            else if (HasFocus && _jumpStartupTimer.IsStopped() && IsOnFloor() && Input.IsActionPressed($"Jump_{TeamIdentifier}"))
+            //else if (HasFocus && _isShotButtonReleased && _jumpStartupTimer.IsStopped() && IsOnFloor() && Input.IsActionPressed($"Jump_{TeamIdentifier}"))
+            else if (HasFocus && _isJumpFinished && _jumpStartupTimer.IsStopped() && IsOnFloor() && Input.IsActionPressed($"Jump_{TeamIdentifier}"))
             {
                 _jumpStartupTimer.Start();
+
+                if (HasBasketball)
+                {
+                    ParentBasketballCourtLevel.Basketball.GlobalPosition = GlobalPosition + new Vector3(0, 1.2f, 0);
+                }
             }
             //Is on floor still when jump startup finishes but player decides not to continue with jump
             else if (HasFocus && _jumpStartupTimer.IsStopped() && IsOnFloor() && !Input.IsActionPressed($"Jump_{TeamIdentifier}"))
@@ -432,6 +443,9 @@ namespace Entities
             else if (HasFocus && _isJumpStartupFinished && IsOnFloor() && Input.IsActionPressed($"Jump_{TeamIdentifier}"))
             {
                 _isJumpStartupFinished = false;
+                _isJumpFinished = false;
+
+                _isStuckOnFloor = false;
 
                 if (HasBasketball)
                 {
@@ -514,7 +528,7 @@ namespace Entities
 
             #endregion
 
-            if (HasFocus)
+            if (HasFocus && !_isStuckOnFloor)
             {
                 moveInput.X = Input.GetActionStrength($"MoveEast_{TeamIdentifier}") - Input.GetActionStrength($"MoveWest_{TeamIdentifier}");
                 moveInput.Z = Input.GetActionStrength($"MoveSouth_{TeamIdentifier}") - Input.GetActionStrength($"MoveNorth_{TeamIdentifier}");
@@ -558,6 +572,19 @@ namespace Entities
                 //    moveDirection = new Vector3(moveDirection.X/10, yMoveInput, moveDirection.Z/10);
                 //}
             }
+
+            if (Input.IsActionJustReleased($"Jump_{TeamIdentifier}"))
+            {
+                _isJumpFinished = true;
+
+                if (HasBasketball && IsOnFloor())
+                {
+                    ParentBasketballCourtLevel.Basketball.BasketballState = BasketballState.IsBeingHeldByStationaryPlayer;
+                    ParentBasketballCourtLevel.Basketball.GlobalPosition = GlobalPosition + new Vector3(0, 0, 1f);
+
+                    _isStuckOnFloor = true;
+                }
+            }
         }
 
         private float GetStandardJumpYValue(float delta)
@@ -574,6 +601,8 @@ namespace Entities
         {
             if (_isJumpStartupFinished && PlayerState != PlayerState.IsRebounding && Input.IsActionJustReleased($"Jump_{TeamIdentifier}"))
             {
+                _isStuckOnFloor = false;
+
                 this.HasBasketball = false;
 
                 ParentBasketballCourtLevel.Basketball.Reparent(ParentBasketballCourtLevel);

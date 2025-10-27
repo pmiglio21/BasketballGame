@@ -5,6 +5,8 @@ namespace Enums
     {
         IsBeingDribbled,
 
+        IsBeingHeldByStationaryPlayer,
+
         IsInAirWithPlayer,
 
         IsBeingPassed,
