@@ -3,6 +3,7 @@ using Enums;
 using Godot;
 using Helpers;
 using Levels;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -470,7 +471,8 @@ namespace Entities
 
                 if (HasBasketball)
                 {
-                    ParentBasketballCourtLevel.Basketball.GlobalPosition = GlobalPosition + new Vector3(0, 1.5f, 0);
+                    //ParentBasketballCourtLevel.Basketball.GlobalPosition = GlobalPosition + new Vector3(0, 1.2f, 1f);
+                    ParentBasketballCourtLevel.Basketball.GlobalPosition = GlobalPosition + new Vector3(0, 1.2f, 0);
                 }
 
                 //GD.Print($"Ascending 2 - yMoveInput: {yMoveInput}; jumpAscensionCount: {_jumpAscensionCount}");
@@ -570,21 +572,13 @@ namespace Entities
 
         protected void GetShootBasketballInput()
         {
-            //TODO: Maybe do something with IsOnFloor() here?
             if (_isJumpStartupFinished && PlayerState != PlayerState.IsRebounding && Input.IsActionJustReleased($"Jump_{TeamIdentifier}"))
             {
-                //GD.Print($"ShootBall triggered by player {PlayerIdentifier}");
-
                 this.HasBasketball = false;
 
                 ParentBasketballCourtLevel.Basketball.Reparent(ParentBasketballCourtLevel);
 
                 ParentBasketballCourtLevel.Basketball.BasketballState = BasketballState.IsBeingShotAscending;
-
-                //TODO: Testing, please remove later
-                ParentBasketballCourtLevel.Basketball.GlobalPosition = new Vector3(ParentBasketballCourtLevel.Basketball.GlobalPosition.X,
-                                                                                ParentBasketballCourtLevel.HoopArea.GlobalPosition.Y,
-                                                                                ParentBasketballCourtLevel.Basketball.GlobalPosition.Z);
 
                 ParentBasketballCourtLevel.Basketball.GlobalPositionAtPointOfShot = ParentBasketballCourtLevel.Basketball.GlobalPosition;
 
@@ -982,23 +976,35 @@ namespace Entities
             {
                 Basketball basketball = area.GetParent() as Basketball;
 
-                var parent = basketball.GetParent();
-
-                //GD.Print($"Parent is {parent.Name}");
-
                 if (basketball.GetParent() is BasketballCourtLevel)
                 {
                     IsBasketballInDetectionArea = true;
 
                     if (basketball.BasketballState == BasketballState.IsBeingPassed && basketball.PreviousPlayer != this && basketball.TargetPlayer == this)
                     {
-                        //GD.Print($"Player {PlayerIdentifier} is receiving the ball from a pass");
-                        ReceiveTheBall(basketball);
+                        try
+                        {
+                            //GD.Print($"Player {PlayerIdentifier} is receiving the ball from the ground/reboundable state");
+                            ReceiveTheBall(basketball);
+                        }
+                        catch (Exception ex)
+                        {
+                            GD.PrintErr($"Error while player {PlayerIdentifier} while passing: {ex.Message}");
+                            GD.PrintErr($"BasketballState: {basketball.BasketballState}");
+                        }
                     }
                     else if (basketball.BasketballState == BasketballState.IsUpForGrabsOnGround || basketball.BasketballState == BasketballState.IsReboundable)
                     {
-                        //GD.Print($"Player {PlayerIdentifier} is receiving the ball from the ground/reboundable state");
-                        ReceiveTheBall(basketball);
+                        try
+                        {
+                            //GD.Print($"Player {PlayerIdentifier} is receiving the ball from the ground/reboundable state");
+                            ReceiveTheBall(basketball);
+                        }
+                        catch (Exception ex)
+                        {
+                            GD.PrintErr($"Error while player {PlayerIdentifier} was trying to receive the ball from ground/reboundable state: {ex.Message}");
+                            GD.PrintErr($"BasketballState: {basketball.BasketballState}");
+                        }
                     }
                 }
             }
