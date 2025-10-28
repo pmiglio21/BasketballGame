@@ -449,6 +449,11 @@ namespace Entities
                 if (HasBasketball)
                 {
                     ParentBasketballCourtLevel.Basketball.GlobalPosition = GlobalPosition + new Vector3(0, 1.2f, 0);
+
+                    if (IsOnOffense)
+                    {
+                        PlayerState = PlayerState.IsShooting;
+                    }
                 }
             }
             //Is on floor still when jump startup finishes but player decides not to continue with jump
@@ -976,23 +981,30 @@ namespace Entities
 
             if (moveDirection != Vector3.Zero)
             {
-                //LookAt((GlobalPosition + moveDirection), Vector3.Up);
+                
 
                 float newAngle = 0;  
 
-                if (IsOnFloor())
+                if (PlayerState == PlayerState.IsShooting || 
+                    ((ParentBasketballCourtLevel.Basketball.BasketballState == BasketballState.IsBeingShotAscending || ParentBasketballCourtLevel.Basketball.BasketballState == BasketballState.IsBeingShotDescending) && ParentBasketballCourtLevel.Basketball.PreviousPlayer == this))
                 {
-                    newAngle = Mathf.LerpAngle(GlobalRotation.Y, Mathf.Atan2(moveDirection.X, moveDirection.Z), .1f);
+                    newAngle = Mathf.LerpAngle(GlobalRotation.Y, Mathf.Atan2(ParentBasketballCourtLevel.HoopArea.GlobalPosition.X, ParentBasketballCourtLevel.HoopArea.GlobalPosition.Z), .1f);
+
+                    GlobalRotation = new Vector3(GlobalRotation.X, newAngle, GlobalRotation.Z);
                 }
                 else
                 {
-                    newAngle = Mathf.LerpAngle(GlobalRotation.Y, Mathf.Atan2(moveDirection.X, moveDirection.Z), .01f);
+                    if (IsOnFloor())
+                    {
+                        newAngle = Mathf.LerpAngle(GlobalRotation.Y, Mathf.Atan2(moveDirection.X, moveDirection.Z), .1f);
+                    }
+                    else
+                    {
+                        newAngle = Mathf.LerpAngle(GlobalRotation.Y, Mathf.Atan2(moveDirection.X, moveDirection.Z), .01f);
+                    }
+
+                    GlobalRotation = new Vector3(GlobalRotation.X, newAngle, GlobalRotation.Z);
                 }
-
-                GlobalRotation = new Vector3(GlobalRotation.X, newAngle, GlobalRotation.Z);
-
-
-                //Rotation = GlobalPosition.Rotated(moveDirection, 0);
             }
         }
 
