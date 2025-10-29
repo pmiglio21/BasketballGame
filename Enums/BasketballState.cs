@@ -7,6 +7,8 @@ namespace Enums
 
         IsBeingHeldByStationaryPlayer,
 
+        IsBeingHeldByAirbornePlayer,
+
         IsInAirWithPlayer,
 
         IsBeingPassed,

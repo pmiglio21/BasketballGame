@@ -120,7 +120,14 @@ namespace Entities
         {
             if (propertyName == nameof(BasketballState))
             {
-
+                if (BasketballState == BasketballState.IsBeingHeldByAirbornePlayer)
+                {
+                    GravityScale = 0;
+                }
+                else
+                {
+                    GravityScale = 1;
+                }
             }
         }
 

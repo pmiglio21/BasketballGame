@@ -464,7 +464,7 @@ namespace Entities
             //Is on floor and jump startup completes, continuing to jump
             else if (HasFocus && _isJumpStartupFinished && IsOnFloor() && Input.IsActionPressed($"Jump_{TeamIdentifier}"))
             {
-                _isJumpStartupFinished = false;
+                //_isJumpStartupFinished = false;
                 _isJumpFinished = false;
 
                 _isStuckOnFloor = false;
@@ -492,7 +492,7 @@ namespace Entities
                 _jumpAscensionTimer.Start();
             }
             //Is in air and continues to hold jump while ascending is still allowed (jumpAscensionTimer is not stopped yet)
-            else if (HasFocus && !IsOnFloor() && !_jumpAscensionTimer.IsStopped() && Input.IsActionPressed($"Jump_{TeamIdentifier}"))
+            else if (HasFocus && _isJumpStartupFinished && !IsOnFloor() && !_jumpAscensionTimer.IsStopped() && Input.IsActionPressed($"Jump_{TeamIdentifier}"))
             {
                 if (!IsOnOffense)
                 {
@@ -1089,15 +1089,16 @@ namespace Entities
                 if (!_jumpAscensionTimer.IsStopped())
                 {
                     _jumpAscensionTimer.Stop();
+                }
 
-                    if (HasBasketball)
-                    {
-                        ParentBasketballCourtLevel.Basketball.BasketballState = BasketballState.IsBeingDribbled;
-                    }
+                if (HasBasketball)
+                {
+                    ParentBasketballCourtLevel.Basketball.BasketballState = BasketballState.IsBeingDribbled;
                 }
 
                 PlayerState = PlayerState.IsIdle;
 
+                _isJumpStartupFinished = false;
                 _isSuperJumpComplete = false;
             }
         }
@@ -1122,9 +1123,18 @@ namespace Entities
 
             Vector3 distanceBetweenPlayerAndBall = new Vector3(0, 0, 1.5f);
             Vector3 rotatedDistance = distanceBetweenPlayerAndBall.Rotated(Vector3.Up, this.GlobalPosition.Y);
-            basketball.GlobalPosition = this.GlobalPosition + rotatedDistance;
+            //basketball.GlobalPosition = this.GlobalPosition + rotatedDistance;
 
-            ParentBasketballCourtLevel.Basketball.BasketballState = BasketballState.IsBeingDribbled;
+            //basketball.GlobalPosition = this.GlobalPosition + new Vector3(0, 0, 1.5f);
+
+            if (IsOnFloor())
+            {
+                ParentBasketballCourtLevel.Basketball.BasketballState = BasketballState.IsBeingDribbled;
+            }
+            else
+            {
+                ParentBasketballCourtLevel.Basketball.BasketballState = BasketballState.IsBeingHeldByAirbornePlayer;
+            }
 
             basketball.TargetPlayer = null;
             basketball.PreviousPlayer = this;
