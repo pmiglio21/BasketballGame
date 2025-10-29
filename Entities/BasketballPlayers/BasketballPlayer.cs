@@ -627,7 +627,10 @@ namespace Entities
 
                 this.HasBasketball = false;
 
-                ParentBasketballCourtLevel.Basketball.Reparent(ParentBasketballCourtLevel);
+                if (ParentBasketballCourtLevel.Basketball.GetParent() != ParentBasketballCourtLevel)
+                {
+                    ParentBasketballCourtLevel.Basketball.Reparent(ParentBasketballCourtLevel);
+                }
 
                 ParentBasketballCourtLevel.Basketball.BasketballState = BasketballState.IsBeingShotAscending;
 
