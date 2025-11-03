@@ -292,12 +292,15 @@ namespace Entities
         {
             if (area.IsInGroup(GroupTags.HoopArea))
             {
-                _shotAscensionCount = 1;
-                BasketballState = BasketballState.IsInBasket;
+                if (BasketballState == BasketballState.IsBeingShotDescending || BasketballState == BasketballState.IsReboundable)
+                {
+                    _shotAscensionCount = 1;
+                    BasketballState = BasketballState.IsInBasket;
 
-                //GD.Print($"Got into HoopArea.\n" +
-                //         $"Starting position was {GlobalPositionAtPointOfShot.X}, {GlobalPositionAtPointOfShot.Y}, {GlobalPositionAtPointOfShot.Z}\n" +
-                //         $"Hoop Area position was {area.GlobalPosition.X}, {area.GlobalPosition.Y}, {area.GlobalPosition.Z}");
+                    //GD.Print($"Got into HoopArea.\n" +
+                    //         $"Starting position was {GlobalPositionAtPointOfShot.X}, {GlobalPositionAtPointOfShot.Y}, {GlobalPositionAtPointOfShot.Z}\n" +
+                    //         $"Hoop Area position was {area.GlobalPosition.X}, {area.GlobalPosition.Y}, {area.GlobalPosition.Z}");
+                }
             }
             else if (area.IsInGroup(GroupTags.ForceShotDownArea))
             {
