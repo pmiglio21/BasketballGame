@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3 uid="uid://67mof4iojay2"]
+[gd_scene load_steps=17 format=3 uid="uid://67mof4iojay2"]
 
 [ext_resource type="Script" path="res://Entities/BasketballPlayers/BasketballPlayer.cs" id="1_kr2bl"]
 [ext_resource type="PackedScene" uid="uid://f8100ldjgx8q" path="res://Entities/EntityShadow.tscn" id="2_35xjf"]
@@ -27,6 +27,12 @@ albedo_color = Color(0, 0, 0, 1)
 [sub_resource type="BoxShape3D" id="BoxShape3D_p0kc4"]
 
 [sub_resource type="BoxMesh" id="BoxMesh_1wjxe"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_i3nkc"]
+albedo_color = Color(0.686275, 0.329412, 0.0705882, 1)
+
+[sub_resource type="SphereMesh" id="SphereMesh_04er7"]
+material = SubResource("StandardMaterial3D_i3nkc")
 
 [node name="BasketballPlayer" type="CharacterBody3D" groups=["BasketballPlayer"]]
 collision_layer = 0
@@ -125,6 +131,19 @@ ParentObject = NodePath("..")
 [node name="JumpStartupTimer" type="Timer" parent="."]
 wait_time = 0.15
 one_shot = true
+
+[node name="CpuTargetBody" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.293612, 2.44831)
+collision_layer = 0
+collision_mask = 0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="CpuTargetBody"]
+transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0, 0)
+shape = SubResource("SphereShape3D_bgp65")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="CpuTargetBody"]
+transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0, 0)
+mesh = SubResource("SphereMesh_04er7")
 
 [connection signal="area_entered" from="BodyDetectionArea" to="." method="OnBodyDetectionAreaEntered"]
 [connection signal="area_exited" from="BodyDetectionArea" to="." method="OnBodyDetectionAreaExited"]
