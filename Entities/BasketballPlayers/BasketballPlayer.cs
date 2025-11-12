@@ -27,9 +27,9 @@ namespace Entities
         private StaticBody3D _passTargetIndicator = new();
 
         private StaticBody3D _shotBlockBody = new();
-
         private CollisionShape3D _shotBlockCollisionShape = new();
 
+        private Node3D _cpuTargetPivot = new();
         public StaticBody3D CpuTargetBody = new();
 
         private Timer _jumpAscensionTimer = new();
@@ -249,10 +249,10 @@ namespace Entities
             _passTargetIndicator = GetNode("PassTargetIndicator") as StaticBody3D;
 
             _shotBlockBody = GetNode("ShotBlockBody") as StaticBody3D;
-
             _shotBlockCollisionShape = _shotBlockBody.GetNode("CollisionShape3D") as CollisionShape3D;
 
-            CpuTargetBody = GetNode("CpuTargetBody") as StaticBody3D;
+            _cpuTargetPivot = GetNode("CpuTargetPivot") as Node3D;
+            CpuTargetBody = _cpuTargetPivot.GetNode("CpuTargetBody") as StaticBody3D;
 
             _jumpAscensionTimer = GetNode("JumpAscensionTimer") as Timer;
 
@@ -977,6 +977,8 @@ namespace Entities
         public override void _PhysicsProcess(double delta)
         {
             MovePlayer();
+
+            RotateCpuTargetBody();
         }
 
         private void MovePlayer()
@@ -1007,6 +1009,36 @@ namespace Entities
                     }
 
                     GlobalRotation = new Vector3(GlobalRotation.X, newAngle, GlobalRotation.Z);
+                }
+            }
+        }
+
+        private void RotateCpuTargetBody()
+        {
+            if (IsOnOffense)
+            {
+                //Get between player and hoop
+                if (HasBasketball)
+                {
+                    Vector3 directionToHoop = GlobalPosition.DirectionTo(ParentBasketballCourtLevel.HoopArea.GlobalPosition);
+
+                    float newAngle = Mathf.LerpAngle(_cpuTargetPivot.GlobalRotation.Y, Mathf.Atan2(directionToHoop.X, directionToHoop.Z), 1f);
+
+                    _cpuTargetPivot.GlobalRotation = new Vector3(_cpuTargetPivot.GlobalRotation.X, newAngle, _cpuTargetPivot.GlobalRotation.Z);
+                }
+                //Get between player and the player with the ball
+                else
+                {
+                    BasketballPlayer playerWithBall = ParentBasketballCourtLevel.AllBasketballPlayers.FirstOrDefault(x => x.TeamIdentifier == TeamIdentifier && x.IsOnOffense && x.HasBasketball);
+
+                    if (playerWithBall != null)
+                    {
+                        Vector3 directionToPlayerWithBall = GlobalPosition.DirectionTo(playerWithBall.GlobalPosition);
+
+                        float newAngle = Mathf.LerpAngle(_cpuTargetPivot.GlobalRotation.Y, Mathf.Atan2(directionToPlayerWithBall.X, directionToPlayerWithBall.Z), 1f);
+
+                        _cpuTargetPivot.GlobalRotation = new Vector3(_cpuTargetPivot.GlobalRotation.X, newAngle, _cpuTargetPivot.GlobalRotation.Z);
+                    }
                 }
             }
         }

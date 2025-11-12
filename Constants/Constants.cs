@@ -17,5 +17,7 @@ namespace Constants
         public const int SkillStatLow = 1;
 
         #endregion
+
+        public const float DistanceCpuTargetBodyIsFromParentPlayer = 2.5f;
     }
 }

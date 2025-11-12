@@ -13,5 +13,15 @@ namespace Helpers
 
             return hypotenuseDistance;
         }
+
+        //Not used right now, but I don't want to do the math for this again
+        public static Vector3 GetCartesianCoordinatesFromPolarCoordinates(float radius, float angleBetweenXAndZ, float angleBetweenXandY)
+        {
+            float x = radius * Mathf.Sin(angleBetweenXandY) * Mathf.Cos(angleBetweenXAndZ);
+            float y = radius * Mathf.Cos(angleBetweenXandY);
+            float z = radius * Mathf.Sin(angleBetweenXandY) * Mathf.Sin(angleBetweenXAndZ);
+
+            return new Vector3(x, y, z);
+        }
     }
 }

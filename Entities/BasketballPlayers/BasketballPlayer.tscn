@@ -132,16 +132,18 @@ ParentObject = NodePath("..")
 wait_time = 0.15
 one_shot = true
 
-[node name="CpuTargetBody" type="StaticBody3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.293612, 2.44831)
+[node name="CpuTargetPivot" type="Node3D" parent="."]
+
+[node name="CpuTargetBody" type="StaticBody3D" parent="CpuTargetPivot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 2.5)
 collision_layer = 0
 collision_mask = 0
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="CpuTargetBody"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="CpuTargetPivot/CpuTargetBody"]
 transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0, 0)
 shape = SubResource("SphereShape3D_bgp65")
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="CpuTargetBody"]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="CpuTargetPivot/CpuTargetBody"]
 transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0, 0)
 mesh = SubResource("SphereMesh_04er7")
 
