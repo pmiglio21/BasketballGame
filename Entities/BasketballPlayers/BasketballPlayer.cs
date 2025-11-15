@@ -412,11 +412,10 @@ namespace Entities
 
             #region Jumping Logic
 
-            bool conditionsForSuperBlockAreMet = SkillStats.Blocking == GlobalConstants.SkillStatHigh && ParentBasketballCourtLevel.Basketball.BasketballState == BasketballState.IsBeingShotAscending && PhysicsMathHelper.GetHorizontalDistance(this.GlobalPosition, ParentBasketballCourtLevel.BasketballHoop.GlobalPosition) <= 10;
+            bool conditionsForSuperBlockAreMet = SkillStats.Blocking == GlobalConstants.SkillStatHigh && ParentBasketballCourtLevel.Basketball.BasketballState == BasketballState.IsBeingShotAscending;
 
-            bool conditionsForSuperReboundAreMet = SkillStats.Rebounding == GlobalConstants.SkillStatHigh && ParentBasketballCourtLevel.Basketball.BasketballState == BasketballState.IsReboundable && PhysicsMathHelper.GetHorizontalDistance(this.GlobalPosition, ParentBasketballCourtLevel.BasketballHoop.GlobalPosition) <= 10;
-
-            
+            bool conditionsForSuperReboundAreMet = SkillStats.Rebounding == GlobalConstants.SkillStatHigh && 
+                (ParentBasketballCourtLevel.Basketball.BasketballState == BasketballState.IsReboundable || (ParentBasketballCourtLevel.Basketball.BasketballState == BasketballState.IsUpForGrabsOnGround && ParentBasketballCourtLevel.Basketball.GlobalPosition.Y > 2.5f));
 
             //Is finished with super jump (ball has been blocked or rebounded) and must descend now
             if (HasFocus && _isSuperJumpComplete)
@@ -563,6 +562,8 @@ namespace Entities
             if (yMoveInput > 0 && conditionsForSuperBlockAreMet)
             {
                 Vector3 directionToBall = GlobalPosition.DirectionTo(ParentBasketballCourtLevel.Basketball.GlobalPosition);
+
+                PlayerState = PlayerState.IsBlocking;
 
                 moveDirection = directionToBall * superJumpVelocity * (float)delta;
             }
