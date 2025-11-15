@@ -290,13 +290,13 @@ namespace Entities
                     _isSuperJumpComplete = true;
                 }
             }
-            //else if (propertyName == nameof(IsOnOffense))
-            //{
-            //    if (IsOnOffense)
-            //    {
-            //        _shotBlockBody.Hide();
-            //    }
-            //}
+            else if (propertyName == nameof(IsOnOffense))
+            {
+                if (IsOnOffense)
+                {
+                    ToggleShotBlockBody(false);
+                }
+            }
         }
 
         #region Input Handling - Process
@@ -370,7 +370,7 @@ namespace Entities
 
             var normalizedMoveInput = moveInput.Normalized();
 
-            moveDirection = new Vector3(normalizedMoveInput.X, 0, normalizedMoveInput.Z);
+            moveDirection = new Vector3(normalizedMoveInput.X, -10f, normalizedMoveInput.Z);
 
             if (this.GlobalPosition.DistanceTo(PairingPlayer.CpuTargetBody.GlobalPosition) <= .5f)
             {
@@ -384,7 +384,9 @@ namespace Entities
             {
                 foreach (BasketballPlayer player in ParentBasketballCourtLevel.AllBasketballPlayers.Where(player => player.TeamIdentifier == TeamIdentifier))
                 {
-                    GD.Print($"Team: {player.TeamIdentifier}, Player: {player.PlayerIdentifier} \nSkill Stats:\n" +
+                    GD.Print($"Team: {player.TeamIdentifier}, Player: {player.PlayerIdentifier} \n" +
+                        $"IsOnOffense: {IsOnOffense}\n"+
+                        $"Skill Stats:\n" +
                         $"2PT: {player.SkillStats.TwoPointShooting}\n" +
                         $"3PT: {player.SkillStats.ThreePointShooting}\n" +
                         $"DNK: {player.SkillStats.Dunking}\n" +
@@ -421,9 +423,7 @@ namespace Entities
             {
                 if (!IsOnOffense)
                 {
-                    _shotBlockBody.Hide();
-
-                    _shotBlockCollisionShape.Disabled = false;
+                    //ToggleShotBlockBody(false);
                 }
 
                 yMoveInput = Mathf.Clamp(-GetStandardJumpYValue((float)delta), _minimumFallVelocity, _maximumFallVelocity) * .33f;
@@ -501,9 +501,7 @@ namespace Entities
             {
                 if (!IsOnOffense)
                 {
-                    _shotBlockBody.Show();
-
-                    _shotBlockCollisionShape.Disabled = true;
+                    ToggleShotBlockBody(true);
                 }
 
                 _jumpAscensionCount++;
@@ -525,9 +523,7 @@ namespace Entities
 
                 if (!IsOnOffense)
                 {
-                    _shotBlockBody.Hide();
-
-                    _shotBlockCollisionShape.Disabled = false;
+                    //ToggleShotBlockBody(false);
                 }
 
                 yMoveInput = Mathf.Clamp(-GetStandardJumpYValue((float)delta), _minimumFallVelocity, _maximumFallVelocity);
@@ -541,9 +537,7 @@ namespace Entities
             {
                 if (!IsOnOffense)
                 {
-                    _shotBlockBody.Hide();
-
-                    _shotBlockCollisionShape.Disabled = false;
+                    //ToggleShotBlockBody(false);
                 }
 
                 yMoveInput = Mathf.Clamp(-GetStandardJumpYValue((float)delta), _minimumFallVelocity, _maximumFallVelocity);
@@ -954,15 +948,6 @@ namespace Entities
                         GD.Print($"Ball has been stolen by player {PlayerIdentifier}!");
 
                         FlipTeamIsOnOffense(TeamIdentifier, true);
-
-                        if (TeamIdentifier == "1")
-                        {
-                            FlipTeamIsOnOffense("2", false);
-                        }
-                        else if (TeamIdentifier == "2")
-                        {
-                            FlipTeamIsOnOffense("1", false);
-                        }
                     }
                 }
             }
@@ -1035,7 +1020,7 @@ namespace Entities
                     {
                         Vector3 directionToPlayerWithBall = GlobalPosition.DirectionTo(playerWithBall.GlobalPosition);
 
-                        float newAngle = Mathf.LerpAngle(_cpuTargetPivot.GlobalRotation.Y, Mathf.Atan2(directionToPlayerWithBall.X, directionToPlayerWithBall.Z), 1f);
+                        float newAngle = Mathf.LerpAngle(_cpuTargetPivot.GlobalRotation.Y, Mathf.Atan2(directionToPlayerWithBall.X, directionToPlayerWithBall.Z), .1f);
 
                         _cpuTargetPivot.GlobalRotation = new Vector3(_cpuTargetPivot.GlobalRotation.X, newAngle, _cpuTargetPivot.GlobalRotation.Z);
                     }
@@ -1133,6 +1118,8 @@ namespace Entities
 
                 PlayerState = PlayerState.IsIdle;
 
+                ToggleShotBlockBody(false);
+
                 _isJumpStartupFinished = false;
                 _isSuperJumpComplete = false;
             }
@@ -1173,24 +1160,41 @@ namespace Entities
 
             basketball.TargetPlayer = null;
             basketball.PreviousPlayer = this;
+
+            FlipTeamIsOnOffense(TeamIdentifier, true);
         }
 
         private void FlipTeamIsOnOffense(string teamIdentifier, bool isOnOffense)
         {
+            string otherTeamIdentifier = teamIdentifier == "1" ? "2" : "1";
+
             List<BasketballPlayer> playersOnTeam = ParentBasketballCourtLevel.AllBasketballPlayers.Where(player => player.TeamIdentifier == teamIdentifier).ToList();
+            List<BasketballPlayer> playersOnOtherTeam = ParentBasketballCourtLevel.AllBasketballPlayers.Where(player => player.TeamIdentifier == otherTeamIdentifier).ToList();
 
             foreach (BasketballPlayer player in playersOnTeam)
             {
                 player.IsOnOffense = isOnOffense;
+            }
 
-                //if (isOnOffense)
-                //{
-                //    GD.Print($"{player.TeamIdentifier} {player.PlayerIdentifier} is on offense");
-                //}
-                //else
-                //{
-                //    GD.Print($"{player.TeamIdentifier} {player.PlayerIdentifier} is on defense");
-                //}
+            foreach (BasketballPlayer player in playersOnOtherTeam)
+            {
+                player.IsOnOffense = !isOnOffense;
+            }
+        }
+
+        private void ToggleShotBlockBody(bool isVisible)
+        {
+            if (isVisible)
+            {
+                _shotBlockBody.CollisionLayer = 1;
+
+                _shotBlockBody.Show();
+            }
+            else
+            {
+                _shotBlockBody.CollisionLayer = 0;
+
+                _shotBlockBody.Hide();
             }
         }
     }
