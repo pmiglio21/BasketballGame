@@ -974,12 +974,12 @@ namespace Entities
 
             if (moveDirection != Vector3.Zero)
             {
-                float newAngle;  
+                float newAngle;
 
-                if (PlayerState == PlayerState.IsShooting || 
+                if (PlayerState == PlayerState.IsShooting ||
                     ((ParentBasketballCourtLevel.Basketball.BasketballState == BasketballState.IsBeingShotAscending || ParentBasketballCourtLevel.Basketball.BasketballState == BasketballState.IsBeingShotDescending) && ParentBasketballCourtLevel.Basketball.PreviousPlayer == this))
                 {
-                    newAngle = Mathf.LerpAngle(GlobalRotation.Y, Mathf.Atan2(ParentBasketballCourtLevel.HoopArea.GlobalPosition.X, ParentBasketballCourtLevel.HoopArea.GlobalPosition.Z), .1f);
+                    newAngle = Mathf.LerpAngle(GlobalRotation.Y, Mathf.Atan2(ParentBasketballCourtLevel.HoopArea.GlobalPosition.X, ParentBasketballCourtLevel.HoopArea.GlobalPosition.Z), 1f);
 
                     GlobalRotation = new Vector3(GlobalRotation.X, newAngle, GlobalRotation.Z);
                 }
@@ -987,14 +987,10 @@ namespace Entities
                 {
                     if (IsOnFloor())
                     {
-                        newAngle = Mathf.LerpAngle(GlobalRotation.Y, Mathf.Atan2(moveDirection.X, moveDirection.Z), .1f);
-                    }
-                    else
-                    {
-                        newAngle = Mathf.LerpAngle(GlobalRotation.Y, Mathf.Atan2(moveDirection.X, moveDirection.Z), .01f);
-                    }
+                        newAngle = Mathf.LerpAngle(GlobalRotation.Y, Mathf.Atan2(moveDirection.X, moveDirection.Z), .2f);
 
-                    GlobalRotation = new Vector3(GlobalRotation.X, newAngle, GlobalRotation.Z);
+                        GlobalRotation = new Vector3(GlobalRotation.X, newAngle, GlobalRotation.Z);
+                    }
                 }
             }
         }
