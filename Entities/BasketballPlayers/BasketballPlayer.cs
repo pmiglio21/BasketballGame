@@ -317,9 +317,14 @@ namespace Entities
 
                     if (TargetPlayer != this)
                     {
-                        GetPassFocusInput();
-
-                        GetPassBallInput();
+                        if (HasBasketball)
+                        {
+                            GetPassBallInput();
+                        }
+                        else
+                        {
+                            GetPassFocusInput();
+                        }
                     }
 
                     if (HasBasketball)
@@ -819,17 +824,37 @@ namespace Entities
 
         protected void GetPassTargetSelectionInput()
         {
-            if (Input.IsActionJustPressed($"SelectTargetLeft_{TeamIdentifier}"))
+            if (Input.IsActionJustPressed($"SelectTarget_{TeamIdentifier}"))
             {
-                FindPassTargetPlayer(true);
-            }
-            else if (Input.IsActionJustPressed($"SelectTargetRight_{TeamIdentifier}"))
-            {
-                FindPassTargetPlayer(false);
+                FindPassTargetPlayer();
             }
         }
 
+        //Not going in any specific direction, just incrementing player number
+        private void FindPassTargetPlayer()
+        {
+            //Reset pass target indicators for all players
+            ParentBasketballCourtLevel.AllBasketballPlayers.ForEach(player => player.IsTargeted = false);
 
+            List<BasketballPlayer> availablePlayersToPassTo = ParentBasketballCourtLevel.AllBasketballPlayers.Where(player => player.TeamIdentifier == TeamIdentifier && player != this).OrderBy(player => player.PlayerIdentifier).ToList();
+
+            BasketballPlayer nextTargetPlayer = null;
+            nextTargetPlayer = availablePlayersToPassTo.FirstOrDefault(player => int.Parse(player.PlayerIdentifier) > int.Parse(TargetPlayer.PlayerIdentifier));
+
+            //Current player is the highest-numbered player, use first numbered player
+            if (nextTargetPlayer == null)
+            {
+                TargetPlayer = availablePlayersToPassTo.First();
+            }
+            else
+            {
+               TargetPlayer = nextTargetPlayer;
+            }
+
+            TargetPlayer.IsTargeted = true;
+        }
+
+        //Going in a direction, left to right or right to left
         private void FindPassTargetPlayer(bool fromLeftToRight)
         {
             List<BasketballPlayer> availablePlayers = GetOrganizedAvailablePassTargets(fromLeftToRight);
@@ -851,8 +876,6 @@ namespace Entities
             }
 
             TargetPlayer.IsTargeted = true;
-
-            //GD.Print($"Player {DeviceIdentifier} will pass to Player {PassTargetPlayer?.DeviceIdentifier}\n");
         }
 
         private List<BasketballPlayer> GetOrganizedAvailablePassTargets(bool fromLeftToRight)
@@ -892,7 +915,7 @@ namespace Entities
 
         protected void GetPassBallInput()
         {
-            if (Input.IsActionJustPressed($"PassBall_{TeamIdentifier}"))
+            if (Input.IsActionJustPressed($"PassFocus_{TeamIdentifier}"))
             {
                 //GD.Print($"PassBall triggered by player {PlayerIdentifier}");
 
@@ -976,6 +999,7 @@ namespace Entities
             {
                 float newAngle;
 
+                //TODO: Fix rotating to a single direction when shooting, should be aiming towards hoop
                 if (PlayerState == PlayerState.IsShooting ||
                     ((ParentBasketballCourtLevel.Basketball.BasketballState == BasketballState.IsBeingShotAscending || ParentBasketballCourtLevel.Basketball.BasketballState == BasketballState.IsBeingShotDescending) && ParentBasketballCourtLevel.Basketball.PreviousPlayer == this))
                 {
