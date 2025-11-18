@@ -560,8 +560,15 @@ namespace Entities
             }
             else if (IsTargeted)
             {
-                moveInput.X = Input.GetActionStrength($"MoveTargetEast_{TeamIdentifier}") - Input.GetActionStrength($"MoveTargetWest_{TeamIdentifier}");
-                moveInput.Z = Input.GetActionStrength($"MoveTargetSouth_{TeamIdentifier}") - Input.GetActionStrength($"MoveTargetNorth_{TeamIdentifier}");
+                float targetedMovementX = Input.GetActionStrength($"MoveTargetEast_{TeamIdentifier}") - Input.GetActionStrength($"MoveTargetWest_{TeamIdentifier}");
+                float targetedMovementZ = Input.GetActionStrength($"MoveTargetSouth_{TeamIdentifier}") - Input.GetActionStrength($"MoveTargetNorth_{TeamIdentifier}");
+
+                //Keep them moving from last movement
+                if (targetedMovementX != 0 || targetedMovementZ != 0)
+                {
+                    moveInput.X = targetedMovementX;
+                    moveInput.Z = targetedMovementZ;
+                }
             }
 
             if (yMoveInput > 0 && conditionsForSuperBlockAreMet)
@@ -1045,7 +1052,6 @@ namespace Entities
             {
                 Velocity = moveDirection * _standardMovementSpeed;
             }
-            
 
             MoveAndSlide();
 
@@ -1120,6 +1126,11 @@ namespace Entities
             if (area.IsInGroup(GroupTags.ThreePointLine))
             {
                 IsInThreePointLine = false;
+
+                if (IsTargeted)
+                {
+                    moveInput = Vector3.Zero;
+                }
             }
         }
 
