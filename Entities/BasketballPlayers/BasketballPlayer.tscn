@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=3 uid="uid://67mof4iojay2"]
+[gd_scene load_steps=20 format=3 uid="uid://67mof4iojay2"]
 
 [ext_resource type="Script" path="res://Entities/BasketballPlayers/BasketballPlayer.cs" id="1_kr2bl"]
 [ext_resource type="PackedScene" uid="uid://f8100ldjgx8q" path="res://Entities/EntityShadow.tscn" id="2_35xjf"]
@@ -33,6 +33,12 @@ albedo_color = Color(0.686275, 0.329412, 0.0705882, 1)
 
 [sub_resource type="SphereMesh" id="SphereMesh_04er7"]
 material = SubResource("StandardMaterial3D_i3nkc")
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_ngtvp"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_fctlk"]
+
+[sub_resource type="SphereMesh" id="SphereMesh_iwtvc"]
 
 [node name="BasketballPlayer" type="CharacterBody3D" groups=["BasketballPlayer"]]
 collision_layer = 0
@@ -144,6 +150,20 @@ shape = SubResource("SphereShape3D_bgp65")
 [node name="MeshInstance3D" type="MeshInstance3D" parent="CpuTargetPivot/CpuTargetBody"]
 transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0, 0)
 mesh = SubResource("SphereMesh_04er7")
+
+[node name="DribblingBallTargetPivot" type="Node3D" parent="."]
+
+[node name="DribblingBallTargetBody" type="StaticBody3D" parent="DribblingBallTargetPivot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.179571, 0, 1.15071)
+physics_material_override = SubResource("PhysicsMaterial_ngtvp")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="DribblingBallTargetPivot/DribblingBallTargetBody"]
+transform = Transform3D(0.25, 0, 0, 0, 0.25, 0, 0, 0, 0.25, 0, 0, 0)
+shape = SubResource("SphereShape3D_fctlk")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="DribblingBallTargetPivot/DribblingBallTargetBody"]
+transform = Transform3D(0.25, 0, 0, 0, 0.25, 0, 0, 0, 0.25, 0, 0, 0)
+mesh = SubResource("SphereMesh_iwtvc")
 
 [connection signal="area_entered" from="BodyDetectionArea" to="." method="OnBodyDetectionAreaEntered"]
 [connection signal="area_exited" from="BodyDetectionArea" to="." method="OnBodyDetectionAreaExited"]

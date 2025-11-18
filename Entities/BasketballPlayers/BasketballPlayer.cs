@@ -32,6 +32,9 @@ namespace Entities
         private Node3D _cpuTargetPivot = new();
         public StaticBody3D CpuTargetBody = new();
 
+        private Node3D _dribblingBallTargetPivot = new();
+        private StaticBody3D _dribblingBallTargetBody = new();
+
         private Timer _jumpAscensionTimer = new();
 
         private Timer _jumpStartupTimer = new();
@@ -254,6 +257,9 @@ namespace Entities
             _cpuTargetPivot = GetNode("CpuTargetPivot") as Node3D;
             CpuTargetBody = _cpuTargetPivot.GetNode("CpuTargetBody") as StaticBody3D;
 
+            _dribblingBallTargetPivot = GetNode("DribblingBallTargetPivot") as Node3D;
+            _dribblingBallTargetBody = _dribblingBallTargetPivot.GetNode("DribblingBallTargetBody") as StaticBody3D;
+
             _jumpAscensionTimer = GetNode("JumpAscensionTimer") as Timer;
 
             _jumpStartupTimer = GetNode("JumpStartupTimer") as Timer;
@@ -425,11 +431,6 @@ namespace Entities
             //Is finished with super jump (ball has been blocked or rebounded) and must descend now
             if (HasFocus && _isSuperJumpComplete)
             {
-                if (!IsOnOffense)
-                {
-                    //ToggleShotBlockBody(false);
-                }
-
                 yMoveInput = Mathf.Clamp(-GetStandardJumpYValue((float)delta), _minimumFallVelocity, _maximumFallVelocity) * .33f;
 
                 //GD.Print($"Descending 2 - yMoveInput: {yMoveInput}; jumpAscensionCount: {_jumpAscensionCount}");
@@ -473,7 +474,6 @@ namespace Entities
             //Is on floor and jump startup completes, continuing to jump
             else if (HasFocus && _isJumpStartupFinished && IsOnFloor() && Input.IsActionPressed($"Jump_{TeamIdentifier}"))
             {
-                //_isJumpStartupFinished = false;
                 _isJumpFinished = false;
 
                 _isStuckOnFloor = false;
@@ -514,7 +514,6 @@ namespace Entities
 
                 if (HasBasketball)
                 {
-                    //ParentBasketballCourtLevel.Basketball.GlobalPosition = GlobalPosition + new Vector3(0, 1.2f, 1f);
                     ParentBasketballCourtLevel.Basketball.GlobalPosition = GlobalPosition + new Vector3(0, 1.2f, 0);
                 }
 
@@ -525,11 +524,6 @@ namespace Entities
             {
                 PlayerState = PlayerState.IsIdle;
 
-                if (!IsOnOffense)
-                {
-                    //ToggleShotBlockBody(false);
-                }
-
                 yMoveInput = Mathf.Clamp(-GetStandardJumpYValue((float)delta), _minimumFallVelocity, _maximumFallVelocity);
 
                 //GD.Print($"Descending 1 - yMoveInput: {yMoveInput}; jumpAscensionCount: {_jumpAscensionCount}");
@@ -539,11 +533,6 @@ namespace Entities
             //Is in air and ascending is finished. Falls whether jump button is held or not
             else if (!IsOnFloor() && _jumpAscensionTimer.IsStopped())
             {
-                if (!IsOnOffense)
-                {
-                    //ToggleShotBlockBody(false);
-                }
-
                 yMoveInput = Mathf.Clamp(-GetStandardJumpYValue((float)delta), _minimumFallVelocity, _maximumFallVelocity);
 
                 //GD.Print($"Descending 2 - yMoveInput: {yMoveInput}; jumpAscensionCount: {_jumpAscensionCount}");
@@ -563,7 +552,7 @@ namespace Entities
                 float targetedMovementX = Input.GetActionStrength($"MoveTargetEast_{TeamIdentifier}") - Input.GetActionStrength($"MoveTargetWest_{TeamIdentifier}");
                 float targetedMovementZ = Input.GetActionStrength($"MoveTargetSouth_{TeamIdentifier}") - Input.GetActionStrength($"MoveTargetNorth_{TeamIdentifier}");
 
-                //Keep them moving from last movement
+                //Keep them moving from last movement as long as they aren't standing still
                 if (targetedMovementX != 0 || targetedMovementZ != 0)
                 {
                     moveInput.X = targetedMovementX;
@@ -601,10 +590,10 @@ namespace Entities
             {
                 moveDirection = new Vector3(moveInput.X, yMoveInput, moveInput.Z);
 
-                //if (HasBasketball && yMoveInput != 0)
-                //{
-                //    moveDirection = new Vector3(moveDirection.X/10, yMoveInput, moveDirection.Z/10);
-                //}
+                if (HasBasketball && yMoveInput > 0)
+                {
+                    moveDirection = new Vector3(moveDirection.X / 4, yMoveInput, moveDirection.Z / 4);
+                }
             }
 
             if (Input.IsActionJustReleased($"Jump_{TeamIdentifier}"))
@@ -623,12 +612,9 @@ namespace Entities
 
         private float GetStandardJumpYValue(float delta)
         {
-            var jumpVelocity = 150.0f; // Adjust jump velocity as needed
-
-            //float jumpVelocity = Velocity.Y == 0 ? 2f : Velocity.Y; // Adjust jump velocity as needed
+            var jumpVelocity = 150.0f;
 
             return ((jumpVelocity) / (_jumpAscensionCount)) * (float)delta;
-            //return (((jumpVelocity) - _jumpAscensionCount)/100) * (float)delta;
         }
 
         protected void GetShootBasketballInput()
@@ -805,9 +791,8 @@ namespace Entities
                 ParentBasketballCourtLevel.Basketball.SetShotAsensionCountModifier(this);
 
                 ParentBasketballCourtLevel.Basketball.LinearVelocity = new Vector3(basketballDestinationGlobalPosition.X - ParentBasketballCourtLevel.Basketball.GlobalPosition.X,
-                                                                             //Mathf.Sin(Mathf.Pi / 4) * 20,
-                                                                             0,
-                                                                             basketballDestinationGlobalPosition.Z - ParentBasketballCourtLevel.Basketball.GlobalPosition.Z) * ballSpeed;
+                                                                                   0,
+                                                                                   basketballDestinationGlobalPosition.Z - ParentBasketballCourtLevel.Basketball.GlobalPosition.Z) * ballSpeed;
 
                 ParentBasketballCourtLevel.Basketball.DestinationGlobalPosition = basketballDestinationGlobalPosition;
 
@@ -818,14 +803,6 @@ namespace Entities
                 ParentBasketballCourtLevel.BasketballResetTimer.Start();
             }
         }
-
-        ////Ball is maybe bumping into own player's shot block body and indicator bodies???????????/
-        //private Vector3 CalculateBasketballShotGlobalRotation()
-        //{
-        //    Vector3 shotGlobalRotation = Vector3.Zero;
-
-        //    return shotGlobalRotation;
-        //}
 
         #region Pass Target Input
 
@@ -861,57 +838,10 @@ namespace Entities
             TargetPlayer.IsTargeted = true;
         }
 
-        //Going in a direction, left to right or right to left
-        private void FindPassTargetPlayer(bool fromLeftToRight)
-        {
-            List<BasketballPlayer> availablePlayers = GetOrganizedAvailablePassTargets(fromLeftToRight);
-
-            if (TargetPlayer != this)
-            {
-                availablePlayers.Remove(this);
-            }
-
-            int indexOfCurrentTargetPlayer = availablePlayers.IndexOf(TargetPlayer);
-
-            if (indexOfCurrentTargetPlayer == 0)
-            {
-                TargetPlayer = availablePlayers.Last();
-            }
-            else
-            {
-                TargetPlayer = availablePlayers.ElementAt(indexOfCurrentTargetPlayer - 1);
-            }
-
-            TargetPlayer.IsTargeted = true;
-        }
-
-        private List<BasketballPlayer> GetOrganizedAvailablePassTargets(bool fromLeftToRight)
-        {
-            List<BasketballPlayer> availablePassTargets;
-
-            //Reset pass target indicators for all players
-            ParentBasketballCourtLevel.AllBasketballPlayers.ForEach(player => player.IsTargeted = false);
-
-            if (fromLeftToRight)
-            {
-                availablePassTargets = ParentBasketballCourtLevel.AllBasketballPlayers.Where(player => player.TeamIdentifier == TeamIdentifier).OrderBy(player => player.GlobalPosition.X).ToList();
-            }
-            else
-            {
-                availablePassTargets = ParentBasketballCourtLevel.AllBasketballPlayers.Where(player => player.TeamIdentifier == TeamIdentifier).OrderByDescending(player => player.GlobalPosition.X).ToList();
-            }
-
-            return availablePassTargets;
-        }
-
-        #endregion
-
         protected void GetPassFocusInput()
         {
             if (Input.IsActionJustPressed($"PassFocus_{TeamIdentifier}"))
             {
-                //GD.Print($"PassFocus triggered by player {PlayerIdentifier}");
-
                 TargetPlayer.HasFocus = true;
 
                 this.HasFocus = false;
@@ -924,43 +854,22 @@ namespace Entities
         {
             if (Input.IsActionJustPressed($"PassFocus_{TeamIdentifier}"))
             {
-                //GD.Print($"PassBall triggered by player {PlayerIdentifier}");
-
                 if (HasBasketball)
                 {
                     ParentBasketballCourtLevel.Basketball.PreviousPlayer = this;
                     ParentBasketballCourtLevel.Basketball.TargetPlayer = TargetPlayer;
 
                     this.HasBasketball = false;
-                    //this.HasFocus = false;
 
                     ParentBasketballCourtLevel.Basketball.Reparent(ParentBasketballCourtLevel);
                     ParentBasketballCourtLevel.Basketball.BasketballState = BasketballState.IsBeingPassed;
 
                     TargetPlayer = this;
                 }
-                else
-                {
-                    Node3D parentNodeOfBasketball = ParentBasketballCourtLevel.Basketball.GetParent() as Node3D;
-
-                    if (parentNodeOfBasketball is BasketballPlayer)
-                    {
-                        BasketballPlayer cpuPlayerInPossessionOfBall = ParentBasketballCourtLevel.Basketball.GetParent() as BasketballPlayer;
-
-                        ParentBasketballCourtLevel.Basketball.PreviousPlayer = cpuPlayerInPossessionOfBall;
-                        ParentBasketballCourtLevel.Basketball.TargetPlayer = this;
-
-                        cpuPlayerInPossessionOfBall.HasBasketball = false;
-                        cpuPlayerInPossessionOfBall.HasFocus = false;
-
-                        ParentBasketballCourtLevel.Basketball.Reparent(ParentBasketballCourtLevel);
-                        ParentBasketballCourtLevel.Basketball.BasketballState = BasketballState.IsBeingPassed;
-
-                        cpuPlayerInPossessionOfBall.TargetPlayer = cpuPlayerInPossessionOfBall;
-                    }
-                }
             }
         }
+
+        #endregion
 
         protected void GetStealInput()
         {
@@ -1079,6 +988,11 @@ namespace Entities
             }
         }
 
+        private void RotateDribblingBasketball()
+        {
+
+        }
+
         private void RotateCpuTargetBody()
         {
             if (IsOnOffense)
@@ -1146,29 +1060,11 @@ namespace Entities
 
                     if (basketball.BasketballState == BasketballState.IsBeingPassed && basketball.PreviousPlayer != this && basketball.TargetPlayer == this)
                     {
-                        try
-                        {
-                            //GD.Print($"Player {PlayerIdentifier} is receiving the ball from the ground/reboundable state");
-                            ReceiveTheBall(basketball);
-                        }
-                        catch (Exception ex)
-                        {
-                            GD.PrintErr($"Error while player {PlayerIdentifier} while passing: {ex.Message}");
-                            GD.PrintErr($"BasketballState: {basketball.BasketballState}");
-                        }
+                        ReceiveTheBall(basketball);
                     }
                     else if (basketball.BasketballState == BasketballState.IsUpForGrabsOnGround || basketball.BasketballState == BasketballState.IsReboundable)
                     {
-                        try
-                        {
-                            //GD.Print($"Player {PlayerIdentifier} is receiving the ball from the ground/reboundable state");
-                            ReceiveTheBall(basketball);
-                        }
-                        catch (Exception ex)
-                        {
-                            GD.PrintErr($"Error while player {PlayerIdentifier} was trying to receive the ball from ground/reboundable state: {ex.Message}");
-                            GD.PrintErr($"BasketballState: {basketball.BasketballState}");
-                        }
+                        ReceiveTheBall(basketball);
                     }
                 }
             }
@@ -1229,11 +1125,13 @@ namespace Entities
 
             basketball.LinearVelocity = Vector3.Zero;
 
-            Vector3 distanceBetweenPlayerAndBall = new Vector3(0, 0, 1.5f);
-            Vector3 rotatedDistance = distanceBetweenPlayerAndBall.Rotated(Vector3.Up, this.GlobalPosition.Y);
+            //Vector3 distanceBetweenPlayerAndBall = new Vector3(0, 0, 1.5f);
+            //Vector3 rotatedDistance = distanceBetweenPlayerAndBall.Rotated(Vector3.Up, this.GlobalPosition.Y);
             //basketball.GlobalPosition = this.GlobalPosition + rotatedDistance;
 
             //basketball.GlobalPosition = this.GlobalPosition + new Vector3(0, 0, 1.5f);
+
+            basketball.GlobalPosition = _dribblingBallTargetBody.GlobalPosition;
 
             if (IsOnFloor())
             {

@@ -131,9 +131,9 @@ namespace Entities
             }
         }
 
-        // Called every frame. 'delta' is the elapsed time since the previous frame.
         public override void _Process(double delta)
         {
+            //For getting inputs
         }
 
         public void SetShotAsensionCountModifier(BasketballPlayer shootingPlayer)
@@ -235,7 +235,8 @@ namespace Entities
 
                 MoveAndCollide(LinearVelocity * (float)delta);
             }
-            else if (BasketballState == BasketballState.IsBeingPassed)//Used to send ball to player
+            //Used to send ball to player
+            else if (BasketballState == BasketballState.IsBeingPassed)
             {
                 if (TargetPlayer != null && TargetPlayer != GetParent() as BasketballPlayer)
                 {
@@ -250,7 +251,8 @@ namespace Entities
 
                 MoveAndCollide(LinearVelocity * (float)delta);
             }
-            else if (BasketballState == BasketballState.IsUpForGrabsOnGround || BasketballState == BasketballState.IsReboundable) //Bouncing on floor or rebounding off basket, etc.
+            //Bouncing on floor or rebounding off basket, etc.
+            else if (BasketballState == BasketballState.IsUpForGrabsOnGround || BasketballState == BasketballState.IsReboundable)
             {
                 KinematicCollision3D collisionInfo = MoveAndCollide(LinearVelocity * (float)delta);
             }
@@ -277,11 +279,6 @@ namespace Entities
                 {
                     //Reflect velocity vector
                     velocity = velocity.Bounce(normal) * BounceDampeningFactor;
-                    
-                    //if (velocity.Length() < MinBounceVelocity)
-                    //{
-                    //    velocity = Vector3.Zero;
-                    //}
                 }
             }
 
