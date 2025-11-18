@@ -192,7 +192,7 @@ namespace Entities
         protected Vector3 moveDirection = Vector3.Zero;
         protected float moveAngle = 0;
 
-        float movementSpeed = 20.0f;
+        private float _standardMovementSpeed = 15.0f;
 
         bool _isStuckOnFloor = false;
 
@@ -961,17 +961,58 @@ namespace Entities
             {
                 GD.Print($"StealBall triggered by player {PlayerIdentifier}");
 
-                if (ParentBasketballCourtLevel.Basketball.GetParent() is BasketballCourtLevel)
+                Basketball basketball = ParentBasketballCourtLevel.Basketball;
+
+                if (basketball.GetParent() is BasketballCourtLevel)
                 {
-                    IsBasketballInDetectionArea = ParentBasketballCourtLevel.Basketball.GlobalPosition.DistanceTo(GlobalPosition) <= 4.0f;
+                    IsBasketballInDetectionArea = basketball.GlobalPosition.DistanceTo(GlobalPosition) <= 4.0f;
 
                     if (IsBasketballInDetectionArea)
                     {
-                        ReceiveTheBall(ParentBasketballCourtLevel.Basketball);
+                        ReceiveTheBall(basketball);
 
                         GD.Print($"Ball has been stolen by player {PlayerIdentifier}!");
+                    }
+                }
+                else if (basketball.GetParent() is BasketballPlayer)
+                {
+                    BasketballPlayer playerWithBall = basketball.GetParent() as BasketballPlayer;
 
-                        FlipTeamIsOnOffense(TeamIdentifier, true);
+                    if (playerWithBall.IsOnOffense != IsOnOffense && basketball.BasketballState == BasketballState.IsBeingDribbled)
+                    {
+                        int chanceOfSuccessfulSteal = ParentBasketballCourtLevel.RandomNumberGenerator.RandiRange(0, 100);
+
+                        int attemptAtSteal = 0;
+
+                        if (SkillStats.Stealing == GlobalConstants.SkillStatHigh)
+                        {
+                            attemptAtSteal = 100;
+                        }
+                        else if (SkillStats.Stealing == GlobalConstants.SkillStatAverage)
+                        {
+                            attemptAtSteal = 40;
+                        }
+                        else if (SkillStats.Stealing == GlobalConstants.SkillStatLow)
+                        {
+                            attemptAtSteal = 10;
+                        }
+
+                        if (chanceOfSuccessfulSteal <= attemptAtSteal)
+                        {
+                            if (playerWithBall.SkillStats.BallHandling == GlobalConstants.SkillStatHigh)
+                            {
+                                int chanceOfStealAgain = ParentBasketballCourtLevel.RandomNumberGenerator.RandiRange(0, 100);
+
+                                if (chanceOfStealAgain <= 50)
+                                {
+                                    ReceiveTheBall(basketball);
+                                }
+                            }
+                            else
+                            {
+                                ReceiveTheBall(basketball);
+                            }
+                        }
                     }
                 }
             }
@@ -992,7 +1033,20 @@ namespace Entities
 
         private void MovePlayer()
         {
-            Velocity = moveDirection * movementSpeed;
+            if (SkillStats.Speed == GlobalConstants.SkillStatHigh && HasBasketball)
+            {
+                Velocity = moveDirection * _standardMovementSpeed * 1.5f;
+            }
+            else if (SkillStats.Speed == GlobalConstants.SkillStatLow && HasBasketball)
+            {
+                Velocity = moveDirection * _standardMovementSpeed * .5f;
+            }
+            else
+            {
+                Velocity = moveDirection * _standardMovementSpeed;
+            }
+            
+
             MoveAndSlide();
 
             if (moveDirection != Vector3.Zero)
