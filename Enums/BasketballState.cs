@@ -9,7 +9,7 @@ namespace Enums
 
         IsBeingHeldByAirbornePlayer,
 
-        IsInAirWithPlayer,
+        IsHeldByAirbornePlayerAndShootable,
 
         IsBeingPassed,
 

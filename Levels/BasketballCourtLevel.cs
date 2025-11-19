@@ -93,7 +93,11 @@ namespace Levels
         {
             if (basketballPlayer != null && Basketball.GetParent() is not BasketballPlayer)
             {
-                Basketball.Reparent(basketballPlayer);
+                if (Basketball.GetParent() != basketballPlayer)
+                {
+                    Basketball.Reparent(basketballPlayer);
+                }
+                
                 //Basketball.ParentPlayer = basketballPlayer;
                 basketballPlayer.HasBasketball = true;
                 basketballPlayer.HasFocus = true;
@@ -199,8 +203,8 @@ namespace Levels
                 }
             }
 
-            basketballPlayer.SkillStats.Rebounding = GlobalConstants.SkillStatHigh;
-            basketballPlayer.SkillStats.Blocking = GlobalConstants.SkillStatHigh;
+            //basketballPlayer.SkillStats.Rebounding = GlobalConstants.SkillStatHigh;
+            //basketballPlayer.SkillStats.Blocking = GlobalConstants.SkillStatHigh;
         }
 
         private void ResetBasketballOnTimeout()

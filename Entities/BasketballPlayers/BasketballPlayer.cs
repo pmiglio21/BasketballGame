@@ -201,6 +201,7 @@ namespace Entities
 
         #region Jump Properties
 
+        private const float _weakjumpTime = .1f;
         private const float _normaljumpTime = .4f;
         private const float _superJumpTime = 1f;
         private int _jumpAscensionCount = 1;
@@ -423,10 +424,17 @@ namespace Entities
 
             #region Jumping Logic
 
-            bool conditionsForSuperBlockAreMet = SkillStats.Blocking == GlobalConstants.SkillStatHigh && ParentBasketballCourtLevel.Basketball.BasketballState == BasketballState.IsBeingShotAscending;
+            bool conditionsForSuperBlockAreMet = SkillStats.Blocking == GlobalConstants.SkillStatHigh && (ParentBasketballCourtLevel.Basketball.BasketballState == BasketballState.IsBeingShotAscending || ParentBasketballCourtLevel.Basketball.BasketballState == BasketballState.IsHeldByAirbornePlayerAndShootable);
 
             bool conditionsForSuperReboundAreMet = SkillStats.Rebounding == GlobalConstants.SkillStatHigh && 
                 (ParentBasketballCourtLevel.Basketball.BasketballState == BasketballState.IsReboundable || (ParentBasketballCourtLevel.Basketball.BasketballState == BasketballState.IsUpForGrabsOnGround && ParentBasketballCourtLevel.Basketball.GlobalPosition.Y > 2.5f));
+
+
+            bool conditionsForWeakBlockAreMet = SkillStats.Blocking == GlobalConstants.SkillStatLow && (ParentBasketballCourtLevel.Basketball.BasketballState == BasketballState.IsBeingShotAscending || ParentBasketballCourtLevel.Basketball.BasketballState == BasketballState.IsHeldByAirbornePlayerAndShootable);
+
+            bool conditionsForWeakReboundAreMet = SkillStats.Rebounding == GlobalConstants.SkillStatLow &&
+                (ParentBasketballCourtLevel.Basketball.BasketballState == BasketballState.IsReboundable || (ParentBasketballCourtLevel.Basketball.BasketballState == BasketballState.IsUpForGrabsOnGround && ParentBasketballCourtLevel.Basketball.GlobalPosition.Y > 2.5f));
+
 
             //Is finished with super jump (ball has been blocked or rebounded) and must descend now
             if (HasFocus && _isSuperJumpComplete)
@@ -480,7 +488,7 @@ namespace Entities
 
                 if (HasBasketball)
                 {
-                    ParentBasketballCourtLevel.Basketball.BasketballState = BasketballState.IsInAirWithPlayer;
+                    ParentBasketballCourtLevel.Basketball.BasketballState = BasketballState.IsHeldByAirbornePlayerAndShootable;
                 }
 
                 _jumpAscensionCount = 1;
@@ -490,6 +498,10 @@ namespace Entities
                 if (conditionsForSuperBlockAreMet || conditionsForSuperReboundAreMet)
                 {
                     _jumpAscensionTimer.WaitTime = _superJumpTime;
+                }
+                else if (conditionsForWeakBlockAreMet || conditionsForWeakReboundAreMet)
+                {
+                    _jumpAscensionTimer.WaitTime = _weakjumpTime;
                 }
                 else
                 {
@@ -861,7 +873,10 @@ namespace Entities
 
                     this.HasBasketball = false;
 
-                    ParentBasketballCourtLevel.Basketball.Reparent(ParentBasketballCourtLevel);
+                    if (ParentBasketballCourtLevel.Basketball.GetParent() != ParentBasketballCourtLevel)
+                    {
+                        ParentBasketballCourtLevel.Basketball.Reparent(ParentBasketballCourtLevel);
+                    }
                     ParentBasketballCourtLevel.Basketball.BasketballState = BasketballState.IsBeingPassed;
 
                     TargetPlayer = this;
@@ -1121,7 +1136,10 @@ namespace Entities
             HasFocus = true;
             HasBasketball = true;
 
-            basketball.Reparent(this);
+            if (ParentBasketballCourtLevel.Basketball.GetParent() != this)
+            {
+                basketball.Reparent(this);
+            }
 
             basketball.LinearVelocity = Vector3.Zero;
 
