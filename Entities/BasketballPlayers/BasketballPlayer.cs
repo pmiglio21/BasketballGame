@@ -904,8 +904,6 @@ namespace Entities
         {
             if (Input.IsActionJustPressed($"StealBall_{TeamIdentifier}"))
             {
-                GD.Print($"StealBall triggered by player {PlayerIdentifier}");
-
                 Basketball basketball = ParentBasketballCourtLevel.Basketball;
 
                 IsBasketballInDetectionArea = basketball.GlobalPosition.DistanceTo(GlobalPosition) <= 4.0f;
@@ -996,11 +994,11 @@ namespace Entities
         {
             if (SkillStats.Speed == GlobalConstants.SkillStatHigh && HasBasketball)
             {
-                Velocity = moveDirection * _standardMovementSpeed * 1.5f;
+                Velocity = new Vector3(moveDirection.X * _standardMovementSpeed * 1.5f, moveDirection.Y * _standardMovementSpeed, moveDirection.Z * _standardMovementSpeed * 1.5f);
             }
             else if (SkillStats.Speed == GlobalConstants.SkillStatLow && HasBasketball)
             {
-                Velocity = moveDirection * _standardMovementSpeed * .5f;
+                Velocity = new Vector3(moveDirection.X * _standardMovementSpeed * .5f, moveDirection.Y * _standardMovementSpeed, moveDirection.Z * _standardMovementSpeed * .5f);
             }
             else
             {
@@ -1023,7 +1021,7 @@ namespace Entities
                 }
                 else if (IsOnFloor())
                 {
-                    if ((moveDirection.X != 0 || moveDirection.Z != 0) && SkillStats.BallHandling == GlobalConstants.SkillStatLow)
+                    if ((moveDirection.X != 0 || moveDirection.Z != 0) && SkillStats.BallHandling == GlobalConstants.SkillStatLow && HasBasketball)
                     {
                         int chanceOfLosingBall = ParentBasketballCourtLevel.RandomNumberGenerator.RandiRange(0, 100);
 
@@ -1215,6 +1213,8 @@ namespace Entities
             HasBasketball = false;
 
             basketball.BasketballState = BasketballState.IsUpForGrabsOnGround;
+
+            basketball.LinearVelocity = new Vector3(ParentBasketballCourtLevel.RandomNumberGenerator.RandfRange(-2, 2), ParentBasketballCourtLevel.RandomNumberGenerator.RandfRange(0, 5), ParentBasketballCourtLevel.RandomNumberGenerator.RandfRange(-2, 2));
 
             //Vector3 currentPlayerVelocity = new Vector3(Velocity.X, Velocity.Y, Velocity.Z);
 
