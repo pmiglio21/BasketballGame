@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Entities
 {
@@ -20,7 +21,9 @@ namespace Entities
 
         #region Components
 
-        public MeshInstance3D _characterBodyMesh = new();
+        private MeshInstance3D _characterBodyMesh = new();
+        private StandardMaterial3D _characterBodyMeshMaterial = new StandardMaterial3D();
+        private Color _originalCharacterBodyColor = new Color();
 
         private StaticBody3D _hasFocusIndicator = new();
         
@@ -248,6 +251,14 @@ namespace Entities
                 _characterBodyMesh.SetSurfaceOverrideMaterial(0, redTeamMaterial);
             }
 
+            // Ensure material is unique and accessible
+            if (_characterBodyMesh != null && _characterBodyMesh.GetSurfaceOverrideMaterial(0) is StandardMaterial3D material)
+            {
+                _characterBodyMeshMaterial = (StandardMaterial3D)material.Duplicate();
+                _characterBodyMesh.SetSurfaceOverrideMaterial(0, _characterBodyMeshMaterial);
+                _originalCharacterBodyColor = _characterBodyMeshMaterial.AlbedoColor;
+            }
+
             _hasFocusIndicator = GetNode("HasFocusIndicator") as StaticBody3D;
 
             _passTargetIndicator = GetNode("PassTargetIndicator") as StaticBody3D;
@@ -364,6 +375,7 @@ namespace Entities
             {
                 if (IsOnOffense)
                 {
+                    //TODO: Make offensive CPUs try to get open
                     //MagnetizeCpuToPairedPlayer();
                 }
                 else
@@ -894,57 +906,73 @@ namespace Entities
 
                 Basketball basketball = ParentBasketballCourtLevel.Basketball;
 
-                if (basketball.GetParent() is BasketballCourtLevel)
-                {
-                    IsBasketballInDetectionArea = basketball.GlobalPosition.DistanceTo(GlobalPosition) <= 4.0f;
+                IsBasketballInDetectionArea = basketball.GlobalPosition.DistanceTo(GlobalPosition) <= 4.0f;
 
-                    if (IsBasketballInDetectionArea)
+                if (IsBasketballInDetectionArea)
+                {
+                    if (basketball.GetParent() is BasketballCourtLevel)
                     {
                         ReceiveTheBall(basketball);
 
                         GD.Print($"Ball has been stolen by player {PlayerIdentifier}!");
                     }
-                }
-                else if (basketball.GetParent() is BasketballPlayer)
-                {
-                    BasketballPlayer playerWithBall = basketball.GetParent() as BasketballPlayer;
-
-                    if (playerWithBall.IsOnOffense != IsOnOffense && basketball.BasketballState == BasketballState.IsBeingDribbled)
+                    else if (basketball.GetParent() is BasketballPlayer)
                     {
-                        int chanceOfSuccessfulSteal = ParentBasketballCourtLevel.RandomNumberGenerator.RandiRange(0, 100);
+                        BasketballPlayer playerWithBall = basketball.GetParent() as BasketballPlayer;
 
-                        int attemptAtSteal = 0;
+                        if (playerWithBall.IsOnOffense != IsOnOffense && basketball.BasketballState == BasketballState.IsBeingDribbled)
+                        {
+                            int chanceOfSuccessfulSteal = ParentBasketballCourtLevel.RandomNumberGenerator.RandiRange(0, 100);
 
-                        if (SkillStats.Stealing == GlobalConstants.SkillStatHigh)
-                        {
-                            attemptAtSteal = 100;
-                        }
-                        else if (SkillStats.Stealing == GlobalConstants.SkillStatAverage)
-                        {
-                            attemptAtSteal = 40;
-                        }
-                        else if (SkillStats.Stealing == GlobalConstants.SkillStatLow)
-                        {
-                            attemptAtSteal = 10;
-                        }
+                            int attemptAtSteal = 0;
 
-                        if (chanceOfSuccessfulSteal <= attemptAtSteal)
-                        {
-                            if (playerWithBall.SkillStats.BallHandling == GlobalConstants.SkillStatHigh)
+                            if (SkillStats.Stealing == GlobalConstants.SkillStatHigh)
                             {
-                                int chanceOfStealAgain = ParentBasketballCourtLevel.RandomNumberGenerator.RandiRange(0, 100);
+                                attemptAtSteal = 100;
+                            }
+                            else if (SkillStats.Stealing == GlobalConstants.SkillStatAverage)
+                            {
+                                attemptAtSteal = 40;
+                            }
+                            else if (SkillStats.Stealing == GlobalConstants.SkillStatLow)
+                            {
+                                attemptAtSteal = 10;
+                            }
 
-                                if (chanceOfStealAgain <= 50)
+                            if (chanceOfSuccessfulSteal <= attemptAtSteal)
+                            {
+                                if (playerWithBall.SkillStats.BallHandling == GlobalConstants.SkillStatHigh)
+                                {
+                                    int chanceOfStealAgain = ParentBasketballCourtLevel.RandomNumberGenerator.RandiRange(0, 100);
+
+                                    if (chanceOfStealAgain <= 50)
+                                    {
+                                        ReceiveTheBall(basketball);
+
+                                        FlashColor(new Color(1, 1, 1));
+                                    }
+                                    else
+                                    {
+                                        FlashColor(new Color(0, 0, 0));
+                                    }
+                                }
+                                else
                                 {
                                     ReceiveTheBall(basketball);
+
+                                    FlashColor(new Color(1, 1, 1));
                                 }
                             }
                             else
                             {
-                                ReceiveTheBall(basketball);
+                                FlashColor(new Color(0, 0, 0));
                             }
                         }
                     }
+                }
+                else
+                {
+                    FlashColor(new Color(0, 0, 0));
                 }
             }
         }
@@ -1198,6 +1226,16 @@ namespace Entities
 
                 _shotBlockBody.Hide();
             }
+        }
+
+        public async void FlashColor(Color newMeshColor)
+        {
+            if (_characterBodyMeshMaterial == null) return;
+
+            _characterBodyMeshMaterial.AlbedoColor = newMeshColor;
+            // Wait for a short duration (e.g., 0.2 seconds)
+            await Task.Delay(200);
+            _characterBodyMeshMaterial.AlbedoColor = _originalCharacterBodyColor;
         }
     }
 }
