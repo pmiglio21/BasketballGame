@@ -436,7 +436,9 @@ namespace Entities
 
             #region Jumping Logic
 
-            bool conditionsForSuperBlockAreMet = SkillStats.Blocking == GlobalConstants.SkillStatHigh && (ParentBasketballCourtLevel.Basketball.BasketballState == BasketballState.IsBeingShotAscending || ParentBasketballCourtLevel.Basketball.BasketballState == BasketballState.IsHeldByAirbornePlayerAndShootable);
+            BasketballPlayer playerWithBasketball = ParentBasketballCourtLevel.AllBasketballPlayers.FirstOrDefault(player => player.HasBasketball);
+
+            bool conditionsForSuperBlockAreMet = SkillStats.Blocking == GlobalConstants.SkillStatHigh && (ParentBasketballCourtLevel.Basketball.BasketballState == BasketballState.IsBeingShotAscending || ParentBasketballCourtLevel.Basketball.BasketballState == BasketballState.IsHeldByAirbornePlayerAndShootable) && playerWithBasketball != null && playerWithBasketball.PlayerState == PlayerState.IsShooting && playerWithBasketball != this;
 
             bool conditionsForSuperReboundAreMet = SkillStats.Rebounding == GlobalConstants.SkillStatHigh && 
                 (ParentBasketballCourtLevel.Basketball.BasketballState == BasketballState.IsReboundable || (ParentBasketballCourtLevel.Basketball.BasketballState == BasketballState.IsUpForGrabsOnGround && ParentBasketballCourtLevel.Basketball.GlobalPosition.Y > 2.5f));
@@ -1019,9 +1021,18 @@ namespace Entities
 
                     GlobalRotation = new Vector3(GlobalRotation.X, newAngle, GlobalRotation.Z);
                 }
-                else
+                else if (IsOnFloor())
                 {
-                    if (IsOnFloor())
+                    if ((moveDirection.X != 0 || moveDirection.Z != 0) && SkillStats.BallHandling == GlobalConstants.SkillStatLow)
+                    {
+                        int chanceOfLosingBall = ParentBasketballCourtLevel.RandomNumberGenerator.RandiRange(0, 100);
+
+                        if (chanceOfLosingBall <= 1) //1% to lose ball every time they move
+                        {
+                            LoseTheBall(ParentBasketballCourtLevel.Basketball);
+                        }
+                    }
+                    else
                     {
                         newAngle = Mathf.LerpAngle(GlobalRotation.Y, Mathf.Atan2(moveDirection.X, moveDirection.Z), .2f);
 
@@ -1192,6 +1203,22 @@ namespace Entities
             basketball.PreviousPlayer = this;
 
             FlipTeamIsOnOffense(TeamIdentifier, true);
+        }
+
+        private void LoseTheBall(Basketball basketball)
+        {
+            if (basketball.GetParent() != ParentBasketballCourtLevel)
+            {
+                basketball.Reparent(ParentBasketballCourtLevel);
+            }
+
+            HasBasketball = false;
+
+            basketball.BasketballState = BasketballState.IsUpForGrabsOnGround;
+
+            //Vector3 currentPlayerVelocity = new Vector3(Velocity.X, Velocity.Y, Velocity.Z);
+
+            //basketball.LinearVelocity = currentPlayerVelocity;
         }
 
         private void FlipTeamIsOnOffense(string teamIdentifier, bool isOnOffense)
