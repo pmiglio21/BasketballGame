@@ -301,11 +301,20 @@ namespace Entities
             }
             else if (area.IsInGroup(GroupTags.ForceShotDownArea))
             {
+                //GD.Print($"Got into ForceShotDownArea");
+                //GD.Print($"IsDestinedToSucced: {IsDestinedToSucceed}");
+
                 if (IsDestinedToSucceed)
                 {
                     LinearVelocity = new Vector3(0, -10f, 0);
 
+                    //Vector3 directionToHoop = GlobalPosition.DirectionTo(BasketballCourtLevel.HoopArea.GlobalPosition);
+
+                    //LinearVelocity = directionToHoop;
+
                     //GD.Print($"Got into ForceShotDownArea");
+
+                    //GravityScale = 10;
                 }
             }
         }

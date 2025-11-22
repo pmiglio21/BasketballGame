@@ -512,10 +512,14 @@ namespace Entities
                 if (conditionsForSuperBlockAreMet || conditionsForSuperReboundAreMet)
                 {
                     _jumpAscensionTimer.WaitTime = _superJumpTime;
+
+                    FlashColor(new Color(1, 1, 1));
                 }
                 else if (conditionsForWeakBlockAreMet || conditionsForWeakReboundAreMet)
                 {
                     _jumpAscensionTimer.WaitTime = _weakjumpTime;
+
+                    FlashColor(new Color(0, 0, 0));
                 }
                 else
                 {
@@ -717,6 +721,8 @@ namespace Entities
 
                         basketballDestinationGlobalPosition = ParentBasketballCourtLevel.HoopArea.GlobalPosition + new Vector3(randomXOffset, yOffset, 0);
 
+                        ParentBasketballCourtLevel.Basketball.IsDestinedToSucceed = false;
+
                         newBasketballLightColor = new Color(1, 0, 0);
                     }
                     else if (SkillStats.TwoPointShooting == GlobalConstants.SkillStatLow)
@@ -735,6 +741,8 @@ namespace Entities
                         }
 
                         basketballDestinationGlobalPosition = ParentBasketballCourtLevel.HoopArea.GlobalPosition + new Vector3(randomXOffset, yOffset, 0);
+
+                        ParentBasketballCourtLevel.Basketball.IsDestinedToSucceed = false;
 
                         newBasketballLightColor = new Color(1, 0, 0);
                     }
@@ -789,6 +797,8 @@ namespace Entities
 
                         basketballDestinationGlobalPosition = ParentBasketballCourtLevel.HoopArea.GlobalPosition + new Vector3(randomXOffset, yOffset, 0);
 
+                        ParentBasketballCourtLevel.Basketball.IsDestinedToSucceed = false;
+
                         newBasketballLightColor = new Color(1, 0, 0);
                     }
                     else if (SkillStats.ThreePointShooting == GlobalConstants.SkillStatLow)
@@ -807,6 +817,8 @@ namespace Entities
                         }
 
                         basketballDestinationGlobalPosition = ParentBasketballCourtLevel.HoopArea.GlobalPosition + new Vector3(randomXOffset, yOffset, 0);
+
+                        ParentBasketballCourtLevel.Basketball.IsDestinedToSucceed = false;
 
                         newBasketballLightColor = new Color(1, 0, 0);
                     }
