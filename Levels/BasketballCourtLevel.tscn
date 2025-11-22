@@ -1,8 +1,9 @@
-[gd_scene load_steps=16 format=3 uid="uid://ckacamuxb6baa"]
+[gd_scene load_steps=17 format=3 uid="uid://ckacamuxb6baa"]
 
 [ext_resource type="Script" path="res://Levels/BasketballCourtLevel.cs" id="1_fd8c3"]
 [ext_resource type="PackedScene" uid="uid://67mof4iojay2" path="res://Entities/BasketballPlayers/BasketballPlayer.tscn" id="1_omy0y"]
 [ext_resource type="PackedScene" uid="uid://doymmdgdlp6g0" path="res://Entities/Basketball/Basketball.tscn" id="3_aa00t"]
+[ext_resource type="PackedScene" uid="uid://dcdbyrr8ou4w5" path="res://Levels/LevelObjects/PlayerStartPoint.tscn" id="4_kuxo6"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_cmsn1"]
 
@@ -282,3 +283,15 @@ one_shot = true
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 0.725855, 0.687848, 0, -0.687848, 0.725855, 0, 30.0775, -21.5144)
 light_energy = 0.5
+
+[node name="PlayerStartPoint1" parent="." instance=ExtResource("4_kuxo6")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -20, 1, -30)
+PlayerIdentifier = "1"
+
+[node name="PlayerStartPoint2" parent="." instance=ExtResource("4_kuxo6")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, -25)
+PlayerIdentifier = "2"
+
+[node name="PlayerStartPoint3" parent="." instance=ExtResource("4_kuxo6")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20, 1, -30)
+PlayerIdentifier = "3"

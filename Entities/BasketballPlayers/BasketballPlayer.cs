@@ -404,6 +404,8 @@ namespace Entities
                     {
                         //TODO: Make offensive CPUs try to get open
                         //MagnetizeCpuToPairedPlayer();
+
+                        moveDirection = new Vector3(0, -10f, 0);
                     }
                     else
                     {

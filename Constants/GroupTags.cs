@@ -22,5 +22,7 @@ namespace Constants
         public const string Bounceable = "Bounceable";
 
         public const string Floor = "Floor";
+
+        public const string PlayerStartPoint = "PlayerStartPoint";
     }
 }

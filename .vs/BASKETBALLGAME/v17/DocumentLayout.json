@@ -3,6 +3,10 @@
   "WorkspaceRootPath": "C:\\Users\\pmigl\\OneDrive\\Documents\\GitHub\\BasketballGame\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{59D50053-CA9E-4119-921D-F3733D2C85E7}|BasketballGame.csproj|c:\\users\\pmigl\\onedrive\\documents\\github\\basketballgame\\entities\\basketball\\basketball.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{59D50053-CA9E-4119-921D-F3733D2C85E7}|BasketballGame.csproj|solutionrelative:entities\\basketball\\basketball.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{59D50053-CA9E-4119-921D-F3733D2C85E7}|BasketballGame.csproj|c:\\users\\pmigl\\onedrive\\documents\\github\\basketballgame\\levels\\basketballcourtlevel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{59D50053-CA9E-4119-921D-F3733D2C85E7}|BasketballGame.csproj|solutionrelative:levels\\basketballcourtlevel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
@@ -11,40 +15,12 @@
       "RelativeMoniker": "D:0:0:{59D50053-CA9E-4119-921D-F3733D2C85E7}|BasketballGame.csproj|solutionrelative:entities\\basketballplayers\\basketballplayer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{59D50053-CA9E-4119-921D-F3733D2C85E7}|BasketballGame.csproj|c:\\users\\pmigl\\onedrive\\documents\\github\\basketballgame\\entities\\basketball\\basketball.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{59D50053-CA9E-4119-921D-F3733D2C85E7}|BasketballGame.csproj|solutionrelative:entities\\basketball\\basketball.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{59D50053-CA9E-4119-921D-F3733D2C85E7}|BasketballGame.csproj|c:\\users\\pmigl\\onedrive\\documents\\github\\basketballgame\\entities\\basketballplayers\\boxscorestats.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{59D50053-CA9E-4119-921D-F3733D2C85E7}|BasketballGame.csproj|solutionrelative:entities\\basketballplayers\\boxscorestats.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{59D50053-CA9E-4119-921D-F3733D2C85E7}|BasketballGame.csproj|c:\\users\\pmigl\\onedrive\\documents\\github\\basketballgame\\enums\\basketballstate.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{59D50053-CA9E-4119-921D-F3733D2C85E7}|BasketballGame.csproj|solutionrelative:enums\\basketballstate.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{59D50053-CA9E-4119-921D-F3733D2C85E7}|BasketballGame.csproj|c:\\users\\pmigl\\onedrive\\documents\\github\\basketballgame\\entities\\basketballplayers\\skillstats.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{59D50053-CA9E-4119-921D-F3733D2C85E7}|BasketballGame.csproj|solutionrelative:entities\\basketballplayers\\skillstats.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{59D50053-CA9E-4119-921D-F3733D2C85E7}|BasketballGame.csproj|c:\\users\\pmigl\\onedrive\\documents\\github\\basketballgame\\levels\\levelobjects\\playerstartpoint.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{59D50053-CA9E-4119-921D-F3733D2C85E7}|BasketballGame.csproj|solutionrelative:levels\\levelobjects\\playerstartpoint.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{59D50053-CA9E-4119-921D-F3733D2C85E7}|BasketballGame.csproj|c:\\users\\pmigl\\onedrive\\documents\\github\\basketballgame\\constants\\grouptags.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{59D50053-CA9E-4119-921D-F3733D2C85E7}|BasketballGame.csproj|solutionrelative:constants\\grouptags.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{59D50053-CA9E-4119-921D-F3733D2C85E7}|BasketballGame.csproj|c:\\users\\pmigl\\onedrive\\documents\\github\\basketballgame\\constants\\constants.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{59D50053-CA9E-4119-921D-F3733D2C85E7}|BasketballGame.csproj|solutionrelative:constants\\constants.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{59D50053-CA9E-4119-921D-F3733D2C85E7}|BasketballGame.csproj|c:\\users\\pmigl\\onedrive\\documents\\github\\basketballgame\\enums\\playerstate.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{59D50053-CA9E-4119-921D-F3733D2C85E7}|BasketballGame.csproj|solutionrelative:enums\\playerstate.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{59D50053-CA9E-4119-921D-F3733D2C85E7}|BasketballGame.csproj|c:\\users\\pmigl\\onedrive\\documents\\github\\basketballgame\\enums\\skillstattype.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{59D50053-CA9E-4119-921D-F3733D2C85E7}|BasketballGame.csproj|solutionrelative:enums\\skillstattype.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{59D50053-CA9E-4119-921D-F3733D2C85E7}|BasketballGame.csproj|c:\\users\\pmigl\\onedrive\\documents\\github\\basketballgame\\constants\\materialpaths.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{59D50053-CA9E-4119-921D-F3733D2C85E7}|BasketballGame.csproj|solutionrelative:constants\\materialpaths.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -54,140 +30,69 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 5,
+          "SelectedChildIndex": 3,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "BoxScoreStats.cs",
-              "DocumentMoniker": "C:\\Users\\pmigl\\OneDrive\\Documents\\GitHub\\BasketballGame\\Entities\\BasketballPlayers\\BoxScoreStats.cs",
-              "RelativeDocumentMoniker": "Entities\\BasketballPlayers\\BoxScoreStats.cs",
-              "ToolTip": "C:\\Users\\pmigl\\OneDrive\\Documents\\GitHub\\BasketballGame\\Entities\\BasketballPlayers\\BoxScoreStats.cs",
-              "RelativeToolTip": "Entities\\BasketballPlayers\\BoxScoreStats.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAUAAAAkAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-22T02:58:27.935Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 8,
-              "Title": "PlayerState.cs",
-              "DocumentMoniker": "C:\\Users\\pmigl\\OneDrive\\Documents\\GitHub\\BasketballGame\\Enums\\PlayerState.cs",
-              "RelativeDocumentMoniker": "Enums\\PlayerState.cs",
-              "ToolTip": "C:\\Users\\pmigl\\OneDrive\\Documents\\GitHub\\BasketballGame\\Enums\\PlayerState.cs",
-              "RelativeToolTip": "Enums\\PlayerState.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAgAAAASAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-22T00:48:04.949Z"
-            },
-            {
-              "$type": "Document",
               "DocumentIndex": 4,
-              "Title": "BasketballState.cs",
-              "DocumentMoniker": "C:\\Users\\pmigl\\OneDrive\\Documents\\GitHub\\BasketballGame\\Enums\\BasketballState.cs",
-              "RelativeDocumentMoniker": "Enums\\BasketballState.cs",
-              "ToolTip": "C:\\Users\\pmigl\\OneDrive\\Documents\\GitHub\\BasketballGame\\Enums\\BasketballState.cs",
-              "RelativeToolTip": "Enums\\BasketballState.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAABQAAAAAAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-01T11:56:38.805Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 6,
               "Title": "GroupTags.cs",
               "DocumentMoniker": "C:\\Users\\pmigl\\OneDrive\\Documents\\GitHub\\BasketballGame\\Constants\\GroupTags.cs",
               "RelativeDocumentMoniker": "Constants\\GroupTags.cs",
               "ToolTip": "C:\\Users\\pmigl\\OneDrive\\Documents\\GitHub\\BasketballGame\\Constants\\GroupTags.cs",
               "RelativeToolTip": "Constants\\GroupTags.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAqwBcAAAAsAAAA",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAABkAAABCAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-26T00:39:02.017Z"
+              "WhenOpened": "2025-11-22T19:55:43.833Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 10,
-              "Title": "MaterialPaths.cs",
-              "DocumentMoniker": "C:\\Users\\pmigl\\OneDrive\\Documents\\GitHub\\BasketballGame\\Constants\\MaterialPaths.cs",
-              "RelativeDocumentMoniker": "Constants\\MaterialPaths.cs",
-              "ToolTip": "C:\\Users\\pmigl\\OneDrive\\Documents\\GitHub\\BasketballGame\\Constants\\MaterialPaths.cs",
-              "RelativeToolTip": "Constants\\MaterialPaths.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAYAAAAKAAAA",
+              "DocumentIndex": 3,
+              "Title": "PlayerStartPoint.cs",
+              "DocumentMoniker": "C:\\Users\\pmigl\\OneDrive\\Documents\\GitHub\\BasketballGame\\Levels\\LevelObjects\\PlayerStartPoint.cs",
+              "RelativeDocumentMoniker": "Levels\\LevelObjects\\PlayerStartPoint.cs",
+              "ToolTip": "C:\\Users\\pmigl\\OneDrive\\Documents\\GitHub\\BasketballGame\\Levels\\LevelObjects\\PlayerStartPoint.cs",
+              "RelativeToolTip": "Levels\\LevelObjects\\PlayerStartPoint.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAqwAcAAAAWAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-08-09T15:56:31.332Z"
+              "WhenOpened": "2025-11-22T19:50:04.207Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 1,
               "Title": "BasketballCourtLevel.cs",
               "DocumentMoniker": "C:\\Users\\pmigl\\OneDrive\\Documents\\GitHub\\BasketballGame\\Levels\\BasketballCourtLevel.cs",
               "RelativeDocumentMoniker": "Levels\\BasketballCourtLevel.cs",
               "ToolTip": "C:\\Users\\pmigl\\OneDrive\\Documents\\GitHub\\BasketballGame\\Levels\\BasketballCourtLevel.cs",
               "RelativeToolTip": "Levels\\BasketballCourtLevel.cs",
-              "ViewState": "AQIAAM4AAAAAAAAAAAAAAO4AAAAmAAAA",
+              "ViewState": "AQIAAF4AAAAAAAAAAAAAwGoAAAAOAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-08-09T15:47:51.641Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 9,
-              "Title": "SkillStatType.cs",
-              "DocumentMoniker": "C:\\Users\\pmigl\\OneDrive\\Documents\\GitHub\\BasketballGame\\Enums\\SkillStatType.cs",
-              "RelativeDocumentMoniker": "Enums\\SkillStatType.cs",
-              "ToolTip": "C:\\Users\\pmigl\\OneDrive\\Documents\\GitHub\\BasketballGame\\Enums\\SkillStatType.cs",
-              "RelativeToolTip": "Enums\\SkillStatType.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-07-25T01:25:27.09Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 7,
-              "Title": "Constants.cs",
-              "DocumentMoniker": "C:\\Users\\pmigl\\OneDrive\\Documents\\GitHub\\BasketballGame\\Constants\\Constants.cs",
-              "RelativeDocumentMoniker": "Constants\\Constants.cs",
-              "ToolTip": "C:\\Users\\pmigl\\OneDrive\\Documents\\GitHub\\BasketballGame\\Constants\\Constants.cs",
-              "RelativeToolTip": "Constants\\Constants.cs",
-              "ViewState": "AQIAAA8AAAAAAAAAAAAswBEAAAAAAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-07-22T17:35:17.7Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "SkillStats.cs",
-              "DocumentMoniker": "C:\\Users\\pmigl\\OneDrive\\Documents\\GitHub\\BasketballGame\\Entities\\BasketballPlayers\\SkillStats.cs",
-              "RelativeDocumentMoniker": "Entities\\BasketballPlayers\\SkillStats.cs",
-              "ToolTip": "C:\\Users\\pmigl\\OneDrive\\Documents\\GitHub\\BasketballGame\\Entities\\BasketballPlayers\\SkillStats.cs",
-              "RelativeToolTip": "Entities\\BasketballPlayers\\SkillStats.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAABYAAAAfAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-07-22T17:30:59.705Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 0,
               "Title": "Basketball.cs",
               "DocumentMoniker": "C:\\Users\\pmigl\\OneDrive\\Documents\\GitHub\\BasketballGame\\Entities\\Basketball\\Basketball.cs",
               "RelativeDocumentMoniker": "Entities\\Basketball\\Basketball.cs",
               "ToolTip": "C:\\Users\\pmigl\\OneDrive\\Documents\\GitHub\\BasketballGame\\Entities\\Basketball\\Basketball.cs",
               "RelativeToolTip": "Entities\\Basketball\\Basketball.cs",
-              "ViewState": "AQIAAF0BAAAAAAAAAAAowG0BAAAoAAAA",
+              "ViewState": "AQIAALEAAAAAAAAAAAAAAM0AAAAGAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-07-16T00:00:20.721Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 2,
               "Title": "BasketballPlayer.cs",
               "DocumentMoniker": "C:\\Users\\pmigl\\OneDrive\\Documents\\GitHub\\BasketballGame\\Entities\\BasketballPlayers\\BasketballPlayer.cs",
               "RelativeDocumentMoniker": "Entities\\BasketballPlayers\\BasketballPlayer.cs",
               "ToolTip": "C:\\Users\\pmigl\\OneDrive\\Documents\\GitHub\\BasketballGame\\Entities\\BasketballPlayers\\BasketballPlayer.cs",
               "RelativeToolTip": "Entities\\BasketballPlayers\\BasketballPlayer.cs",
-              "ViewState": "AQIAABwEAAAAAAAAAAAAADEEAAAJAAAA",
+              "ViewState": "AQIAAPoEAAAAAAAAAAAAAAEFAAAIAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-09-06T16:43:00.042Z",
               "EditorCaption": ""

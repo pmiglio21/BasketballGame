@@ -1,8 +1,7 @@
 using Constants;
-using Godot;
 using Entities;
 using Enums;
-using System;
+using Godot;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -27,6 +26,8 @@ namespace Levels
         public List<BasketballPlayer> AllBasketballPlayers = new();
 
         public Timer BasketballResetTimer = new();
+
+        public List<PlayerStartPoint> PlayerStartPoints = new();
 
         #endregion
 
@@ -53,7 +54,11 @@ namespace Levels
             BasketballResetTimer = GetNode("BasketballResetTimer") as Timer;
             BasketballResetTimer.Timeout += ResetBasketballOnTimeout;
 
+            PlayerStartPoints = GetTree().GetNodesInGroup(GroupTags.PlayerStartPoint).Cast<PlayerStartPoint>().ToList();
+
             GetAllBasketballPlayers();
+
+            AssignPlayersToStartPoints();
         }
 
         // Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -99,7 +104,7 @@ namespace Levels
             }
         }
 
-        private void GiveBasketballToPlayer(BasketballPlayer basketballPlayer)
+        public void GiveBasketballToPlayer(BasketballPlayer basketballPlayer)
         {
             if (basketballPlayer != null && Basketball.GetParent() is not BasketballPlayer)
             {
@@ -215,6 +220,19 @@ namespace Levels
 
             //basketballPlayer.SkillStats.Rebounding = GlobalConstants.SkillStatHigh;
             //basketballPlayer.SkillStats.Blocking = GlobalConstants.SkillStatHigh;
+        }
+
+        public void AssignPlayersToStartPoints()
+        {
+            foreach (BasketballPlayer basketballPlayer in AllBasketballPlayers.Where(x => x.TeamIdentifier == "1"))
+            {
+                PlayerStartPoint assignedStartPoint = PlayerStartPoints.FirstOrDefault(sp => sp.PlayerIdentifier == basketballPlayer.PlayerIdentifier);
+
+                if (assignedStartPoint != null)
+                {
+                    basketballPlayer.GlobalPosition = assignedStartPoint.GlobalPosition;
+                }
+            }
         }
 
         private void ResetBasketballOnTimeout()

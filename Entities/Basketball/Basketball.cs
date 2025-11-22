@@ -2,7 +2,9 @@ using Constants;
 using Enums;
 using Godot;
 using Levels;
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 
 namespace Entities
 {
@@ -192,6 +194,11 @@ namespace Entities
                     PreviousPlayer.BoxScoreStats.TotalPointsScored += PointsExpected;
                     BasketballCourtLevel.UpdateScoreboard();
                     BounceDampeningFactor = MaxBounceDampeningFactor;
+
+                    BasketballPlayer focusedDefensivePlayer = BasketballCourtLevel.AllBasketballPlayers.FirstOrDefault(player => player.HasFocus && !player.IsOnOffense);
+                    BasketballCourtLevel.GiveBasketballToPlayer(focusedDefensivePlayer);
+
+                    BasketballCourtLevel.AssignPlayersToStartPoints();
                 }
             }
         }
