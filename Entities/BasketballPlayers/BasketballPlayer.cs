@@ -594,18 +594,18 @@ namespace Entities
                 moveInput.X = Input.GetActionStrength($"MoveEast_{TeamIdentifier}") - Input.GetActionStrength($"MoveWest_{TeamIdentifier}");
                 moveInput.Z = Input.GetActionStrength($"MoveSouth_{TeamIdentifier}") - Input.GetActionStrength($"MoveNorth_{TeamIdentifier}");
             }
-            else if (IsTargeted)
-            {
-                float targetedMovementX = Input.GetActionStrength($"MoveTargetEast_{TeamIdentifier}") - Input.GetActionStrength($"MoveTargetWest_{TeamIdentifier}");
-                float targetedMovementZ = Input.GetActionStrength($"MoveTargetSouth_{TeamIdentifier}") - Input.GetActionStrength($"MoveTargetNorth_{TeamIdentifier}");
+            //else if (IsTargeted)
+            //{
+            //    float targetedMovementX = Input.GetActionStrength($"MoveTargetEast_{TeamIdentifier}") - Input.GetActionStrength($"MoveTargetWest_{TeamIdentifier}");
+            //    float targetedMovementZ = Input.GetActionStrength($"MoveTargetSouth_{TeamIdentifier}") - Input.GetActionStrength($"MoveTargetNorth_{TeamIdentifier}");
 
-                //Keep them moving from last movement as long as they aren't standing still
-                if (targetedMovementX != 0 || targetedMovementZ != 0)
-                {
-                    moveInput.X = targetedMovementX;
-                    moveInput.Z = targetedMovementZ;
-                }
-            }
+            //    //Keep them moving from last movement as long as they aren't standing still
+            //    if (targetedMovementX != 0 || targetedMovementZ != 0)
+            //    {
+            //        moveInput.X = targetedMovementX;
+            //        moveInput.Z = targetedMovementZ;
+            //    }
+            //}
 
             if (yMoveInput > 0 && conditionsForSuperBlockAreMet)
             {

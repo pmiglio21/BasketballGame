@@ -191,6 +191,7 @@ namespace Entities
                 {
                     PreviousPlayer.BoxScoreStats.TotalPointsScored += PointsExpected;
                     BasketballCourtLevel.UpdateScoreboard();
+                    BounceDampeningFactor = MaxBounceDampeningFactor;
                 }
             }
         }
@@ -326,7 +327,9 @@ namespace Entities
             }
         }
 
-        public const float BounceDampeningFactor = .85f;
+        public const float MaxBounceDampeningFactor = .85f;
+        public const float MinBounceDampeningFactor = .1f;
+        public float BounceDampeningFactor = .85f;
         public const float MinBounceVelocity = .1f;
 
         public override void _IntegrateForces(PhysicsDirectBodyState3D state)
@@ -365,9 +368,13 @@ namespace Entities
             {
                 if (IsDestinedToSucceed)
                 {
-                    LinearVelocity = new Vector3(0, -10f, 0);
+                    BounceDampeningFactor = MinBounceDampeningFactor;
+
+                    //LinearVelocity = new Vector3(0, -10f, 0);
 
                     //Vector3 directionToHoop = GlobalPosition.DirectionTo(BasketballCourtLevel.HoopArea.GlobalPosition);
+
+                    //LinearVelocity = directionToHoop * LinearVelocity.Length();
 
                     //LinearVelocity = directionToHoop;
 
