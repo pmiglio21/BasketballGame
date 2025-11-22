@@ -184,10 +184,27 @@ namespace Entities
 
         #region Skill Properties
 
-
         public SkillStats SkillStats = new SkillStats();
 
         #endregion
+
+        #region Box Score Stats Properties
+
+        public BoxScoreStats BoxScoreStats
+        {
+            get { return _boxScoreStats; }
+            set
+            {
+                if (_boxScoreStats != value)
+                {
+                    _boxScoreStats = value;
+                    OnPropertyChanged(nameof(BoxScoreStats));
+                }
+            }
+        }
+        private BoxScoreStats _boxScoreStats = new BoxScoreStats();
+
+        #endregion 
 
         #region Movement Properties
 
@@ -746,6 +763,8 @@ namespace Entities
 
                         newBasketballLightColor = new Color(1, 0, 0);
                     }
+
+                    ParentBasketballCourtLevel.Basketball.PointsExpected = 2;
                 }
                 else
                 {
@@ -822,6 +841,8 @@ namespace Entities
 
                         newBasketballLightColor = new Color(1, 0, 0);
                     }
+
+                    ParentBasketballCourtLevel.Basketball.PointsExpected = 3;
                 }
 
                 float ballSpeed = .5f;
@@ -1050,11 +1071,6 @@ namespace Entities
                     }
                 }
             }
-        }
-
-        private void RotateDribblingBasketball()
-        {
-
         }
 
         private void RotateCpuTargetBody()

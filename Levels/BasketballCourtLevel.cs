@@ -12,31 +12,41 @@ namespace Levels
     {
         #region Children Objects
 
-        public Basketball Basketball = new Basketball();
+        public Control ScoreboardControl = new();
 
-        public StaticBody3D BasketballHoop = new StaticBody3D();
+        public RichTextLabel BlueScoreRichTextLabel = new();
 
-        public Area3D HoopArea = new Area3D();
+        public RichTextLabel RedScoreRichTextLabel = new();
 
-        public List<BasketballPlayer> AllBasketballPlayers = new List<BasketballPlayer>();
+        public Basketball Basketball = new();
 
-        public Timer BasketballResetTimer = new Timer();
+        public StaticBody3D BasketballHoop = new();
+
+        public Area3D HoopArea = new();
+
+        public List<BasketballPlayer> AllBasketballPlayers = new();
+
+        public Timer BasketballResetTimer = new();
 
         #endregion
 
-        public RandomNumberGenerator RandomNumberGenerator = new RandomNumberGenerator();
+        public RandomNumberGenerator RandomNumberGenerator = new();
 
-        public HashSet<SkillStatType> AllPlayersHighSkillStatsFilled_Team1 = new HashSet<SkillStatType>();
+        public HashSet<SkillStatType> AllPlayersHighSkillStatsFilled_Team1 = new();
 
-        public HashSet<SkillStatType> AllPlayersHighSkillStatsFilled_Team2 = new HashSet<SkillStatType>();
+        public HashSet<SkillStatType> AllPlayersHighSkillStatsFilled_Team2 = new();
 
-        public HashSet<SkillStatType> AllPlayersLowSkillStatsFilled_Team1 = new HashSet<SkillStatType>();
+        public HashSet<SkillStatType> AllPlayersLowSkillStatsFilled_Team1 = new();
 
-        public HashSet<SkillStatType> AllPlayersLowSkillStatsFilled_Team2 = new HashSet<SkillStatType>();
+        public HashSet<SkillStatType> AllPlayersLowSkillStatsFilled_Team2 = new();
 
         // Called when the node enters the scene tree for the first time.
         public override void _Ready()
         {
+            ScoreboardControl = GetNode("Scoreboard") as Control;
+            BlueScoreRichTextLabel = ScoreboardControl.GetNode("BlueTeamScore") as RichTextLabel;
+            RedScoreRichTextLabel = ScoreboardControl.GetNode("RedTeamScore") as RichTextLabel;
+
             Basketball = GetNode("Basketball") as Basketball;
             BasketballHoop = GetNode("BasketballHoop") as StaticBody3D;
             HoopArea = GetNode("HoopArea") as Area3D;
@@ -224,6 +234,15 @@ namespace Levels
                     focusedDefensePlayer.HasFocus = true;
                 }
             }
+        }
+
+        public void UpdateScoreboard()
+        {
+            int blueTeamScore = AllBasketballPlayers.Where(p => p.TeamIdentifier == "1").Sum(p => p.BoxScoreStats.TotalPointsScored);
+            int redTeamScore = AllBasketballPlayers.Where(p => p.TeamIdentifier == "2").Sum(p => p.BoxScoreStats.TotalPointsScored);
+
+            BlueScoreRichTextLabel.Text = blueTeamScore.ToString();
+            RedScoreRichTextLabel.Text = redTeamScore.ToString();
         }
     }
 }

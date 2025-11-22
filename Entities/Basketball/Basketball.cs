@@ -90,7 +90,63 @@ namespace Entities
 
         private float _shotAscensionCountModifier = 1f;
 
+        public int PointsExpected
+        {
+            get { return _pointsExpected; }
+            set
+            {
+                if (_pointsExpected != value)
+                {
+                    _pointsExpected = value;
+                    OnPropertyChanged(nameof(PointsExpected));
+                }
+            }
+        }
+        private int _pointsExpected;
+
         #endregion
+
+        #endregion
+
+        #region Scoring Properties
+
+        public bool HasPassedIntoForceShotDownArea //First check
+        {
+            get { return _hasPassedIntoForceShotDownArea; }
+            set
+            {
+                if (_hasPassedIntoForceShotDownArea != value)
+                {
+                    _hasPassedIntoForceShotDownArea = value;
+                    OnPropertyChanged(nameof(HasPassedIntoForceShotDownArea));
+                    OnPropertyChanged(nameof(HasBeenScored));
+                }
+            }
+        }
+        private bool _hasPassedIntoForceShotDownArea;
+
+        public bool HasPassedIntoHoopArea //Second check
+        {
+            get { return _hasPassedIntoHoopArea; }
+            set
+            {
+                if (_hasPassedIntoHoopArea != value)
+                {
+                    _hasPassedIntoHoopArea = value;
+                    OnPropertyChanged(nameof(HasPassedIntoHoopArea));
+                    OnPropertyChanged(nameof(HasBeenScored));
+                }
+            }
+        }
+        private bool _hasPassedIntoHoopArea;
+
+        public bool HasBeenScored
+        {
+            get
+            {
+                return _hasPassedIntoForceShotDownArea && _hasPassedIntoHoopArea;
+            }
+        }
 
         #endregion
 
@@ -127,6 +183,14 @@ namespace Entities
                 else
                 {
                     GravityScale = 1;
+                }
+            }
+            else if (propertyName == nameof(HasBeenScored))
+            {
+                if (HasBeenScored) 
+                {
+                    PreviousPlayer.BoxScoreStats.TotalPointsScored += PointsExpected;
+                    BasketballCourtLevel.UpdateScoreboard();
                 }
             }
         }
@@ -293,17 +357,12 @@ namespace Entities
                 {
                     _shotAscensionCount = 1;
                     BasketballState = BasketballState.IsInBasket;
-
-                    //GD.Print($"Got into HoopArea.\n" +
-                    //         $"Starting position was {GlobalPositionAtPointOfShot.X}, {GlobalPositionAtPointOfShot.Y}, {GlobalPositionAtPointOfShot.Z}\n" +
-                    //         $"Hoop Area position was {area.GlobalPosition.X}, {area.GlobalPosition.Y}, {area.GlobalPosition.Z}");
                 }
+
+                HasPassedIntoHoopArea = true;
             }
             else if (area.IsInGroup(GroupTags.ForceShotDownArea))
             {
-                //GD.Print($"Got into ForceShotDownArea");
-                //GD.Print($"IsDestinedToSucced: {IsDestinedToSucceed}");
-
                 if (IsDestinedToSucceed)
                 {
                     LinearVelocity = new Vector3(0, -10f, 0);
@@ -316,6 +375,20 @@ namespace Entities
 
                     //GravityScale = 10;
                 }
+
+                HasPassedIntoForceShotDownArea = true;
+            }
+        }
+
+        private void OnDetectionAreaExited(Area3D area)
+        {
+            if (area.IsInGroup(GroupTags.HoopArea))
+            {
+                HasPassedIntoHoopArea = false;
+            }
+            else if (area.IsInGroup(GroupTags.ForceShotDownArea))
+            {
+                HasPassedIntoForceShotDownArea = false;
             }
         }
 

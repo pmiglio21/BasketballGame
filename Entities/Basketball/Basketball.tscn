@@ -43,4 +43,5 @@ shape = SubResource("SphereShape3D_o7370")
 ParentObject = NodePath("..")
 
 [connection signal="area_entered" from="DetectionArea" to="." method="OnDetectionAreaEntered"]
+[connection signal="area_exited" from="DetectionArea" to="." method="OnDetectionAreaExited"]
 [connection signal="body_entered" from="DetectionArea" to="." method="OnDetectionAreaBodyEntered"]
