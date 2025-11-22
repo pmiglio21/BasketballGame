@@ -390,21 +390,33 @@ namespace Entities
             //CPU logic
             else
             {
-                if (IsOnOffense)
+                List<BasketballPlayer> playersOnTeam = ParentBasketballCourtLevel.AllBasketballPlayers.Where(player => player.TeamIdentifier == TeamIdentifier).ToList();
+
+                BasketballPlayer playerClosestToBasketball = playersOnTeam.OrderBy(player => player.GlobalPosition.DistanceTo(ParentBasketballCourtLevel.Basketball.GlobalPosition)).FirstOrDefault();
+
+                if (ParentBasketballCourtLevel.Basketball.GetParent() is BasketballCourtLevel && !ParentBasketballCourtLevel.Basketball.HasBeenScored && playerClosestToBasketball == this)
                 {
-                    //TODO: Make offensive CPUs try to get open
-                    //MagnetizeCpuToPairedPlayer();
+                    GoAfterBasketball();
                 }
                 else
                 {
-                    MagnetizeCpuToPairedPlayer();
+                    if (IsOnOffense)
+                    {
+                        //TODO: Make offensive CPUs try to get open
+                        //MagnetizeCpuToPairedPlayer();
+                    }
+                    else
+                    {
+                        MagnetizeCpuToPairedPlayer();
+                    }
                 }
             }
         }
 
         #region Controller Inputs
 
-        //General CPU movement on defense
+        #region CPU Movement
+
         protected void MagnetizeCpuToPairedPlayer()
         {
             moveInput = GlobalPosition.DirectionTo(PairingPlayer.CpuTargetBody.GlobalPosition);
@@ -418,6 +430,22 @@ namespace Entities
                 moveDirection = Vector3.Zero;
             }
         }
+
+        protected void GoAfterBasketball()
+        {
+            moveInput = GlobalPosition.DirectionTo(ParentBasketballCourtLevel.Basketball.GlobalPosition);
+
+            var normalizedMoveInput = moveInput.Normalized();
+
+            moveDirection = new Vector3(normalizedMoveInput.X, -10f, normalizedMoveInput.Z);
+
+            //if (this.GlobalPosition.DistanceTo(PairingPlayer.CpuTargetBody.GlobalPosition) <= .5f)
+            //{
+            //    moveDirection = Vector3.Zero;
+            //}
+        }
+
+        #endregion
 
         protected void GetSkillStatsData()
         {
