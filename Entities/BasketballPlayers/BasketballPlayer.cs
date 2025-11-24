@@ -956,6 +956,9 @@ namespace Entities
                     }
                     ParentBasketballCourtLevel.Basketball.BasketballState = BasketballState.IsBeingPassed;
 
+                    TargetPlayer.TargetPlayer = this;
+
+                    IsTargeted = true;
                     TargetPlayer = this;
                 }
             }
@@ -1255,7 +1258,7 @@ namespace Entities
                 ParentBasketballCourtLevel.Basketball.BasketballState = BasketballState.IsBeingHeldByAirbornePlayer;
             }
 
-            basketball.TargetPlayer = null;
+            //basketball.TargetPlayer = null;
             basketball.PreviousPlayer = this;
 
             FlipTeamIsOnOffense(TeamIdentifier, true);
