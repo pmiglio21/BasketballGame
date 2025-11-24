@@ -39,8 +39,9 @@ namespace Entities
         private StaticBody3D _dribblingBallTargetBody = new();
 
         private Timer _jumpAscensionTimer = new();
-
         private Timer _jumpStartupTimer = new();
+
+        private Timer _stealTimer = new();
 
         #endregion
 
@@ -298,6 +299,9 @@ namespace Entities
                 _isJumpStartupFinished = true;
             };
 
+            _stealTimer = GetNode("StealTimer") as Timer;
+
+            //TODO: Maybe move this to the next available player by default
             //Start target on the current player so TargetBasketballPlayer has something to go off of on the first target-selection input
             TargetPlayer = this;
         }
@@ -380,7 +384,10 @@ namespace Entities
                         GetPassFocusInput();
                     }
 
-                    GetStealInput();
+                    if (_stealTimer.IsStopped())
+                    {
+                        GetStealInput();
+                    }
                 }
             }
             else if (IsTargeted)
@@ -1040,6 +1047,8 @@ namespace Entities
                 {
                     FlashColor(new Color(0, 0, 0));
                 }
+
+                _stealTimer.Start();
             }
         }
 

@@ -168,6 +168,10 @@ shape = SubResource("SphereShape3D_fctlk")
 transform = Transform3D(0.25, 0, 0, 0, 0.25, 0, 0, 0, 0.25, 0, 0, 0)
 mesh = SubResource("SphereMesh_iwtvc")
 
+[node name="StealTimer" type="Timer" parent="."]
+wait_time = 0.4
+one_shot = true
+
 [connection signal="area_entered" from="BodyDetectionArea" to="." method="OnBodyDetectionAreaEntered"]
 [connection signal="area_exited" from="BodyDetectionArea" to="." method="OnBodyDetectionAreaExited"]
 [connection signal="body_entered" from="BodyDetectionArea" to="." method="OnBodyDetectionAreaBodyEntered"]
