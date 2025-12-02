@@ -303,7 +303,8 @@ namespace Entities
 
             //TODO: Maybe move this to the next available player by default
             //Start target on the current player so TargetBasketballPlayer has something to go off of on the first target-selection input
-            TargetPlayer = this;
+            //List<BasketballPlayer> playersOnTeam = ParentBasketballCourtLevel.AllBasketballPlayers.Where(player => player.TeamIdentifier == TeamIdentifier && player != this).OrderBy(player => player.PlayerIdentifier).ToList();
+            TargetPlayer = this;// playersOnTeam.FirstOrDefault();
         }
 
         //Necessary for INotifyPropertyChanged implementation
@@ -360,10 +361,10 @@ namespace Entities
                         {
                             GetPassBallInput();
                         }
-                        else
-                        {
-                            GetPassFocusInput();
-                        }
+                        //else
+                        //{
+                        //    GetPassFocusInput();
+                        //}
                     }
 
                     if (HasBasketball)
@@ -1103,6 +1104,8 @@ namespace Entities
                         if (chanceOfLosingBall <= 1) //1% to lose ball every time they move
                         {
                             LoseTheBall(ParentBasketballCourtLevel.Basketball);
+
+                            FlashColor(new Color(0,0,0));
                         }
                     }
                     else
@@ -1270,7 +1273,7 @@ namespace Entities
             //basketball.TargetPlayer = null;
             basketball.PreviousPlayer = this;
 
-            FlipTeamIsOnOffense(TeamIdentifier, true);
+            ParentBasketballCourtLevel.FlipTeamIsOnOffense(TeamIdentifier, true);
         }
 
         private void LoseTheBall(Basketball basketball)
@@ -1291,23 +1294,23 @@ namespace Entities
             //basketball.LinearVelocity = currentPlayerVelocity;
         }
 
-        private void FlipTeamIsOnOffense(string teamIdentifier, bool isOnOffense)
-        {
-            string otherTeamIdentifier = teamIdentifier == "1" ? "2" : "1";
+        //private void FlipTeamIsOnOffense(string teamIdentifier, bool isOnOffense)
+        //{
+        //    string otherTeamIdentifier = teamIdentifier == "1" ? "2" : "1";
 
-            List<BasketballPlayer> playersOnTeam = ParentBasketballCourtLevel.AllBasketballPlayers.Where(player => player.TeamIdentifier == teamIdentifier).ToList();
-            List<BasketballPlayer> playersOnOtherTeam = ParentBasketballCourtLevel.AllBasketballPlayers.Where(player => player.TeamIdentifier == otherTeamIdentifier).ToList();
+        //    List<BasketballPlayer> playersOnTeam = ParentBasketballCourtLevel.AllBasketballPlayers.Where(player => player.TeamIdentifier == teamIdentifier).ToList();
+        //    List<BasketballPlayer> playersOnOtherTeam = ParentBasketballCourtLevel.AllBasketballPlayers.Where(player => player.TeamIdentifier == otherTeamIdentifier).ToList();
 
-            foreach (BasketballPlayer player in playersOnTeam)
-            {
-                player.IsOnOffense = isOnOffense;
-            }
+        //    foreach (BasketballPlayer player in playersOnTeam)
+        //    {
+        //        player.IsOnOffense = isOnOffense;
+        //    }
 
-            foreach (BasketballPlayer player in playersOnOtherTeam)
-            {
-                player.IsOnOffense = !isOnOffense;
-            }
-        }
+        //    foreach (BasketballPlayer player in playersOnOtherTeam)
+        //    {
+        //        player.IsOnOffense = !isOnOffense;
+        //    }
+        //}
 
         private void ToggleShotBlockBody(bool isVisible)
         {

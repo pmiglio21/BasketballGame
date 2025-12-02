@@ -123,6 +123,26 @@ namespace Levels
                 Basketball.BasketballState = BasketballState.IsBeingDribbled;
 
                 Basketball.PreviousPlayer = basketballPlayer;
+
+                FlipTeamIsOnOffense(basketballPlayer.TeamIdentifier, basketballPlayer.IsOnOffense);
+            }
+        }
+
+        public void FlipTeamIsOnOffense(string teamIdentifier, bool isOnOffense)
+        {
+            string otherTeamIdentifier = teamIdentifier == "1" ? "2" : "1";
+
+            List<BasketballPlayer> playersOnTeam = AllBasketballPlayers.Where(player => player.TeamIdentifier == teamIdentifier).ToList();
+            List<BasketballPlayer> playersOnOtherTeam = AllBasketballPlayers.Where(player => player.TeamIdentifier == otherTeamIdentifier).ToList();
+
+            foreach (BasketballPlayer player in playersOnTeam)
+            {
+                player.IsOnOffense = isOnOffense;
+            }
+
+            foreach (BasketballPlayer player in playersOnOtherTeam)
+            {
+                player.IsOnOffense = !isOnOffense;
             }
         }
 

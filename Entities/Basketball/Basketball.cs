@@ -193,12 +193,12 @@ namespace Entities
                 {
                     PreviousPlayer.BoxScoreStats.TotalPointsScored += PointsExpected;
                     BasketballCourtLevel.UpdateScoreboard();
-                    BounceDampeningFactor = MaxBounceDampeningFactor;
+                    //BounceDampeningFactor = MaxBounceDampeningFactor;
 
-                    BasketballPlayer focusedDefensivePlayer = BasketballCourtLevel.AllBasketballPlayers.FirstOrDefault(player => player.HasFocus && !player.IsOnOffense);
-                    BasketballCourtLevel.GiveBasketballToPlayer(focusedDefensivePlayer);
+                    //BasketballPlayer focusedDefensivePlayer = BasketballCourtLevel.AllBasketballPlayers.FirstOrDefault(player => player.HasFocus && !player.IsOnOffense);
+                    //BasketballCourtLevel.GiveBasketballToPlayer(focusedDefensivePlayer);
 
-                    BasketballCourtLevel.AssignPlayersToStartPoints();
+                    //BasketballCourtLevel.AssignPlayersToStartPoints();
                 }
             }
         }
