@@ -677,10 +677,23 @@ namespace Entities
             else
             {
                 moveDirection = new Vector3(moveInput.X, yMoveInput, moveInput.Z);
-
-                if (HasBasketball && yMoveInput > 0)
+                
+                //Player should move pretty slowly horizontally while shooting a three
+                if (ParentBasketballCourtLevel.Basketball.PreviousPlayer == this && 
+                    (ParentBasketballCourtLevel.Basketball.BasketballState == BasketballState.IsHeldByAirbornePlayerAndShootable ||
+                     ParentBasketballCourtLevel.Basketball.BasketballState == BasketballState.IsBeingShotAscending) &&
+                    !IsInThreePointLine && !IsOnFloor())
+                {
+                    moveDirection = new Vector3(moveDirection.X / 8, yMoveInput, moveDirection.Z / 8);
+                }
+                //Player should move a little slowly horizontally while shooting a two
+                else if (HasBasketball && yMoveInput > 0)
                 {
                     moveDirection = new Vector3(moveDirection.X / 4, yMoveInput, moveDirection.Z / 4);
+                }
+                else if (Input.IsActionPressed($"Jump_{TeamIdentifier}") && IsOnFloor())
+                {
+                    moveDirection = new Vector3(moveDirection.X / 2, yMoveInput, moveDirection.Z / 2);
                 }
             }
 
