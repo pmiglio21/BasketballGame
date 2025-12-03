@@ -305,6 +305,9 @@ namespace Entities
             //Start target on the current player so TargetBasketballPlayer has something to go off of on the first target-selection input
             //List<BasketballPlayer> playersOnTeam = ParentBasketballCourtLevel.AllBasketballPlayers.Where(player => player.TeamIdentifier == TeamIdentifier && player != this).OrderBy(player => player.PlayerIdentifier).ToList();
             TargetPlayer = this;// playersOnTeam.FirstOrDefault();
+
+            //Offensive players start outside the three point line
+            IsInThreePointLine = IsOnOffense;
         }
 
         //Necessary for INotifyPropertyChanged implementation
@@ -391,10 +394,10 @@ namespace Entities
                     }
                 }
             }
-            else if (IsTargeted)
-            {
-                GetMovementInput(delta);
-            }
+            //else if (IsTargeted)
+            //{
+            //    GetMovementInput(delta);
+            //}
             //CPU logic
             else
             {
@@ -767,11 +770,11 @@ namespace Entities
 
                         if (chanceOfSkew == 1)
                         {
-                            randomXOffset = ParentBasketballCourtLevel.RandomNumberGenerator.RandfRange(.5f, yOffset);
+                            randomXOffset = ParentBasketballCourtLevel.RandomNumberGenerator.RandfRange(1f, 1.5f);
                         }
                         else if (chanceOfSkew == 2)
                         {
-                            randomXOffset = ParentBasketballCourtLevel.RandomNumberGenerator.RandfRange(-1f, -.5f);
+                            randomXOffset = ParentBasketballCourtLevel.RandomNumberGenerator.RandfRange(-1.5f, -1f);
                         }
 
                         basketballDestinationGlobalPosition = ParentBasketballCourtLevel.HoopArea.GlobalPosition + new Vector3(randomXOffset, yOffset, 0);
@@ -1097,23 +1100,23 @@ namespace Entities
                 }
                 else if (IsOnFloor())
                 {
-                    if ((moveDirection.X != 0 || moveDirection.Z != 0) && SkillStats.BallHandling == GlobalConstants.SkillStatLow && HasBasketball)
-                    {
-                        int chanceOfLosingBall = ParentBasketballCourtLevel.RandomNumberGenerator.RandiRange(0, 100);
+                    //if ((moveDirection.X != 0 || moveDirection.Z != 0) && SkillStats.BallHandling == GlobalConstants.SkillStatLow && HasBasketball)
+                    //{
+                    //    int chanceOfLosingBall = ParentBasketballCourtLevel.RandomNumberGenerator.RandiRange(0, 100);
 
-                        if (chanceOfLosingBall <= 1) //1% to lose ball every time they move
-                        {
-                            LoseTheBall(ParentBasketballCourtLevel.Basketball);
+                    //    if (chanceOfLosingBall <= 1) //1% to lose ball every time they move
+                    //    {
+                    //        LoseTheBall(ParentBasketballCourtLevel.Basketball);
 
-                            FlashColor(new Color(0,0,0));
-                        }
-                    }
-                    else
-                    {
+                    //        FlashColor(new Color(0,0,0));
+                    //    }
+                    //}
+                    //else
+                    //{
                         newAngle = Mathf.LerpAngle(GlobalRotation.Y, Mathf.Atan2(moveDirection.X, moveDirection.Z), .2f);
 
                         GlobalRotation = new Vector3(GlobalRotation.X, newAngle, GlobalRotation.Z);
-                    }
+                    //}
                 }
             }
         }

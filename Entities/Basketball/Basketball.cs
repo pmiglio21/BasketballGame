@@ -4,6 +4,7 @@ using Godot;
 using Levels;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
 
 namespace Entities
@@ -186,6 +187,11 @@ namespace Entities
                 {
                     GravityScale = 1;
                 }
+
+                if (BasketballState != BasketballState.IsReboundable)
+                {
+                    BounceDampeningFactor = MaxBounceDampeningFactor;
+                }
             }
             else if (propertyName == nameof(HasBeenScored))
             {
@@ -193,7 +199,6 @@ namespace Entities
                 {
                     PreviousPlayer.BoxScoreStats.TotalPointsScored += PointsExpected;
                     BasketballCourtLevel.UpdateScoreboard();
-                    //BounceDampeningFactor = MaxBounceDampeningFactor;
 
                     //BasketballPlayer focusedDefensivePlayer = BasketballCourtLevel.AllBasketballPlayers.FirstOrDefault(player => player.HasFocus && !player.IsOnOffense);
                     //BasketballCourtLevel.GiveBasketballToPlayer(focusedDefensivePlayer);
@@ -373,22 +378,7 @@ namespace Entities
             }
             else if (area.IsInGroup(GroupTags.ForceShotDownArea))
             {
-                if (IsDestinedToSucceed)
-                {
-                    BounceDampeningFactor = MinBounceDampeningFactor;
-
-                    //LinearVelocity = new Vector3(0, -10f, 0);
-
-                    //Vector3 directionToHoop = GlobalPosition.DirectionTo(BasketballCourtLevel.HoopArea.GlobalPosition);
-
-                    //LinearVelocity = directionToHoop * LinearVelocity.Length();
-
-                    //LinearVelocity = directionToHoop;
-
-                    //GD.Print($"Got into ForceShotDownArea");
-
-                    //GravityScale = 10;
-                }
+                //GuideBasketballNearHoop();
 
                 HasPassedIntoForceShotDownArea = true;
             }
@@ -402,7 +392,50 @@ namespace Entities
             }
             else if (area.IsInGroup(GroupTags.ForceShotDownArea))
             {
+                if (GlobalPosition.Y > BasketballCourtLevel.HoopArea.GlobalPosition.Y)
+                {
+                    //GuideBasketballNearHoop();
+                }
+
                 HasPassedIntoForceShotDownArea = false;
+            }
+        }
+
+        //TODO: REMOVE this is shot keeps working
+        private void GuideBasketballNearHoop()
+        {
+            Vector3 directionToHoop = GlobalPosition.DirectionTo(BasketballCourtLevel.HoopArea.GlobalPosition);
+
+            if (IsDestinedToSucceed)
+            {
+                GD.Print("Should bounce inward");
+                BounceDampeningFactor = MinBounceDampeningFactor;
+
+                //LinearVelocity = new Vector3(0, -10f, 0);
+
+                //LinearVelocity = directionToHoop * LinearVelocity.Length();
+
+                LinearVelocity = new Vector3(directionToHoop.X, -5f, directionToHoop.Z);
+
+                //GD.Print($"Got into ForceShotDownArea");
+
+                //GravityScale = 10;
+            }
+            else
+            {
+                GD.Print("Should bounce outward");
+
+                int randomInt = BasketballCourtLevel.RandomNumberGenerator.RandiRange(0, 1);
+
+                if (randomInt == 0)
+                {
+                    LinearVelocity = new Vector3(directionToHoop.X, 5f, -directionToHoop.Z);
+                }
+                else
+                {
+                    LinearVelocity = new Vector3(-directionToHoop.X, 5f, directionToHoop.Z);
+                }
+                
             }
         }
 
