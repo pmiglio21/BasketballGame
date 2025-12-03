@@ -220,6 +220,8 @@ namespace Entities
 
         bool _isStuckOnFloor = false;
 
+        bool _isHorizontalControlLocked = false;
+
         #region Jump Properties
 
         private const float _weakjumpTime = .1f;
@@ -587,6 +589,8 @@ namespace Entities
                 //GD.Print($"Ascending 1 - yMoveInput: {yMoveInput}; jumpAscensionCount: {_jumpAscensionCount}");
 
                 _jumpAscensionTimer.Start();
+
+                _isHorizontalControlLocked = true;
             }
             //Is in air and continues to hold jump while ascending is still allowed (jumpAscensionTimer is not stopped yet)
             else if (HasFocus && _isJumpStartupFinished && !IsOnFloor() && !_jumpAscensionTimer.IsStopped() && Input.IsActionPressed($"Jump_{TeamIdentifier}"))
@@ -630,7 +634,7 @@ namespace Entities
 
             #endregion
 
-            if (HasFocus && !_isStuckOnFloor)
+            if (HasFocus && !_isStuckOnFloor && !_isHorizontalControlLocked)
             {
                 moveInput.X = Input.GetActionStrength($"MoveEast_{TeamIdentifier}") - Input.GetActionStrength($"MoveWest_{TeamIdentifier}");
                 moveInput.Z = Input.GetActionStrength($"MoveSouth_{TeamIdentifier}") - Input.GetActionStrength($"MoveNorth_{TeamIdentifier}");
@@ -1245,6 +1249,7 @@ namespace Entities
 
                 _isJumpStartupFinished = false;
                 _isSuperJumpComplete = false;
+                _isHorizontalControlLocked = false;
             }
         }
 
