@@ -173,7 +173,7 @@ mesh = SubResource("BoxMesh_4rm8i")
 skeleton = NodePath("../..")
 
 [node name="Camera3D" type="Camera3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 0.794944, 0.606682, 0, -0.606682, 0.794944, 0, 15.875, -19.078)
+transform = Transform3D(1, 0, 0, 0, 0.794944, 0.606682, 0, -0.606682, 0.794944, -0.535135, 17.2344, -17.9638)
 current = true
 
 [node name="BasketballPlayer" parent="." instance=ExtResource("1_omy0y")]
@@ -289,7 +289,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -20, 1, -30)
 PlayerIdentifier = "1"
 
 [node name="PlayerStartPoint2" parent="." instance=ExtResource("4_kuxo6")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, -25)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, -23.0734)
 PlayerIdentifier = "2"
 
 [node name="PlayerStartPoint3" parent="." instance=ExtResource("4_kuxo6")]

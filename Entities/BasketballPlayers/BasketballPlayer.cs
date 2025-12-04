@@ -225,9 +225,9 @@ namespace Entities
         #region Jump Properties
 
         private const float _weakjumpTime = .1f;
-        private const float _normaljumpShootingTime = .4f;
-        private const float _normaljumpReboundingTime = .6f;
-        private const float _normaljumpBlockingTime = .8f;
+        private const float _normaljumpShootingTime = .2f;
+        private const float _normaljumpReboundingTime = .25f;
+        private const float _normaljumpBlockingTime = .5f;
         private const float _superJumpTime = 1f;
         private int _jumpAscensionCount = 1;
         private bool _isJumpStartupFinished = false;
@@ -487,8 +487,8 @@ namespace Entities
 
         private const float _minimumFallVelocity = -4f;
         private const float _maximumFallVelocity = -.5f;
-        private const float _maximumRiseVelocity = 4f;
-        private const float _minimumRiseVelocity = .5f;
+        private const float _maximumRiseVelocity = 6f;
+        private const float _minimumRiseVelocity = 1f;
 
         protected void GetMovementInput(double delta)
         {
@@ -500,16 +500,16 @@ namespace Entities
 
             BasketballPlayer playerWithBasketball = ParentBasketballCourtLevel.AllBasketballPlayers.FirstOrDefault(player => player.HasBasketball);
 
-            bool conditionsForSuperBlockAreMet = SkillStats.Blocking == GlobalConstants.SkillStatHigh && (ParentBasketballCourtLevel.Basketball.BasketballState == BasketballState.IsBeingShotAscending || ParentBasketballCourtLevel.Basketball.BasketballState == BasketballState.IsHeldByAirbornePlayerAndShootable) && playerWithBasketball != null && playerWithBasketball.PlayerState == PlayerState.IsShooting && playerWithBasketball != this;
+            bool conditionsForSuperBlockAreMet = SkillStats.Blocking == GlobalConstants.SkillStatHigh && (ParentBasketballCourtLevel.Basketball.BasketballState == BasketballState.IsBeingShotAscending || ParentBasketballCourtLevel.Basketball.BasketballState == BasketballState.IsHeldByAirbornePlayerAndShootable) && playerWithBasketball != null && playerWithBasketball.PlayerState == PlayerState.IsShooting && playerWithBasketball != this && playerWithBasketball != null && PhysicsMathHelper.GetHorizontalDistance(GlobalPosition, playerWithBasketball.GlobalPosition) <= 10;
 
             bool conditionsForSuperReboundAreMet = SkillStats.Rebounding == GlobalConstants.SkillStatHigh && 
-                (ParentBasketballCourtLevel.Basketball.BasketballState == BasketballState.IsReboundable || (ParentBasketballCourtLevel.Basketball.BasketballState == BasketballState.IsUpForGrabsOnGround && ParentBasketballCourtLevel.Basketball.GlobalPosition.Y > 2.5f));
+                (ParentBasketballCourtLevel.Basketball.BasketballState == BasketballState.IsReboundable || (ParentBasketballCourtLevel.Basketball.BasketballState == BasketballState.IsUpForGrabsOnGround && ParentBasketballCourtLevel.Basketball.GlobalPosition.Y > 2.5f)) && playerWithBasketball != null && PhysicsMathHelper.GetHorizontalDistance(GlobalPosition, ParentBasketballCourtLevel.Basketball.GlobalPosition) <= 10;
 
 
-            bool conditionsForWeakBlockAreMet = SkillStats.Blocking == GlobalConstants.SkillStatLow && (ParentBasketballCourtLevel.Basketball.BasketballState == BasketballState.IsBeingShotAscending || ParentBasketballCourtLevel.Basketball.BasketballState == BasketballState.IsHeldByAirbornePlayerAndShootable);
+            bool conditionsForWeakBlockAreMet = SkillStats.Blocking == GlobalConstants.SkillStatLow && (ParentBasketballCourtLevel.Basketball.BasketballState == BasketballState.IsBeingShotAscending || ParentBasketballCourtLevel.Basketball.BasketballState == BasketballState.IsHeldByAirbornePlayerAndShootable) && playerWithBasketball != this && playerWithBasketball != null && PhysicsMathHelper.GetHorizontalDistance(GlobalPosition, playerWithBasketball.GlobalPosition) <= 10;
 
             bool conditionsForWeakReboundAreMet = SkillStats.Rebounding == GlobalConstants.SkillStatLow &&
-                (ParentBasketballCourtLevel.Basketball.BasketballState == BasketballState.IsReboundable || (ParentBasketballCourtLevel.Basketball.BasketballState == BasketballState.IsUpForGrabsOnGround && ParentBasketballCourtLevel.Basketball.GlobalPosition.Y > 2.5f));
+                (ParentBasketballCourtLevel.Basketball.BasketballState == BasketballState.IsReboundable || (ParentBasketballCourtLevel.Basketball.BasketballState == BasketballState.IsUpForGrabsOnGround && ParentBasketballCourtLevel.Basketball.GlobalPosition.Y > 2.5f)) && playerWithBasketball != null && PhysicsMathHelper.GetHorizontalDistance(GlobalPosition, ParentBasketballCourtLevel.Basketball.GlobalPosition) <= 10;
 
 
             //Is finished with super jump (ball has been blocked or rebounded) and must descend now
@@ -529,9 +529,10 @@ namespace Entities
                 {
                     _jumpStartupTimer.WaitTime = _jumpStartupTimeShooting;
                 }
-                else if (!IsOnOffense) //TODO: And actively defending/near player with ball
+                else if (IsAttemptingBlock(playerWithBasketball)) 
                 {
                     _jumpStartupTimer.WaitTime = _jumpStartupTimeBlocking;
+                    PlayerState = PlayerState.IsBlocking;
                 }
                 else
                 {
@@ -691,6 +692,12 @@ namespace Entities
             else
             {
                 moveDirection = new Vector3(moveInput.X, yMoveInput, moveInput.Z);
+
+                //Fall slower than you rise
+                if (yMoveInput < 0)
+                {
+                    yMoveInput *= .125f;
+                }
                 
                 //Player should move pretty slowly horizontally while shooting a three
                 if (ParentBasketballCourtLevel.Basketball.PreviousPlayer == this && 
@@ -712,14 +719,9 @@ namespace Entities
             }
 
             float horizontalDistanceFromBall = PhysicsMathHelper.GetHorizontalDistance(ParentBasketballCourtLevel.Basketball.GlobalPosition, GlobalPosition);
-
-            //If you are near player with ball, are on defense, and jumping, I'm assuming you are trying to block them
-            if (playerWithBasketball != null && PhysicsMathHelper.GetHorizontalDistance(playerWithBasketball.GlobalPosition, GlobalPosition) <= 4 && !IsOnOffense && !IsOnFloor())
-            {
-                PlayerState = PlayerState.IsBlocking;
-            }
+            
             //If you are near ball, do not have the ball, and are jumping, I'm assuming you are trying to rebound
-            else if (horizontalDistanceFromBall <= 4 && !HasBasketball && !IsOnFloor())
+            if (horizontalDistanceFromBall <= 4 && !HasBasketball && !IsOnFloor())
             {
                 PlayerState = PlayerState.IsRebounding;
             }
@@ -735,6 +737,21 @@ namespace Entities
 
                     _isStuckOnFloor = true;
                 }
+            }
+        }
+
+        //If you are near player with ball, are on defense, and jumping, I'm assuming you are trying to block them
+        private bool IsAttemptingBlock(BasketballPlayer playerWithBasketball)
+        {
+            if (playerWithBasketball == null)
+            {
+                return false;
+            }
+            else
+            {
+                var distanceBetweenPlayerAndPlayerWithBall = PhysicsMathHelper.GetHorizontalDistance(playerWithBasketball.GlobalPosition, GlobalPosition);
+
+                return distanceBetweenPlayerAndPlayerWithBall <= 10 && !IsOnOffense && IsOnFloor();
             }
         }
 
