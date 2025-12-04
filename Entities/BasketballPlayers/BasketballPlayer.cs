@@ -225,7 +225,9 @@ namespace Entities
         #region Jump Properties
 
         private const float _weakjumpTime = .1f;
-        private const float _normaljumpTime = .4f;
+        private const float _normaljumpShootingTime = .4f;
+        private const float _normaljumpReboundingTime = .6f;
+        private const float _normaljumpBlockingTime = .8f;
         private const float _superJumpTime = 1f;
         private int _jumpAscensionCount = 1;
         private bool _isJumpStartupFinished = false;
@@ -581,9 +583,17 @@ namespace Entities
 
                     FlashColor(new Color(0, 0, 0));
                 }
+                else if (PlayerState == PlayerState.IsShooting)
+                {
+                    _jumpAscensionTimer.WaitTime = _normaljumpShootingTime;
+                }
+                else if (PlayerState == PlayerState.IsBlocking)
+                {
+                    _jumpAscensionTimer.WaitTime = _normaljumpBlockingTime;
+                }
                 else
                 {
-                    _jumpAscensionTimer.WaitTime = _normaljumpTime;
+                    _jumpAscensionTimer.WaitTime = _normaljumpReboundingTime;
                 }
 
                 //GD.Print($"Ascending 1 - yMoveInput: {yMoveInput}; jumpAscensionCount: {_jumpAscensionCount}");
@@ -699,6 +709,19 @@ namespace Entities
                 {
                     moveDirection = new Vector3(moveDirection.X / 2, yMoveInput, moveDirection.Z / 2);
                 }
+            }
+
+            float horizontalDistanceFromBall = PhysicsMathHelper.GetHorizontalDistance(ParentBasketballCourtLevel.Basketball.GlobalPosition, GlobalPosition);
+
+            //If you are near player with ball, are on defense, and jumping, I'm assuming you are trying to block them
+            if (playerWithBasketball != null && PhysicsMathHelper.GetHorizontalDistance(playerWithBasketball.GlobalPosition, GlobalPosition) <= 4 && !IsOnOffense && !IsOnFloor())
+            {
+                PlayerState = PlayerState.IsBlocking;
+            }
+            //If you are near ball, do not have the ball, and are jumping, I'm assuming you are trying to rebound
+            else if (horizontalDistanceFromBall <= 4 && !HasBasketball && !IsOnFloor())
+            {
+                PlayerState = PlayerState.IsRebounding;
             }
 
             if (Input.IsActionJustReleased($"Jump_{TeamIdentifier}"))
@@ -1314,24 +1337,6 @@ namespace Entities
 
             //basketball.LinearVelocity = currentPlayerVelocity;
         }
-
-        //private void FlipTeamIsOnOffense(string teamIdentifier, bool isOnOffense)
-        //{
-        //    string otherTeamIdentifier = teamIdentifier == "1" ? "2" : "1";
-
-        //    List<BasketballPlayer> playersOnTeam = ParentBasketballCourtLevel.AllBasketballPlayers.Where(player => player.TeamIdentifier == teamIdentifier).ToList();
-        //    List<BasketballPlayer> playersOnOtherTeam = ParentBasketballCourtLevel.AllBasketballPlayers.Where(player => player.TeamIdentifier == otherTeamIdentifier).ToList();
-
-        //    foreach (BasketballPlayer player in playersOnTeam)
-        //    {
-        //        player.IsOnOffense = isOnOffense;
-        //    }
-
-        //    foreach (BasketballPlayer player in playersOnOtherTeam)
-        //    {
-        //        player.IsOnOffense = !isOnOffense;
-        //    }
-        //}
 
         private void ToggleShotBlockBody(bool isVisible)
         {

@@ -378,8 +378,6 @@ namespace Entities
             }
             else if (area.IsInGroup(GroupTags.ForceShotDownArea))
             {
-                //GuideBasketballNearHoop();
-
                 HasPassedIntoForceShotDownArea = true;
             }
         }
@@ -392,50 +390,7 @@ namespace Entities
             }
             else if (area.IsInGroup(GroupTags.ForceShotDownArea))
             {
-                if (GlobalPosition.Y > BasketballCourtLevel.HoopArea.GlobalPosition.Y)
-                {
-                    //GuideBasketballNearHoop();
-                }
-
                 HasPassedIntoForceShotDownArea = false;
-            }
-        }
-
-        //TODO: REMOVE this is shot keeps working
-        private void GuideBasketballNearHoop()
-        {
-            Vector3 directionToHoop = GlobalPosition.DirectionTo(BasketballCourtLevel.HoopArea.GlobalPosition);
-
-            if (IsDestinedToSucceed)
-            {
-                GD.Print("Should bounce inward");
-                BounceDampeningFactor = MinBounceDampeningFactor;
-
-                //LinearVelocity = new Vector3(0, -10f, 0);
-
-                //LinearVelocity = directionToHoop * LinearVelocity.Length();
-
-                LinearVelocity = new Vector3(directionToHoop.X, -5f, directionToHoop.Z);
-
-                //GD.Print($"Got into ForceShotDownArea");
-
-                //GravityScale = 10;
-            }
-            else
-            {
-                GD.Print("Should bounce outward");
-
-                int randomInt = BasketballCourtLevel.RandomNumberGenerator.RandiRange(0, 1);
-
-                if (randomInt == 0)
-                {
-                    LinearVelocity = new Vector3(directionToHoop.X, 5f, -directionToHoop.Z);
-                }
-                else
-                {
-                    LinearVelocity = new Vector3(-directionToHoop.X, 5f, directionToHoop.Z);
-                }
-                
             }
         }
 
