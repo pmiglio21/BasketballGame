@@ -140,6 +140,7 @@ wait_time = 0.15
 one_shot = true
 
 [node name="CpuTargetPivot" type="Node3D" parent="."]
+visible = false
 
 [node name="CpuTargetBody" type="StaticBody3D" parent="CpuTargetPivot"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 2.5)

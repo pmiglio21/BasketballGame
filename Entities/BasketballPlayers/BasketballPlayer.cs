@@ -368,10 +368,6 @@ namespace Entities
                         {
                             GetPassBallInput();
                         }
-                        //else
-                        //{
-                        //    GetPassFocusInput();
-                        //}
                     }
 
                     if (HasBasketball)
@@ -455,11 +451,6 @@ namespace Entities
             var normalizedMoveInput = moveInput.Normalized();
 
             moveDirection = new Vector3(normalizedMoveInput.X, -10f, normalizedMoveInput.Z);
-
-            //if (this.GlobalPosition.DistanceTo(PairingPlayer.CpuTargetBody.GlobalPosition) <= .5f)
-            //{
-            //    moveDirection = Vector3.Zero;
-            //}
         }
 
         #endregion
@@ -489,6 +480,8 @@ namespace Entities
         private const float _maximumFallVelocity = -.5f;
         private const float _maximumRiseVelocity = 6f;
         private const float _minimumRiseVelocity = 1f;
+        private const float _maximumBlockRiseVelocity = 10f;
+        private const float _minimumBlockRiseVelocity = 8f;
 
         protected void GetMovementInput(double delta)
         {
@@ -517,12 +510,9 @@ namespace Entities
             {
                 yMoveInput = Mathf.Clamp(-GetStandardJumpYValue((float)delta), _minimumFallVelocity, _maximumFallVelocity) * .33f;
 
-                //GD.Print($"Descending 2 - yMoveInput: {yMoveInput}; jumpAscensionCount: {_jumpAscensionCount}");
-
                 _jumpAscensionCount = Mathf.Clamp(_jumpAscensionCount - 1, 1, int.MaxValue);
             }
             //Is on floor and begins jump startup
-            //else if (HasFocus && _isShotButtonReleased && _jumpStartupTimer.IsStopped() && IsOnFloor() && Input.IsActionPressed($"Jump_{TeamIdentifier}"))
             else if (HasFocus && _isJumpFinished && _jumpStartupTimer.IsStopped() && IsOnFloor() && Input.IsActionPressed($"Jump_{TeamIdentifier}"))
             {
                 if (HasBasketball)
@@ -570,7 +560,19 @@ namespace Entities
 
                 _jumpAscensionCount = 1;
 
-                yMoveInput = Mathf.Clamp(GetStandardJumpYValue((float)delta), _minimumRiseVelocity, _maximumRiseVelocity);
+                if (PlayerState == PlayerState.IsBlocking)
+                {
+                    yMoveInput = GetStandardJumpYValue((float)delta);
+
+                    //Mathf.Clamp(GetStandardJumpYValue((float)delta), _minimumBlockRiseVelocity, _maximumBlockRiseVelocity);
+
+                    GD.Print($"IsBlocking: {yMoveInput}");
+                }
+                else
+                {
+                    yMoveInput = Mathf.Clamp(GetStandardJumpYValue((float)delta), _minimumRiseVelocity, _maximumRiseVelocity);
+                    GD.Print($"Is not Blocking: {yMoveInput}");
+                }
 
                 if (conditionsForSuperBlockAreMet || conditionsForSuperReboundAreMet)
                 {
@@ -597,11 +599,9 @@ namespace Entities
                     _jumpAscensionTimer.WaitTime = _normaljumpReboundingTime;
                 }
 
-                //GD.Print($"Ascending 1 - yMoveInput: {yMoveInput}; jumpAscensionCount: {_jumpAscensionCount}");
-
                 _jumpAscensionTimer.Start();
 
-                _isHorizontalControlLocked = true;
+                //_isHorizontalControlLocked = true;
             }
             //Is in air and continues to hold jump while ascending is still allowed (jumpAscensionTimer is not stopped yet)
             else if (HasFocus && _isJumpStartupFinished && !IsOnFloor() && !_jumpAscensionTimer.IsStopped() && Input.IsActionPressed($"Jump_{TeamIdentifier}"))
@@ -619,8 +619,6 @@ namespace Entities
                 {
                     ParentBasketballCourtLevel.Basketball.GlobalPosition = GlobalPosition + new Vector3(0, 1.2f, 0);
                 }
-
-                //GD.Print($"Ascending 2 - yMoveInput: {yMoveInput}; jumpAscensionCount: {_jumpAscensionCount}");
             }
             //Is in air and jump button is released before ascending is finished
             else if (!IsOnFloor() && !_jumpAscensionTimer.IsStopped() && !Input.IsActionPressed($"Jump_{TeamIdentifier}"))
@@ -629,16 +627,12 @@ namespace Entities
 
                 yMoveInput = Mathf.Clamp(-GetStandardJumpYValue((float)delta), _minimumFallVelocity, _maximumFallVelocity);
 
-                //GD.Print($"Descending 1 - yMoveInput: {yMoveInput}; jumpAscensionCount: {_jumpAscensionCount}");
-
                 _jumpAscensionCount = Mathf.Clamp(_jumpAscensionCount - 1, 1, int.MaxValue);
             }
             //Is in air and ascending is finished. Falls whether jump button is held or not
             else if (!IsOnFloor() && _jumpAscensionTimer.IsStopped())
             {
                 yMoveInput = Mathf.Clamp(-GetStandardJumpYValue((float)delta), _minimumFallVelocity, _maximumFallVelocity);
-
-                //GD.Print($"Descending 2 - yMoveInput: {yMoveInput}; jumpAscensionCount: {_jumpAscensionCount}");
 
                 _jumpAscensionCount = Mathf.Clamp(_jumpAscensionCount - 1, 1, int.MaxValue);
             }
@@ -757,7 +751,16 @@ namespace Entities
 
         private float GetStandardJumpYValue(float delta)
         {
-            var jumpVelocity = 150.0f;
+            float jumpVelocity = 0;
+
+            if (PlayerState == PlayerState.IsBlocking)
+            {
+                jumpVelocity = 500.0f;
+            }
+            else
+            {
+                jumpVelocity = 150.0f;
+            }
 
             return ((jumpVelocity) / (_jumpAscensionCount)) * (float)delta;
         }
@@ -905,11 +908,11 @@ namespace Entities
 
                         if (chanceOfSkew == 1)
                         {
-                            randomXOffset = ParentBasketballCourtLevel.RandomNumberGenerator.RandfRange(.5f, 1f);
+                            randomXOffset = ParentBasketballCourtLevel.RandomNumberGenerator.RandfRange(1f, 2f);
                         }
                         else if (chanceOfSkew == 2)
                         {
-                            randomXOffset = ParentBasketballCourtLevel.RandomNumberGenerator.RandfRange(-1f, -.5f);
+                            randomXOffset = ParentBasketballCourtLevel.RandomNumberGenerator.RandfRange(-2f, -1f);
                         }
 
                         basketballDestinationGlobalPosition = ParentBasketballCourtLevel.HoopArea.GlobalPosition + new Vector3(randomXOffset, yOffset, 0);
@@ -926,11 +929,11 @@ namespace Entities
 
                         if (chanceOfSkew == 1)
                         {
-                            randomXOffset = ParentBasketballCourtLevel.RandomNumberGenerator.RandfRange(1.5f, 3f);
+                            randomXOffset = ParentBasketballCourtLevel.RandomNumberGenerator.RandfRange(2f, 3f);
                         }
                         else if (chanceOfSkew == 2)
                         {
-                            randomXOffset = ParentBasketballCourtLevel.RandomNumberGenerator.RandfRange(-3f, -1.5f);
+                            randomXOffset = ParentBasketballCourtLevel.RandomNumberGenerator.RandfRange(-3f, -2f);
                         }
 
                         basketballDestinationGlobalPosition = ParentBasketballCourtLevel.HoopArea.GlobalPosition + new Vector3(randomXOffset, yOffset, 0);
@@ -1124,6 +1127,31 @@ namespace Entities
             MovePlayer();
 
             RotateCpuTargetBody();
+
+            //TODO: Trying to make shot block body face player that's being blocked. Not working... maybe because ShotBlockBody is static body? idk
+            //if (PlayerState == PlayerState.IsBlocking)
+            //{
+            //    BasketballPlayer playerWithBasketball = ParentBasketballCourtLevel.AllBasketballPlayers.FirstOrDefault(player => player.HasBasketball);
+
+               
+
+            //    if (playerWithBasketball != null)
+            //    {
+            //        //Vector3 directionToPlayerWithBall = _shotBlockBody.GlobalPosition.DirectionTo(playerWithBasketball.GlobalPosition);
+
+            //        //float newAngle = Mathf.LerpAngle(_shotBlockBody.GlobalRotation.Y, Mathf.Atan2(directionToPlayerWithBall.X, directionToPlayerWithBall.Z), .01f);
+
+            //        //_shotBlockBody.GlobalRotation = new Vector3(_shotBlockBody.GlobalRotation.X, newAngle, _shotBlockBody.GlobalRotation.Z);
+
+            //        //_shotBlockBody.LookAt(playerWithBasketball.GlobalPosition, Vector3.Up);
+            //    }
+            //    //else
+            //    //{
+            //    //    _shotBlockBody.LookAt(GlobalPosition, Vector3.Up);
+            //    //}
+
+            //    //GD.Print($"ShotBlockBody Rotation Y: {_shotBlockBody.GlobalRotation.Y}");
+            //}
         }
 
         private void MovePlayer()
