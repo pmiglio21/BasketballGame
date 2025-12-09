@@ -471,7 +471,7 @@ namespace Entities
                         $"STL: {player.SkillStats.Stealing}\n" +
                         $"BLK: {player.SkillStats.Blocking}\n" +
                         $"HDL: {player.SkillStats.BallHandling}\n" +
-                        $"SPD: {player.SkillStats.Speed}\n");
+                        $"PAS: {player.SkillStats.Passing}\n");
                 }
             }
         }
@@ -493,16 +493,21 @@ namespace Entities
 
             BasketballPlayer playerWithBasketball = ParentBasketballCourtLevel.AllBasketballPlayers.FirstOrDefault(player => player.HasBasketball);
 
-            bool conditionsForSuperBlockAreMet = SkillStats.Blocking == GlobalConstants.SkillStatHigh && (ParentBasketballCourtLevel.Basketball.BasketballState == BasketballState.IsBeingShotAscending || ParentBasketballCourtLevel.Basketball.BasketballState == BasketballState.IsHeldByAirbornePlayerAndShootable) && playerWithBasketball != null && playerWithBasketball.PlayerState == PlayerState.IsShooting && playerWithBasketball != this && playerWithBasketball != null && PhysicsMathHelper.GetHorizontalDistance(GlobalPosition, playerWithBasketball.GlobalPosition) <= 10;
+            //bool conditionsForSuperBlockAreMet = SkillStats.Blocking == GlobalConstants.SkillStatHigh && (ParentBasketballCourtLevel.Basketball.BasketballState == BasketballState.IsBeingShotAscending || ParentBasketballCourtLevel.Basketball.BasketballState == BasketballState.IsHeldByAirbornePlayerAndShootable) && playerWithBasketball != null && playerWithBasketball.PlayerState == PlayerState.IsShooting && playerWithBasketball != this && playerWithBasketball != null && PhysicsMathHelper.GetHorizontalDistance(GlobalPosition, playerWithBasketball.GlobalPosition) <= 10;
 
-            bool conditionsForSuperReboundAreMet = SkillStats.Rebounding == GlobalConstants.SkillStatHigh && 
-                (ParentBasketballCourtLevel.Basketball.BasketballState == BasketballState.IsReboundable || (ParentBasketballCourtLevel.Basketball.BasketballState == BasketballState.IsUpForGrabsOnGround && ParentBasketballCourtLevel.Basketball.GlobalPosition.Y > 2.5f)) && playerWithBasketball != null && PhysicsMathHelper.GetHorizontalDistance(GlobalPosition, ParentBasketballCourtLevel.Basketball.GlobalPosition) <= 10;
+            bool conditionsForSuperBlockAreMet = SkillStats.Blocking == GlobalConstants.SkillStatHigh && (ParentBasketballCourtLevel.Basketball.BasketballState == BasketballState.IsBeingShotAscending || (ParentBasketballCourtLevel.Basketball.BasketballState == BasketballState.IsHeldByAirbornePlayerAndShootable && playerWithBasketball != null && playerWithBasketball.PlayerState == PlayerState.IsShooting && playerWithBasketball != this && playerWithBasketball != null));
+
+            //bool conditionsForSuperReboundAreMet = SkillStats.Rebounding == GlobalConstants.SkillStatHigh && 
+            //    (ParentBasketballCourtLevel.Basketball.BasketballState == BasketballState.IsReboundable || (ParentBasketballCourtLevel.Basketball.BasketballState == BasketballState.IsUpForGrabsOnGround && ParentBasketballCourtLevel.Basketball.GlobalPosition.Y > 2.5f)) && playerWithBasketball != null && PhysicsMathHelper.GetHorizontalDistance(GlobalPosition, ParentBasketballCourtLevel.Basketball.GlobalPosition) <= 10;
+
+            bool conditionsForSuperReboundAreMet = SkillStats.Rebounding == GlobalConstants.SkillStatHigh &&
+                (ParentBasketballCourtLevel.Basketball.BasketballState == BasketballState.IsReboundable || (ParentBasketballCourtLevel.Basketball.BasketballState == BasketballState.IsUpForGrabsOnGround && ParentBasketballCourtLevel.Basketball.GlobalPosition.Y > 2.5f));
 
 
             bool conditionsForWeakBlockAreMet = SkillStats.Blocking == GlobalConstants.SkillStatLow && (ParentBasketballCourtLevel.Basketball.BasketballState == BasketballState.IsBeingShotAscending || ParentBasketballCourtLevel.Basketball.BasketballState == BasketballState.IsHeldByAirbornePlayerAndShootable) && playerWithBasketball != this && playerWithBasketball != null && PhysicsMathHelper.GetHorizontalDistance(GlobalPosition, playerWithBasketball.GlobalPosition) <= 10;
 
             bool conditionsForWeakReboundAreMet = SkillStats.Rebounding == GlobalConstants.SkillStatLow &&
-                (ParentBasketballCourtLevel.Basketball.BasketballState == BasketballState.IsReboundable || (ParentBasketballCourtLevel.Basketball.BasketballState == BasketballState.IsUpForGrabsOnGround && ParentBasketballCourtLevel.Basketball.GlobalPosition.Y > 2.5f)) && playerWithBasketball != null && PhysicsMathHelper.GetHorizontalDistance(GlobalPosition, ParentBasketballCourtLevel.Basketball.GlobalPosition) <= 10;
+                (ParentBasketballCourtLevel.Basketball.BasketballState == BasketballState.IsReboundable || (ParentBasketballCourtLevel.Basketball.BasketballState == BasketballState.IsUpForGrabsOnGround && ParentBasketballCourtLevel.Basketball.GlobalPosition.Y > 2.5f)) && PhysicsMathHelper.GetHorizontalDistance(GlobalPosition, ParentBasketballCourtLevel.Basketball.GlobalPosition) <= 10;
 
 
             //Is finished with super jump (ball has been blocked or rebounded) and must descend now
@@ -566,12 +571,12 @@ namespace Entities
 
                     //Mathf.Clamp(GetStandardJumpYValue((float)delta), _minimumBlockRiseVelocity, _maximumBlockRiseVelocity);
 
-                    GD.Print($"IsBlocking: {yMoveInput}");
+                    //GD.Print($"IsBlocking: {yMoveInput}");
                 }
                 else
                 {
                     yMoveInput = Mathf.Clamp(GetStandardJumpYValue((float)delta), _minimumRiseVelocity, _maximumRiseVelocity);
-                    GD.Print($"Is not Blocking: {yMoveInput}");
+                    //GD.Print($"Is not Blocking: {yMoveInput}");
                 }
 
                 if (conditionsForSuperBlockAreMet || conditionsForSuperReboundAreMet)
@@ -623,7 +628,7 @@ namespace Entities
             //Is in air and jump button is released before ascending is finished
             else if (!IsOnFloor() && !_jumpAscensionTimer.IsStopped() && !Input.IsActionPressed($"Jump_{TeamIdentifier}"))
             {
-                PlayerState = PlayerState.IsIdle;
+                //PlayerState = PlayerState.IsIdle;
 
                 yMoveInput = Mathf.Clamp(-GetStandardJumpYValue((float)delta), _minimumFallVelocity, _maximumFallVelocity);
 
@@ -687,11 +692,7 @@ namespace Entities
             {
                 moveDirection = new Vector3(moveInput.X, yMoveInput, moveInput.Z);
 
-                //Fall slower than you rise
-                if (yMoveInput < 0)
-                {
-                    yMoveInput *= .125f;
-                }
+                
                 
                 //Player should move pretty slowly horizontally while shooting a three
                 if (ParentBasketballCourtLevel.Basketball.PreviousPlayer == this && 
@@ -1156,17 +1157,37 @@ namespace Entities
 
         private void MovePlayer()
         {
-            if (SkillStats.Speed == GlobalConstants.SkillStatHigh && HasBasketball)
+            float yMoveInput = moveDirection.Y;
+
+            //Fall slower than you rise
+            if (yMoveInput < 0)
             {
-                Velocity = new Vector3(moveDirection.X * _standardMovementSpeed * 1.5f, moveDirection.Y * _standardMovementSpeed, moveDirection.Z * _standardMovementSpeed * 1.5f);
+                //GD.Print("In here");
+
+                if (PlayerState == PlayerState.IsRebounding || PlayerState == PlayerState.IsBlocking)
+                {
+                    //GD.Print("In here 2");
+                    yMoveInput = -1;
+
+                    GD.Print($"yMoveInput: {yMoveInput}");
+                }
+                else
+                {
+                    yMoveInput *= .125f;
+                }
             }
-            else if (SkillStats.Speed == GlobalConstants.SkillStatLow && HasBasketball)
+
+            if (SkillStats.BallHandling == GlobalConstants.SkillStatHigh && HasBasketball)
             {
-                Velocity = new Vector3(moveDirection.X * _standardMovementSpeed * .5f, moveDirection.Y * _standardMovementSpeed, moveDirection.Z * _standardMovementSpeed * .5f);
+                Velocity = new Vector3(moveDirection.X * _standardMovementSpeed * 1.5f, yMoveInput * _standardMovementSpeed, moveDirection.Z * _standardMovementSpeed * 1.5f);
+            }
+            else if (SkillStats.BallHandling == GlobalConstants.SkillStatLow && HasBasketball)
+            {
+                Velocity = new Vector3(moveDirection.X * _standardMovementSpeed * .5f, yMoveInput * _standardMovementSpeed, moveDirection.Z * _standardMovementSpeed * .5f);
             }
             else
             {
-                Velocity = moveDirection * _standardMovementSpeed;
+                Velocity = new Vector3(moveDirection.X, yMoveInput, moveDirection.Z) * _standardMovementSpeed;
             }
 
             MoveAndSlide();
@@ -1203,6 +1224,11 @@ namespace Entities
                         GlobalRotation = new Vector3(GlobalRotation.X, newAngle, GlobalRotation.Z);
                     //}
                 }
+
+                //if (HasBasketball)
+                //{
+                //    GD.Print($"Move Direction Y is {moveDirection.Y}");
+                //}
             }
         }
 

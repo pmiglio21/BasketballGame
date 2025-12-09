@@ -188,7 +188,7 @@ namespace Levels
                     }
                     else if (skillStatTypeIndex == 7)
                     {
-                        basketballPlayer.SkillStats.Speed = GlobalConstants.SkillStatHigh;
+                        basketballPlayer.SkillStats.Passing = GlobalConstants.SkillStatHigh;
                     }
                 }
             }
@@ -233,13 +233,13 @@ namespace Levels
                     }
                     else if (skillStatTypeIndex == 7)
                     {
-                        basketballPlayer.SkillStats.Speed = GlobalConstants.SkillStatLow;
+                        basketballPlayer.SkillStats.Passing = GlobalConstants.SkillStatLow;
                     }
                 }
             }
 
-            //basketballPlayer.SkillStats.Rebounding = GlobalConstants.SkillStatHigh;
-            //basketballPlayer.SkillStats.Blocking = GlobalConstants.SkillStatHigh;
+            basketballPlayer.SkillStats.Rebounding = GlobalConstants.SkillStatHigh;
+            basketballPlayer.SkillStats.Blocking = GlobalConstants.SkillStatHigh;
         }
 
         public void AssignPlayersToStartPoints()

@@ -20,7 +20,7 @@ namespace Entities
             SkillStatType.Stealing,
             SkillStatType.Blocking,
             SkillStatType.BallHandling,
-            SkillStatType.Speed
+            SkillStatType.Passing
         };
 
         public int TwoPointShooting { get; set; } = GlobalConstants.SkillStatAverage;
@@ -37,6 +37,6 @@ namespace Entities
 
         public int BallHandling { get; set; } = GlobalConstants.SkillStatAverage;
 
-        public int Speed { get; set; } = GlobalConstants.SkillStatAverage;
+        public int Passing { get; set; } = GlobalConstants.SkillStatAverage;
     }
 }

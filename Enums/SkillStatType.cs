@@ -17,6 +17,9 @@ namespace Enums
 
         BallHandling,
 
-        Speed
+        //Speed
+
+        //TODO: This is replacing speed for now. Don't know if we'll keep it though
+        Passing
     }
 }
