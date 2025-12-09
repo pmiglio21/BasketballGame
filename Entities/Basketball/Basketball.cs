@@ -91,7 +91,7 @@ namespace Entities
 
         private float _shotAscensionCount = 1;
 
-        private float _shotAscensionCountModifier = 1f;
+        private float _shotAscensionCountModifier = 4f;
 
         public int PointsExpected
         {
@@ -230,6 +230,8 @@ namespace Entities
 
         public override void _PhysicsProcess(double delta)
         {
+            float changeInGravity = 40f;
+
             if (BasketballState == BasketballState.IsBeingDribbled)
             {
                 if (DribbleTimer.IsStopped() && DribbleTimer.TimeLeft <= 0)
@@ -254,8 +256,6 @@ namespace Entities
             }
             else if (BasketballState == BasketballState.IsBeingShotAscending)
             {
-                float changeInGravity = 60f;
-
                 //Shot lower than hoop
                 if (GlobalPosition.Y < BasketballCourtLevel.HoopArea.GlobalPosition.Y)
                 {
@@ -297,8 +297,6 @@ namespace Entities
             }
             else if (BasketballState == BasketballState.IsBeingShotDescending)
             {
-                float changeInGravity = 60f;
-
                 if (GlobalPosition.Y >= BasketballCourtLevel.HoopArea.GlobalPosition.Y)
                 {
                     if (_shotAscensionCount > 0)

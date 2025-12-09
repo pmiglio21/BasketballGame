@@ -227,7 +227,7 @@ namespace Entities
         private const float _weakjumpTime = .1f;
         private const float _normaljumpShootingTime = .2f;
         private const float _normaljumpReboundingTime = .25f;
-        private const float _normaljumpBlockingTime = .5f;
+        private const float _normaljumpBlockingTime = .3f;
         private const float _superJumpTime = 1f;
         private int _jumpAscensionCount = 1;
         private bool _isJumpStartupFinished = false;
@@ -1162,19 +1162,21 @@ namespace Entities
             //Fall slower than you rise
             if (yMoveInput < 0)
             {
+                yMoveInput = -1;
+
                 //GD.Print("In here");
 
-                if (PlayerState == PlayerState.IsRebounding || PlayerState == PlayerState.IsBlocking)
-                {
-                    //GD.Print("In here 2");
-                    yMoveInput = -1;
+                //if (PlayerState == PlayerState.IsRebounding || PlayerState == PlayerState.IsBlocking)
+                //{
+                //    //GD.Print("In here 2");
+                //    yMoveInput = -1;
 
-                    GD.Print($"yMoveInput: {yMoveInput}");
-                }
-                else
-                {
-                    yMoveInput *= .125f;
-                }
+                //    GD.Print($"yMoveInput: {yMoveInput}");
+                //}
+                //else
+                //{
+                //    yMoveInput *= .125f;
+                //}
             }
 
             if (SkillStats.BallHandling == GlobalConstants.SkillStatHigh && HasBasketball)
