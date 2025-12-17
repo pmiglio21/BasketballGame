@@ -1351,46 +1351,62 @@ namespace Entities
 
         #endregion
 
+        private bool _isReparenting = false; //Doesn't necessarily work
+
         private void ReceiveTheBall(Basketball basketball)
         {
-            List<BasketballPlayer> playersOnTeam = ParentBasketballCourtLevel.AllBasketballPlayers.Where(player => player.TeamIdentifier == TeamIdentifier).ToList();
-
-            foreach (BasketballPlayer player in playersOnTeam)
+            if (!_isReparenting)
             {
-                player.HasFocus = false;
+                List<BasketballPlayer> playersOnTeam = ParentBasketballCourtLevel.AllBasketballPlayers.Where(player => player.TeamIdentifier == TeamIdentifier).ToList();
+
+                foreach (BasketballPlayer player in playersOnTeam)
+                {
+                    player.HasFocus = false;
+                }
+
+                HasFocus = true;
+                HasBasketball = true;
+
+        //        if body == player and not is_reparenting:
+        //        is_reparenting = true
+        //# Reparent logic here
+        //var new_parent = get_node("/root/Map2")
+        //get_parent().remove_child(self)
+        //new_parent.add_child(self)
+
+                if (ParentBasketballCourtLevel.Basketball.GetParent() != this)
+                {
+                    _isReparenting = true;
+
+                    basketball.Reparent(this);
+
+                    _isReparenting = false;
+                }
+
+                basketball.LinearVelocity = Vector3.Zero;
+
+                //Vector3 distanceBetweenPlayerAndBall = new Vector3(0, 0, 1.5f);
+                //Vector3 rotatedDistance = distanceBetweenPlayerAndBall.Rotated(Vector3.Up, this.GlobalPosition.Y);
+                //basketball.GlobalPosition = this.GlobalPosition + rotatedDistance;
+
+                //basketball.GlobalPosition = this.GlobalPosition + new Vector3(0, 0, 1.5f);
+
+                basketball.GlobalPosition = _dribblingBallTargetBody.GlobalPosition;
+
+                if (IsOnFloor())
+                {
+                    ParentBasketballCourtLevel.Basketball.BasketballState = BasketballState.IsBeingDribbled;
+                }
+                else
+                {
+                    ParentBasketballCourtLevel.Basketball.BasketballState = BasketballState.IsBeingHeldByAirbornePlayer;
+                }
+
+                //basketball.TargetPlayer = null;
+                basketball.PreviousPlayer = this;
+
+                ParentBasketballCourtLevel.FlipTeamIsOnOffense(TeamIdentifier, true);
             }
-
-            HasFocus = true;
-            HasBasketball = true;
-
-            if (ParentBasketballCourtLevel.Basketball.GetParent() != this)
-            {
-                basketball.Reparent(this);
-            }
-
-            basketball.LinearVelocity = Vector3.Zero;
-
-            //Vector3 distanceBetweenPlayerAndBall = new Vector3(0, 0, 1.5f);
-            //Vector3 rotatedDistance = distanceBetweenPlayerAndBall.Rotated(Vector3.Up, this.GlobalPosition.Y);
-            //basketball.GlobalPosition = this.GlobalPosition + rotatedDistance;
-
-            //basketball.GlobalPosition = this.GlobalPosition + new Vector3(0, 0, 1.5f);
-
-            basketball.GlobalPosition = _dribblingBallTargetBody.GlobalPosition;
-
-            if (IsOnFloor())
-            {
-                ParentBasketballCourtLevel.Basketball.BasketballState = BasketballState.IsBeingDribbled;
-            }
-            else
-            {
-                ParentBasketballCourtLevel.Basketball.BasketballState = BasketballState.IsBeingHeldByAirbornePlayer;
-            }
-
-            //basketball.TargetPlayer = null;
-            basketball.PreviousPlayer = this;
-
-            ParentBasketballCourtLevel.FlipTeamIsOnOffense(TeamIdentifier, true);
         }
 
         private void LoseTheBall(Basketball basketball)

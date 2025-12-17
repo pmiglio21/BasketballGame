@@ -5,6 +5,9 @@
 [ext_resource type="PackedScene" uid="uid://doymmdgdlp6g0" path="res://Entities/Basketball/Basketball.tscn" id="3_aa00t"]
 [ext_resource type="PackedScene" uid="uid://dcdbyrr8ou4w5" path="res://Levels/LevelObjects/PlayerStartPoint.tscn" id="4_kuxo6"]
 
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_ihpvk"]
+absorbent = true
+
 [sub_resource type="BoxShape3D" id="BoxShape3D_cmsn1"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_f10l7"]
@@ -15,9 +18,6 @@ material = SubResource("StandardMaterial3D_f10l7")
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_sepwb"]
 albedo_color = Color(0.560784, 0.560784, 0.560784, 1)
-
-[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_ihpvk"]
-absorbent = true
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_gt0n7"]
 
@@ -81,6 +81,20 @@ offset_top = 24.0
 offset_right = 147.0
 offset_bottom = 49.0
 text = "0"
+
+[node name="Ceiling" type="StaticBody3D" parent="." groups=["Bounceable"]]
+transform = Transform3D(300, 0, 0, 0, 1, 0, 0, 0, 300, 0, 24.7461, 0)
+collision_layer = 3
+collision_mask = 0
+physics_material_override = SubResource("PhysicsMaterial_ihpvk")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Ceiling"]
+shape = SubResource("BoxShape3D_cmsn1")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Ceiling"]
+visible = false
+mesh = SubResource("BoxMesh_4rm8i")
+skeleton = NodePath("../..")
 
 [node name="HoopWall" type="StaticBody3D" parent="." groups=["Bounceable", "Wall"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3, 1.5, -53.192)
