@@ -149,19 +149,33 @@ namespace Entities
         }
         private bool _isTargeted = false;
 
-        public bool IsInThreePointLine
+        public bool IsInDunkZone
         {
-            get { return _isInThreePointLine; }
+            get { return _isInDunkZone; }
             set
             {
-                if (_isInThreePointLine != value)
+                if (_isInDunkZone != value)
                 {
-                    _isInThreePointLine = value;
-                    OnPropertyChanged(nameof(IsInThreePointLine));
+                    _isInDunkZone = value;
+                    OnPropertyChanged(nameof(IsInDunkZone));
                 }
             }
         }
-        private bool _isInThreePointLine = false;
+        private bool _isInDunkZone = false;
+
+        public bool IsInThreePointZone
+        {
+            get { return _isInThreePointZone; }
+            set
+            {
+                if (_isInThreePointZone != value)
+                {
+                    _isInThreePointZone = value;
+                    OnPropertyChanged(nameof(IsInThreePointZone));
+                }
+            }
+        }
+        private bool _isInThreePointZone = false;
 
         public bool IsBasketballInDetectionArea
         {
@@ -311,7 +325,7 @@ namespace Entities
             TargetPlayer = this;// playersOnTeam.FirstOrDefault();
 
             //Offensive players start outside the three point line
-            IsInThreePointLine = IsOnOffense;
+            IsInThreePointZone = IsOnOffense;
         }
 
         //Necessary for INotifyPropertyChanged implementation
@@ -698,7 +712,7 @@ namespace Entities
                 if (ParentBasketballCourtLevel.Basketball.PreviousPlayer == this && 
                     (ParentBasketballCourtLevel.Basketball.BasketballState == BasketballState.IsHeldByAirbornePlayerAndShootable ||
                      ParentBasketballCourtLevel.Basketball.BasketballState == BasketballState.IsBeingShotAscending) &&
-                    !IsInThreePointLine && !IsOnFloor())
+                    !IsInThreePointZone && !IsOnFloor())
                 {
                     moveDirection = new Vector3(moveDirection.X / 8, yMoveInput, moveDirection.Z / 8);
                 }
@@ -790,7 +804,7 @@ namespace Entities
 
                 float yOffset = 1f;
 
-                if (IsInThreePointLine)
+                if (IsInThreePointZone)
                 {
                     int chanceOfShotGoingIn = 0;
 
@@ -1270,22 +1284,34 @@ namespace Entities
 
         private void OnBodyDetectionAreaEntered(Area3D area)
         {
-            if (area.IsInGroup(GroupTags.ThreePointLine))
+            if (area.IsInGroup(GroupTags.ThreePointZone))
             {
-                IsInThreePointLine = true;
+                IsInThreePointZone = true;
+            }
+            else if (area.IsInGroup(GroupTags.DunkZone))
+            {
+                IsInDunkZone = true;
+
+                GD.Print("Entered Dunk Zone");
             }
         }
 
         private void OnBodyDetectionAreaExited(Area3D area)
         {
-            if (area.IsInGroup(GroupTags.ThreePointLine))
+            if (area.IsInGroup(GroupTags.ThreePointZone))
             {
-                IsInThreePointLine = false;
+                IsInThreePointZone = false;
 
                 if (IsTargeted)
                 {
                     moveInput = Vector3.Zero;
                 }
+            }
+            else if (area.IsInGroup(GroupTags.DunkZone))
+            {
+                IsInDunkZone = false;
+
+                GD.Print("Exited Dunk Zone");
             }
         }
 

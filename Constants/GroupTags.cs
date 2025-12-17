@@ -9,7 +9,9 @@ namespace Constants
 
         public const string BasketballDetectionArea = "BasketballDetectionArea";
 
-        public const string ThreePointLine = "ThreePointLine";
+        public const string DunkZone = "DunkZone";
+
+        public const string ThreePointZone = "ThreePointZone";
 
         public const string BasketballCourtLevel = "BasketballCourtLevel";
 

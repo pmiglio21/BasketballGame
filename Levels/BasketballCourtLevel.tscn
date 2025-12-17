@@ -1,9 +1,11 @@
-[gd_scene load_steps=17 format=3 uid="uid://ckacamuxb6baa"]
+[gd_scene load_steps=21 format=3 uid="uid://ckacamuxb6baa"]
 
 [ext_resource type="Script" path="res://Levels/BasketballCourtLevel.cs" id="1_fd8c3"]
 [ext_resource type="PackedScene" uid="uid://67mof4iojay2" path="res://Entities/BasketballPlayers/BasketballPlayer.tscn" id="1_omy0y"]
 [ext_resource type="PackedScene" uid="uid://doymmdgdlp6g0" path="res://Entities/Basketball/Basketball.tscn" id="3_aa00t"]
 [ext_resource type="PackedScene" uid="uid://dcdbyrr8ou4w5" path="res://Levels/LevelObjects/PlayerStartPoint.tscn" id="4_kuxo6"]
+[ext_resource type="Script" path="res://Levels/LevelObjects/ThreePointZone.cs" id="4_pbva5"]
+[ext_resource type="Script" path="res://Levels/LevelObjects/DunkZone.cs" id="5_wfm6j"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_ihpvk"]
 absorbent = true
@@ -27,6 +29,16 @@ albedo_color = Color(0.352941, 1, 1, 0.486275)
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_a5gyj"]
 material = SubResource("StandardMaterial3D_syu03")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_8e6l0"]
+transparency = 1
+albedo_color = Color(0.596078, 0.52549, 1, 0.501961)
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_6i33l"]
+material = SubResource("StandardMaterial3D_8e6l0")
+top_radius = 10.0
+bottom_radius = 10.0
+height = 50.0
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_jtbxx"]
 radius = 2.0
@@ -218,17 +230,36 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9, 2, -33.2445)
 TeamIdentifier = "2"
 PlayerIdentifier = "3"
 
-[node name="ThreePointLine" type="Area3D" parent="." groups=["ThreePointLine"]]
+[node name="ThreePointZone" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.456768, -100.664)
+script = ExtResource("4_pbva5")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="ThreePointLine"]
+[node name="ZoneArea" type="Area3D" parent="ThreePointZone" groups=["ThreePointZone"]]
+collision_layer = 7
+collision_mask = 7
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="ThreePointZone/ZoneArea"]
 transform = Transform3D(40, 0, 0, 0, -8.74228e-07, -10, 0, 20, -4.37114e-07, 0.236766, -0.108103, 55.914)
-visible = false
 shape = SubResource("CapsuleShape3D_gt0n7")
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="ThreePointLine"]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="ThreePointZone/ZoneArea"]
 transform = Transform3D(40, 0, 0, 0, -8.74228e-07, -10, 0, 20, -4.37114e-07, 0.237, -0.204848, 55.914)
 mesh = SubResource("CapsuleMesh_a5gyj")
+
+[node name="DunkZone" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9, 2, -33.2445)
+script = ExtResource("5_wfm6j")
+
+[node name="ZoneArea" type="Area3D" parent="DunkZone" groups=["DunkZone"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9, 3.31387, -5.1895)
+collision_layer = 7
+collision_mask = 7
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="DunkZone/ZoneArea"]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="DunkZone/ZoneArea"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 0.74006, 0, -4.74866, -2.87531)
+mesh = SubResource("CylinderMesh_6i33l")
 
 [node name="BasketballHoop" type="StaticBody3D" parent="." groups=["Bounceable", "HoopBody"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.29451, 3.04699, -48.6729)
@@ -309,3 +340,8 @@ PlayerIdentifier = "2"
 [node name="PlayerStartPoint3" parent="." instance=ExtResource("4_kuxo6")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20, 1, -30)
 PlayerIdentifier = "3"
+
+[connection signal="area_entered" from="ThreePointZone/ZoneArea" to="ThreePointZone" method="OnThreePointAreaZoneEntered"]
+[connection signal="area_exited" from="ThreePointZone/ZoneArea" to="ThreePointZone" method="OnThreePointAreaZoneExited"]
+[connection signal="area_entered" from="DunkZone/ZoneArea" to="DunkZone" method="OnDunkZoneAreaEntered"]
+[connection signal="area_exited" from="DunkZone/ZoneArea" to="DunkZone" method="OnDunkZoneAreaExited"]

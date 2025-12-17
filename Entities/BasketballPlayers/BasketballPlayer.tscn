@@ -44,8 +44,8 @@ material = SubResource("StandardMaterial3D_i3nkc")
 [sub_resource type="SphereMesh" id="SphereMesh_iwtvc"]
 
 [node name="BasketballPlayer" type="CharacterBody3D" groups=["BasketballPlayer"]]
-collision_layer = 0
-collision_mask = 2
+collision_layer = 4
+collision_mask = 6
 script = ExtResource("1_kr2bl")
 
 [node name="CharacterBodyMesh" type="MeshInstance3D" parent="."]
