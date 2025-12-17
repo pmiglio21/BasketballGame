@@ -149,6 +149,20 @@ namespace Entities
         }
         private bool _isTargeted = false;
 
+        public bool IsInDunkZone
+        {
+            get { return _isInDunkZone; }
+            set
+            {
+                if (_isInDunkZone != value)
+                {
+                    _isInDunkZone = value;
+                    OnPropertyChanged(nameof(IsInDunkZone));
+                }
+            }
+        }
+        private bool _isInDunkZone = false;
+
         public bool IsInThreePointLine
         {
             get { return _isInThreePointLine; }
@@ -1274,6 +1288,10 @@ namespace Entities
             {
                 IsInThreePointLine = true;
             }
+            else if (area.IsInGroup(GroupTags.DunkZone))
+            {
+                IsInDunkZone = true;
+            }
         }
 
         private void OnBodyDetectionAreaExited(Area3D area)
@@ -1286,6 +1304,10 @@ namespace Entities
                 {
                     moveInput = Vector3.Zero;
                 }
+            }
+            else if (area.IsInGroup(GroupTags.DunkZone))
+            {
+                IsInDunkZone = false;
             }
         }
 
