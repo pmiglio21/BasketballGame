@@ -523,6 +523,12 @@ namespace Entities
             bool conditionsForWeakReboundAreMet = SkillStats.Rebounding == GlobalConstants.SkillStatLow &&
                 (ParentBasketballCourtLevel.Basketball.BasketballState == BasketballState.IsReboundable || (ParentBasketballCourtLevel.Basketball.BasketballState == BasketballState.IsUpForGrabsOnGround && ParentBasketballCourtLevel.Basketball.GlobalPosition.Y > 2.5f)) && PhysicsMathHelper.GetHorizontalDistance(GlobalPosition, ParentBasketballCourtLevel.Basketball.GlobalPosition) <= 10;
 
+            bool conditionsForWeakDunkAreMet = SkillStats.Rebounding == GlobalConstants.SkillStatLow && HasBasketball && IsInDunkZone && ParentBasketballCourtLevel.Basketball.BasketballState == BasketballState.IsBeingShotAscending;
+
+            bool conditionsForLayupAreMet = SkillStats.Rebounding == GlobalConstants.SkillStatAverage && HasBasketball && IsInDunkZone && ParentBasketballCourtLevel.Basketball.BasketballState == BasketballState.IsBeingShotAscending;
+
+            bool conditionsForSuperDunkAreMet = SkillStats.Rebounding == GlobalConstants.SkillStatHigh && HasBasketball && IsInDunkZone;
+
 
             //Is finished with super jump (ball has been blocked or rebounded) and must descend now
             if (HasFocus && _isSuperJumpComplete)
@@ -593,13 +599,13 @@ namespace Entities
                     //GD.Print($"Is not Blocking: {yMoveInput}");
                 }
 
-                if (conditionsForSuperBlockAreMet || conditionsForSuperReboundAreMet)
+                if (conditionsForSuperBlockAreMet || conditionsForSuperReboundAreMet || conditionsForSuperDunkAreMet)
                 {
                     _jumpAscensionTimer.WaitTime = _superJumpTime;
 
                     FlashColor(new Color(1, 1, 1));
                 }
-                else if (conditionsForWeakBlockAreMet || conditionsForWeakReboundAreMet)
+                else if (conditionsForWeakBlockAreMet || conditionsForWeakReboundAreMet || conditionsForWeakDunkAreMet)
                 {
                     _jumpAscensionTimer.WaitTime = _weakjumpTime;
 
@@ -691,6 +697,17 @@ namespace Entities
                 PlayerState = PlayerState.IsRebounding;
 
                 moveDirection = directionToBall * superJumpVelocity * (float)delta;
+            }
+            else if (yMoveInput > 0 && conditionsForSuperDunkAreMet)
+            {
+                Vector3 directionToHoop = GlobalPosition.DirectionTo(ParentBasketballCourtLevel.BasketballHoop.GlobalPosition);
+                directionToHoop = new Vector3(directionToHoop.X, directionToHoop.Y * 2, directionToHoop.Z);
+
+                PlayerState = PlayerState.IsDunking;
+
+                //moveDirection = directionToHoop * (float)delta;
+
+                moveDirection = directionToHoop;
             }
             //TODO: This doesn't work for some reason.
             ////Make them move towards rebound a little more aggressively

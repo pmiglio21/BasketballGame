@@ -238,6 +238,7 @@ namespace Levels
                 }
             }
 
+            basketballPlayer.SkillStats.Dunking = GlobalConstants.SkillStatHigh;
             basketballPlayer.SkillStats.Rebounding = GlobalConstants.SkillStatHigh;
             basketballPlayer.SkillStats.Blocking = GlobalConstants.SkillStatHigh;
         }

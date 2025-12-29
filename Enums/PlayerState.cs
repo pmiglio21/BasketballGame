@@ -10,6 +10,8 @@ namespace Enums
 
         IsRebounding,
 
-        IsBlocking
+        IsBlocking,
+
+        IsDunking //Counts for layups as well
     }
 }
