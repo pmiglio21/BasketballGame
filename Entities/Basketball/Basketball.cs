@@ -266,6 +266,8 @@ namespace Entities
 
                 if (parentNode is BasketballPlayer)
                 {
+                    Vector3 ballDestinationPointBeforeDescending = new Vector3(BasketballCourtLevel.HoopArea.GlobalPosition.X, BasketballCourtLevel.HoopArea.GlobalPosition.Y + 3f, BasketballCourtLevel.HoopArea.GlobalPosition.Z);
+
                     BasketballPlayer parentPlayer = parentNode as BasketballPlayer;
 
                     Node3D nearestDunkPoint = BasketballCourtLevel.DunkPoints.OrderBy(dunkPoint => dunkPoint.GlobalPosition.DistanceTo(parentPlayer.GlobalPosition)).FirstOrDefault();
@@ -274,10 +276,18 @@ namespace Entities
 
                     if (distanceToNearestDunkPoint < 1) //If player is right inside dunk point
                     {
-                        //Maybe lerp it to position and then make it descend?
-                        GlobalPosition = new Vector3(BasketballCourtLevel.HoopArea.GlobalPosition.X, BasketballCourtLevel.HoopArea.GlobalPosition.Y + 3f, BasketballCourtLevel.HoopArea.GlobalPosition.Z);
+                        float distanceToDunkDestinationPoint = GlobalPosition.DistanceTo(ballDestinationPointBeforeDescending);
 
-                        BasketballState = BasketballState.IsBeingShotDescending;
+                        if (distanceToDunkDestinationPoint < .5f)
+                        {
+                            BasketballState = BasketballState.IsBeingShotDescending;
+                            GD.Print("Close enough");
+                        }
+                        else
+                        {
+                            GlobalPosition = GlobalPosition.Lerp(ballDestinationPointBeforeDescending, 20f * (float)delta);
+                            GD.Print("Still has to go");
+                        }
                     }
                 }
 
