@@ -12,6 +12,8 @@ namespace Enums
 
         IsBlocking,
 
-        IsDunking //Counts for layups as well
+        IsDunking, //Counts for layups as well
+
+        IsAirborneAfterDunking
     }
 }

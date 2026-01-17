@@ -163,6 +163,20 @@ namespace Entities
         }
         private bool _isInDunkZone = false;
 
+        public bool HasReachedDunkPoint
+        {
+            get { return _hasReachedDunkPoint; }
+            set
+            {
+                if (_hasReachedDunkPoint != value)
+                {
+                    _hasReachedDunkPoint = value;
+                    OnPropertyChanged(nameof(HasReachedDunkPoint));
+                }
+            }
+        }
+        private bool _hasReachedDunkPoint = false;
+
         public bool IsInThreePointLine
         {
             get { return _isInThreePointLine; }
@@ -531,7 +545,7 @@ namespace Entities
 
             bool conditionsForLayupAreMet = SkillStats.Rebounding == GlobalConstants.SkillStatAverage && HasBasketball && IsInDunkZone && ParentBasketballCourtLevel.Basketball.BasketballState == BasketballState.IsBeingShotAscending;
 
-            bool conditionsForSuperDunkAreMet = SkillStats.Rebounding == GlobalConstants.SkillStatHigh && HasBasketball && IsInDunkZone;
+            bool conditionsForSuperDunkAreMet = SkillStats.Rebounding == GlobalConstants.SkillStatHigh && HasBasketball && IsInDunkZone && !HasReachedDunkPoint;
 
 
             //Is finished with super jump (ball has been blocked or rebounded) and must descend now
@@ -633,7 +647,7 @@ namespace Entities
                 //_isHorizontalControlLocked = true;
             }
             //Is in air and continues to hold jump while ascending is still allowed (jumpAscensionTimer is not stopped yet)
-            else if (HasFocus && _isJumpStartupFinished && !IsOnFloor() && !_jumpAscensionTimer.IsStopped() && Input.IsActionPressed($"Jump_{TeamIdentifier}"))
+            else if (!HasReachedDunkPoint && HasFocus && _isJumpStartupFinished && !IsOnFloor() && !_jumpAscensionTimer.IsStopped() && Input.IsActionPressed($"Jump_{TeamIdentifier}"))
             {
                 if (!IsOnOffense)
                 {
@@ -648,6 +662,13 @@ namespace Entities
                 {
                     ParentBasketballCourtLevel.Basketball.GlobalPosition = GlobalPosition + new Vector3(0, 1.2f, 0);
                 }
+            }
+            //Is in air and continues to hold jump while ascending is still allowed (jumpAscensionTimer is not stopped yet), BUT has already completed dunk, so must descend
+            else if (HasReachedDunkPoint && HasFocus && _isJumpStartupFinished && !IsOnFloor() && !_jumpAscensionTimer.IsStopped() && Input.IsActionPressed($"Jump_{TeamIdentifier}"))
+            {
+                yMoveInput = Mathf.Clamp(-GetStandardJumpYValue((float)delta), _minimumFallVelocity, _maximumFallVelocity);
+
+                _jumpAscensionCount = Mathf.Clamp(_jumpAscensionCount - 1, 1, int.MaxValue);
             }
             //Is in air and jump button is released before ascending is finished
             else if (!IsOnFloor() && !_jumpAscensionTimer.IsStopped() && !Input.IsActionPressed($"Jump_{TeamIdentifier}"))
@@ -686,6 +707,9 @@ namespace Entities
             //    }
             //}
 
+            Node3D nearestDunkPoint = ParentBasketballCourtLevel.DunkPoints.OrderBy(dunkPoint => dunkPoint.GlobalPosition.DistanceTo(this.GlobalPosition)).FirstOrDefault();
+            float distanceToNearestDunkPoint = GlobalPosition.DistanceTo(nearestDunkPoint.GlobalPosition);
+
             if (yMoveInput > 0 && conditionsForSuperBlockAreMet)
             {
                 Vector3 directionToBall = GlobalPosition.DirectionTo(ParentBasketballCourtLevel.Basketball.GlobalPosition);
@@ -702,10 +726,12 @@ namespace Entities
 
                 moveDirection = directionToBall * superJumpVelocity * (float)delta;
             }
-            else if (yMoveInput > 0 && conditionsForSuperDunkAreMet)
+            else if (distanceToNearestDunkPoint <= .5f)
             {
-                Node3D nearestDunkPoint = ParentBasketballCourtLevel.DunkPoints.OrderBy(dunkPoint => dunkPoint.GlobalPosition.DistanceTo(this.GlobalPosition)).FirstOrDefault();
-
+                HasReachedDunkPoint = true;
+            }
+            else if (distanceToNearestDunkPoint > .5f && yMoveInput > 0 && conditionsForSuperDunkAreMet && !HasReachedDunkPoint)
+            {
                 Vector3 directionToNearestDunkPoint = GlobalPosition.DirectionTo(nearestDunkPoint.GlobalPosition);
                 directionToNearestDunkPoint = new Vector3(directionToNearestDunkPoint.X, directionToNearestDunkPoint.Y * 2, directionToNearestDunkPoint.Z);
 
@@ -1394,6 +1420,7 @@ namespace Entities
                 _isJumpStartupFinished = false;
                 _isSuperJumpComplete = false;
                 _isHorizontalControlLocked = false;
+                HasReachedDunkPoint = false;
             }
         }
 

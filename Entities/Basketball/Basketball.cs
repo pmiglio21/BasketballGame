@@ -278,35 +278,27 @@ namespace Entities
                     {
                         float distanceToDunkDestinationPoint = GlobalPosition.DistanceTo(ballDestinationPointBeforeDescending);
 
-                        if (distanceToDunkDestinationPoint < .5f)
+                        if (distanceToDunkDestinationPoint < .5f) //Ball is close enough to hoop, let go of ball and let it descend now
                         {
                             BasketballState = BasketballState.IsBeingShotDescending;
-                            GD.Print("Close enough");
+
+                            parentPlayer.HasBasketball = false;
+
+                            if (parentNode != BasketballCourtLevel) //I know there is already a check for if parentNode is BasketballPlayer, but just in case something asynchronously reparents the ball while in here. It has happened in other spots before.
+                            {
+                                Reparent(BasketballCourtLevel);
+                            }
+
+                            parentPlayer.PlayerState = PlayerState.IsAirborneAfterDunking;
+                            //GD.Print("Close enough");
                         }
-                        else
+                        else //Slam ball towards hoop
                         {
                             GlobalPosition = GlobalPosition.Lerp(ballDestinationPointBeforeDescending, 20f * (float)delta);
-                            GD.Print("Still has to go");
+                            //GD.Print("Still has to go");
                         }
                     }
                 }
-
-                //_shotAscensionCount = 10;
-
-                //BasketballState = BasketballState.IsBeingShotDescending;
-
-                ////if (GlobalPosition.Y >= BasketballCourtLevel.HoopArea.GlobalPosition.Y)
-                ////{
-                ////    if (_shotAscensionCount > 0)
-                ////    {
-                ////        float newYLinearVelocity = Mathf.Clamp(-(changeInGravity / (float)_shotAscensionCount), -20f, float.MaxValue);
-
-                ////        LinearVelocity = new Vector3(LinearVelocity.X, newYLinearVelocity, LinearVelocity.Z);
-                ////        _shotAscensionCount = _shotAscensionCount - _shotAscensionCountModifier;
-                ////    }
-                ////}
-
-                ////MoveAndCollide(LinearVelocity * (float)delta);
             }
             else if (BasketballState == BasketballState.IsBeingShotAscending)
             {
