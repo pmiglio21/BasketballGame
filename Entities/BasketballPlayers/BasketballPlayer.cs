@@ -358,6 +358,10 @@ namespace Entities
                     ToggleShotBlockBody(false);
                 }
             }
+            else if (propertyName == nameof(PlayerState))
+            {
+                //GD.Print($"This is the new PlayerState: {PlayerState}");
+            }
         }
 
         #region Input Handling - Process
@@ -384,7 +388,7 @@ namespace Entities
                         }
                     }
 
-                    if (HasBasketball)
+                    if (HasBasketball && PlayerState != PlayerState.IsDunking)
                     {
                         GetShootBasketballInput();
                     }
@@ -700,14 +704,21 @@ namespace Entities
             }
             else if (yMoveInput > 0 && conditionsForSuperDunkAreMet)
             {
-                Vector3 directionToHoop = GlobalPosition.DirectionTo(ParentBasketballCourtLevel.BasketballHoop.GlobalPosition);
-                directionToHoop = new Vector3(directionToHoop.X, directionToHoop.Y * 2, directionToHoop.Z);
+                Node3D nearestDunkPoint = ParentBasketballCourtLevel.DunkPoints.OrderBy(dunkPoint => dunkPoint.GlobalPosition.DistanceTo(this.GlobalPosition)).FirstOrDefault();
+
+                Vector3 directionToNearestDunkPoint = GlobalPosition.DirectionTo(nearestDunkPoint.GlobalPosition);
+                directionToNearestDunkPoint = new Vector3(directionToNearestDunkPoint.X, directionToNearestDunkPoint.Y * 2, directionToNearestDunkPoint.Z);
 
                 PlayerState = PlayerState.IsDunking;
 
+                ParentBasketballCourtLevel.Basketball.BasketballState = BasketballState.IsBeingDunked;
+                ParentBasketballCourtLevel.Basketball.PointsExpected = 2;
+
                 //moveDirection = directionToHoop * (float)delta;
 
-                moveDirection = directionToHoop;
+                ParentBasketballCourtLevel.Basketball.DestinationGlobalPosition = ParentBasketballCourtLevel.HoopArea.GlobalPosition + new Vector3(0, 1f, 0); //TODO: Make sure yOffset is lined up with the ones in the shooting input method
+
+                moveDirection = directionToNearestDunkPoint;
             }
             //TODO: This doesn't work for some reason.
             ////Make them move towards rebound a little more aggressively
@@ -722,8 +733,6 @@ namespace Entities
             else
             {
                 moveDirection = new Vector3(moveInput.X, yMoveInput, moveInput.Z);
-
-                
                 
                 //Player should move pretty slowly horizontally while shooting a three
                 if (ParentBasketballCourtLevel.Basketball.PreviousPlayer == this && 

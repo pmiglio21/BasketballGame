@@ -192,6 +192,8 @@ namespace Entities
                 {
                     BounceDampeningFactor = MaxBounceDampeningFactor;
                 }
+
+                //GD.Print($"Basketball State changed to: {BasketballState}");
             }
             else if (propertyName == nameof(HasBeenScored))
             {
@@ -205,6 +207,10 @@ namespace Entities
 
                     //BasketballCourtLevel.AssignPlayersToStartPoints();
                 }
+            }
+            else if (propertyName == nameof(DestinationGlobalPosition))
+            {
+
             }
         }
 
@@ -253,6 +259,44 @@ namespace Entities
                 LinearVelocity = new Vector3(0, -10f, 0);
 
                 MoveAndCollide(LinearVelocity * (float)delta);
+            }
+            else if (BasketballState == BasketballState.IsBeingDunked)
+            {
+                Node parentNode = GetParent();
+
+                if (parentNode is BasketballPlayer)
+                {
+                    BasketballPlayer parentPlayer = parentNode as BasketballPlayer;
+
+                    Node3D nearestDunkPoint = BasketballCourtLevel.DunkPoints.OrderBy(dunkPoint => dunkPoint.GlobalPosition.DistanceTo(parentPlayer.GlobalPosition)).FirstOrDefault();
+
+                    float distanceToNearestDunkPoint = parentPlayer.GlobalPosition.DistanceTo(nearestDunkPoint.GlobalPosition);
+
+                    if (distanceToNearestDunkPoint < 1) //If player is right inside dunk point
+                    {
+                        //Maybe lerp it to position and then make it descend?
+                        GlobalPosition = new Vector3(BasketballCourtLevel.HoopArea.GlobalPosition.X, BasketballCourtLevel.HoopArea.GlobalPosition.Y + 3f, BasketballCourtLevel.HoopArea.GlobalPosition.Z);
+
+                        BasketballState = BasketballState.IsBeingShotDescending;
+                    }
+                }
+
+                //_shotAscensionCount = 10;
+
+                //BasketballState = BasketballState.IsBeingShotDescending;
+
+                ////if (GlobalPosition.Y >= BasketballCourtLevel.HoopArea.GlobalPosition.Y)
+                ////{
+                ////    if (_shotAscensionCount > 0)
+                ////    {
+                ////        float newYLinearVelocity = Mathf.Clamp(-(changeInGravity / (float)_shotAscensionCount), -20f, float.MaxValue);
+
+                ////        LinearVelocity = new Vector3(LinearVelocity.X, newYLinearVelocity, LinearVelocity.Z);
+                ////        _shotAscensionCount = _shotAscensionCount - _shotAscensionCountModifier;
+                ////    }
+                ////}
+
+                ////MoveAndCollide(LinearVelocity * (float)delta);
             }
             else if (BasketballState == BasketballState.IsBeingShotAscending)
             {

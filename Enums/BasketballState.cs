@@ -17,6 +17,8 @@ namespace Enums
 
         IsBeingShotDescending,
 
+        IsBeingDunked,
+
         IsInBasket,
 
         IsReboundable,

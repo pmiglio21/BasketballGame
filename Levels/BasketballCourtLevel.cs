@@ -29,6 +29,8 @@ namespace Levels
 
         public List<PlayerStartPoint> PlayerStartPoints = new();
 
+        public List<Node3D> DunkPoints = new();
+
         #endregion
 
         public RandomNumberGenerator RandomNumberGenerator = new();
@@ -55,6 +57,8 @@ namespace Levels
             BasketballResetTimer.Timeout += ResetBasketballOnTimeout;
 
             PlayerStartPoints = GetTree().GetNodesInGroup(GroupTags.PlayerStartPoint).Cast<PlayerStartPoint>().ToList();
+
+            DunkPoints = GetTree().GetNodesInGroup(GroupTags.DunkPoint).Cast<Node3D>().ToList();
 
             GetAllBasketballPlayers();
 
