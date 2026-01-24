@@ -271,7 +271,7 @@ transform = Transform3D(1, 0, 0, 0, 10, 0, 0, 0, 1, 0, 0, 0)
 mesh = SubResource("BoxMesh_4rm8i")
 skeleton = NodePath("../..")
 
-[node name="HoopBackboard" type="StaticBody3D" parent="." groups=["Bounceable", "HoopBody"]]
+[node name="HoopBackboard" type="StaticBody3D" parent="." groups=["Bounceable", "HoopBackboard", "HoopBody"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.29451, 8.30389, -48.0975)
 collision_layer = 3
 collision_mask = 0
@@ -334,6 +334,12 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.28156, 9.475, -44.4871)
 
 [node name="LayupPoint1" type="Node3D" parent="." groups=["LayupPoint"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.307437, 8.71011, -48.0287)
+
+[node name="LayupPoint2" type="Node3D" parent="." groups=["LayupPoint"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.25632, 9.68359, -48.0287)
+
+[node name="LayupPoint3" type="Node3D" parent="." groups=["LayupPoint"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.238862, 9.57341, -48.0287)
 
 [node name="BasketballResetTimer" type="Timer" parent="."]
 wait_time = 10.0

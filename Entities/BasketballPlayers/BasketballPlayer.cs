@@ -879,7 +879,7 @@ namespace Entities
 
                         Node3D nearestLayupPoint = ParentBasketballCourtLevel.LayupPoints.OrderBy(dunkPoint => dunkPoint.GlobalPosition.DistanceTo(this.GlobalPosition)).FirstOrDefault();
 
-                        int chanceOfShotGoingIn = 45;
+                        int chanceOfShotGoingIn = 100;// 45;
 
                         int randomValue = ParentBasketballCourtLevel.RandomNumberGenerator.RandiRange(0, 100);
 

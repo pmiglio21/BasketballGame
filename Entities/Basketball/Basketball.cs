@@ -93,6 +93,20 @@ namespace Entities
 
         private float _shotAscensionCountModifier = 4f;
 
+        public bool IsInLayup
+        {
+            get { return _isInLayup; }
+            set
+            {
+                if (_isInLayup != value)
+                {
+                    _isInLayup = value;
+                    OnPropertyChanged(nameof(IsInLayup));
+                }
+            }
+        }
+        private bool _isInLayup;
+
         public int PointsExpected
         {
             get { return _pointsExpected; }
@@ -238,6 +252,11 @@ namespace Entities
         {
             float changeInGravity = 40f;
 
+            if (GlobalPosition.Y <= BasketballCourtLevel.HoopArea.GlobalPosition.Y)
+            {
+                IsInLayup = false;
+            }
+
             if (BasketballState == BasketballState.IsBeingDribbled)
             {
                 if (DribbleTimer.IsStopped() && DribbleTimer.TimeLeft <= 0)
@@ -375,6 +394,17 @@ namespace Entities
             //Bouncing on floor or rebounding off basket, etc.
             else if (BasketballState == BasketballState.IsUpForGrabsOnGround || BasketballState == BasketballState.IsReboundable)
             {
+                if (IsInLayup)
+                {
+                    var moveInput = GlobalPosition.DirectionTo(BasketballCourtLevel.HoopArea.GlobalPosition);
+
+                    //var normalizedMoveInput = moveInput.Normalized();
+
+                    //var moveDirection = new Vector3(normalizedMoveInput.X, 0, normalizedMoveInput.Z);
+
+                    LinearVelocity = moveInput * 5f;
+                }
+
                 KinematicCollision3D collisionInfo = MoveAndCollide(LinearVelocity * (float)delta);
             }
             else
@@ -419,6 +449,8 @@ namespace Entities
                 }
 
                 HasPassedIntoHoopArea = true;
+
+                IsInLayup = false;
             }
             else if (area.IsInGroup(GroupTags.ForceShotDownArea))
             {
@@ -444,6 +476,11 @@ namespace Entities
             {
                 _shotAscensionCount = 1;
                 BasketballState = BasketballState.IsReboundable;
+
+                if (body.IsInGroup(GroupTags.HoopBackboard) && IsDestinedToSucceed)
+                {
+                    IsInLayup = true;
+                }
             }
             else if (body.IsInGroup(GroupTags.Bounceable) && BasketballState != BasketballState.IsBeingDribbled && BasketballState != BasketballState.IsBeingPassed)
             {

@@ -23,6 +23,8 @@ namespace Constants
 
         public const string HoopArea = "HoopArea";
 
+        public const string HoopBackboard = "HoopBackboard";
+
         public const string ForceShotDownArea = "ForceShotDownArea";
 
         public const string Bounceable = "Bounceable";
