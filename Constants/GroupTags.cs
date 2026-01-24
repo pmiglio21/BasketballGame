@@ -13,6 +13,8 @@ namespace Constants
 
         public const string DunkPoint = "DunkPoint";
 
+        public const string LayupPoint = "LayupPoint";
+
         public const string ThreePointLine = "ThreePointLine";
 
         public const string BasketballCourtLevel = "BasketballCourtLevel";

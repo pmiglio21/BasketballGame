@@ -722,7 +722,6 @@ namespace Entities
             #endregion
 
            
-
             Node3D nearestDunkPoint = ParentBasketballCourtLevel.DunkPoints.OrderBy(dunkPoint => dunkPoint.GlobalPosition.DistanceTo(this.GlobalPosition)).FirstOrDefault();
             float distanceToNearestDunkPoint = GlobalPosition.DistanceTo(nearestDunkPoint.GlobalPosition);
 
@@ -874,78 +873,121 @@ namespace Entities
 
                 if (IsInThreePointLine)
                 {
-                    int chanceOfShotGoingIn = 0;
-
-                    if (SkillStats.TwoPointShooting == GlobalConstants.SkillStatLow)
+                    if (IsInDunkZone && SkillStats.Dunking == GlobalConstants.SkillStatAverage && (moveDirection.X != 0 || moveDirection.Z != 0)) //Doing a laypup
                     {
-                        chanceOfShotGoingIn = 5;
+                        GD.Print("Attempting Layup");
 
-                        basketballDestinationGlobalPosition = ParentBasketballCourtLevel.HoopArea.GlobalPosition + new Vector3(0, yOffset, 0);
-                    }
-                    else if (SkillStats.TwoPointShooting == GlobalConstants.SkillStatAverage)
-                    {
-                        chanceOfShotGoingIn = 35;
+                        Node3D nearestLayupPoint = ParentBasketballCourtLevel.LayupPoints.OrderBy(dunkPoint => dunkPoint.GlobalPosition.DistanceTo(this.GlobalPosition)).FirstOrDefault();
 
-                        basketballDestinationGlobalPosition = ParentBasketballCourtLevel.HoopArea.GlobalPosition + new Vector3(0, yOffset, 0);
-                    }
-                    else if (SkillStats.TwoPointShooting == GlobalConstants.SkillStatHigh)
-                    {
-                        chanceOfShotGoingIn = 95;
+                        int chanceOfShotGoingIn = 45;
 
-                        basketballDestinationGlobalPosition = ParentBasketballCourtLevel.HoopArea.GlobalPosition + new Vector3(0, yOffset, 0);
-                    }
+                        int randomValue = ParentBasketballCourtLevel.RandomNumberGenerator.RandiRange(0, 100);
 
-                    int randomValue = ParentBasketballCourtLevel.RandomNumberGenerator.RandiRange(0, 100);
-
-                    if (randomValue <= chanceOfShotGoingIn)
-                    {
-                        basketballDestinationGlobalPosition = ParentBasketballCourtLevel.HoopArea.GlobalPosition + new Vector3(0, yOffset, 0);
-
-                        ParentBasketballCourtLevel.Basketball.IsDestinedToSucceed = true;
-
-                        newBasketballLightColor = new Color(0, 1, 0);
-                    }
-                    else if (SkillStats.TwoPointShooting == GlobalConstants.SkillStatAverage)
-                    {
-                        float chanceOfSkew = ParentBasketballCourtLevel.RandomNumberGenerator.RandiRange(1, 2);
-
-                        float randomXOffset = 0;
-
-                        if (chanceOfSkew == 1)
+                        if (randomValue <= chanceOfShotGoingIn)
                         {
-                            randomXOffset = ParentBasketballCourtLevel.RandomNumberGenerator.RandfRange(1f, 1.5f);
+                            basketballDestinationGlobalPosition = nearestLayupPoint.GlobalPosition + new Vector3(0, yOffset, 0);
+
+                            ParentBasketballCourtLevel.Basketball.IsDestinedToSucceed = true;
+
+                            newBasketballLightColor = new Color(0, 1, 0);
                         }
-                        else if (chanceOfSkew == 2)
+                        else
                         {
-                            randomXOffset = ParentBasketballCourtLevel.RandomNumberGenerator.RandfRange(-1.5f, -1f);
+                            float chanceOfSkew = ParentBasketballCourtLevel.RandomNumberGenerator.RandiRange(1, 2);
+
+                            float randomXOffset = 0;
+
+                            if (chanceOfSkew == 1)
+                            {
+                                randomXOffset = ParentBasketballCourtLevel.RandomNumberGenerator.RandfRange(1f, 1.5f);
+                            }
+                            else if (chanceOfSkew == 2)
+                            {
+                                randomXOffset = ParentBasketballCourtLevel.RandomNumberGenerator.RandfRange(-1.5f, -1f);
+                            }
+
+                            basketballDestinationGlobalPosition = nearestLayupPoint.GlobalPosition + new Vector3(randomXOffset, yOffset, 0);
+
+                            ParentBasketballCourtLevel.Basketball.IsDestinedToSucceed = false;
+
+                            newBasketballLightColor = new Color(1, 0, 0);
                         }
-
-                        basketballDestinationGlobalPosition = ParentBasketballCourtLevel.HoopArea.GlobalPosition + new Vector3(randomXOffset, yOffset, 0);
-
-                        ParentBasketballCourtLevel.Basketball.IsDestinedToSucceed = false;
-
-                        newBasketballLightColor = new Color(1, 0, 0);
                     }
-                    else if (SkillStats.TwoPointShooting == GlobalConstants.SkillStatLow)
+                    else
                     {
-                        float chanceOfSkew = ParentBasketballCourtLevel.RandomNumberGenerator.RandiRange(1, 2);
+                        int chanceOfShotGoingIn = 0;
 
-                        float randomXOffset = 0;
-
-                        if (chanceOfSkew == 1)
+                        if (SkillStats.TwoPointShooting == GlobalConstants.SkillStatLow)
                         {
-                            randomXOffset = ParentBasketballCourtLevel.RandomNumberGenerator.RandfRange(1.5f, 3f);
+                            chanceOfShotGoingIn = 5;
+
+                            basketballDestinationGlobalPosition = ParentBasketballCourtLevel.HoopArea.GlobalPosition + new Vector3(0, yOffset, 0);
                         }
-                        else if (chanceOfSkew == 2)
+                        else if (SkillStats.TwoPointShooting == GlobalConstants.SkillStatAverage)
                         {
-                            randomXOffset = ParentBasketballCourtLevel.RandomNumberGenerator.RandfRange(-3f, -1.5f);
+                            chanceOfShotGoingIn = 35;
+
+                            basketballDestinationGlobalPosition = ParentBasketballCourtLevel.HoopArea.GlobalPosition + new Vector3(0, yOffset, 0);
+                        }
+                        else if (SkillStats.TwoPointShooting == GlobalConstants.SkillStatHigh)
+                        {
+                            chanceOfShotGoingIn = 95;
+
+                            basketballDestinationGlobalPosition = ParentBasketballCourtLevel.HoopArea.GlobalPosition + new Vector3(0, yOffset, 0);
                         }
 
-                        basketballDestinationGlobalPosition = ParentBasketballCourtLevel.HoopArea.GlobalPosition + new Vector3(randomXOffset, yOffset, 0);
+                        int randomValue = ParentBasketballCourtLevel.RandomNumberGenerator.RandiRange(0, 100);
 
-                        ParentBasketballCourtLevel.Basketball.IsDestinedToSucceed = false;
+                        if (randomValue <= chanceOfShotGoingIn)
+                        {
+                            basketballDestinationGlobalPosition = ParentBasketballCourtLevel.HoopArea.GlobalPosition + new Vector3(0, yOffset, 0);
 
-                        newBasketballLightColor = new Color(1, 0, 0);
+                            ParentBasketballCourtLevel.Basketball.IsDestinedToSucceed = true;
+
+                            newBasketballLightColor = new Color(0, 1, 0);
+                        }
+                        else if (SkillStats.TwoPointShooting == GlobalConstants.SkillStatAverage)
+                        {
+                            float chanceOfSkew = ParentBasketballCourtLevel.RandomNumberGenerator.RandiRange(1, 2);
+
+                            float randomXOffset = 0;
+
+                            if (chanceOfSkew == 1)
+                            {
+                                randomXOffset = ParentBasketballCourtLevel.RandomNumberGenerator.RandfRange(1f, 1.5f);
+                            }
+                            else if (chanceOfSkew == 2)
+                            {
+                                randomXOffset = ParentBasketballCourtLevel.RandomNumberGenerator.RandfRange(-1.5f, -1f);
+                            }
+
+                            basketballDestinationGlobalPosition = ParentBasketballCourtLevel.HoopArea.GlobalPosition + new Vector3(randomXOffset, yOffset, 0);
+
+                            ParentBasketballCourtLevel.Basketball.IsDestinedToSucceed = false;
+
+                            newBasketballLightColor = new Color(1, 0, 0);
+                        }
+                        else if (SkillStats.TwoPointShooting == GlobalConstants.SkillStatLow)
+                        {
+                            float chanceOfSkew = ParentBasketballCourtLevel.RandomNumberGenerator.RandiRange(1, 2);
+
+                            float randomXOffset = 0;
+
+                            if (chanceOfSkew == 1)
+                            {
+                                randomXOffset = ParentBasketballCourtLevel.RandomNumberGenerator.RandfRange(1.5f, 3f);
+                            }
+                            else if (chanceOfSkew == 2)
+                            {
+                                randomXOffset = ParentBasketballCourtLevel.RandomNumberGenerator.RandfRange(-3f, -1.5f);
+                            }
+
+                            basketballDestinationGlobalPosition = ParentBasketballCourtLevel.HoopArea.GlobalPosition + new Vector3(randomXOffset, yOffset, 0);
+
+                            ParentBasketballCourtLevel.Basketball.IsDestinedToSucceed = false;
+
+                            newBasketballLightColor = new Color(1, 0, 0);
+                        }
                     }
 
                     ParentBasketballCourtLevel.Basketball.PointsExpected = 2;

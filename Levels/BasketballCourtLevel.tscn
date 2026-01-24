@@ -332,6 +332,9 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.7627, 9.475, -44.7577)
 [node name="DunkPoint5" type="Node3D" parent="." groups=["DunkPoint"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.28156, 9.475, -44.4871)
 
+[node name="LayupPoint1" type="Node3D" parent="." groups=["LayupPoint"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.307437, 8.71011, -48.0287)
+
 [node name="BasketballResetTimer" type="Timer" parent="."]
 wait_time = 10.0
 one_shot = true

@@ -31,6 +31,8 @@ namespace Levels
 
         public List<Node3D> DunkPoints = new();
 
+        public List<Node3D> LayupPoints = new();
+
         #endregion
 
         public RandomNumberGenerator RandomNumberGenerator = new();
@@ -59,6 +61,8 @@ namespace Levels
             PlayerStartPoints = GetTree().GetNodesInGroup(GroupTags.PlayerStartPoint).Cast<PlayerStartPoint>().ToList();
 
             DunkPoints = GetTree().GetNodesInGroup(GroupTags.DunkPoint).Cast<Node3D>().ToList();
+
+            LayupPoints = GetTree().GetNodesInGroup(GroupTags.LayupPoint).Cast<Node3D>().ToList();
 
             GetAllBasketballPlayers();
 
@@ -242,7 +246,7 @@ namespace Levels
                 }
             }
 
-            basketballPlayer.SkillStats.Dunking = GlobalConstants.SkillStatLow;
+            basketballPlayer.SkillStats.Dunking = GlobalConstants.SkillStatAverage;
             basketballPlayer.SkillStats.Rebounding = GlobalConstants.SkillStatHigh;
             basketballPlayer.SkillStats.Blocking = GlobalConstants.SkillStatHigh;
         }
