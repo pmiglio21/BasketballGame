@@ -43,6 +43,8 @@ namespace Entities
 
         private Timer _stealTimer = new();
 
+        private Timer _ballReposessionTimer = new();
+
         #endregion
 
         #region Player Identification Properties
@@ -333,6 +335,8 @@ namespace Entities
 
             _stealTimer = GetNode("StealTimer") as Timer;
 
+            _ballReposessionTimer = GetNode("BallReposessionTimer") as Timer;
+
             //TODO: Maybe move this to the next available player by default
             //Start target on the current player so TargetBasketballPlayer has something to go off of on the first target-selection input
             //List<BasketballPlayer> playersOnTeam = ParentBasketballCourtLevel.AllBasketballPlayers.Where(player => player.TeamIdentifier == TeamIdentifier && player != this).OrderBy(player => player.PlayerIdentifier).ToList();
@@ -525,6 +529,26 @@ namespace Entities
 
             BasketballPlayer playerWithBasketball = ParentBasketballCourtLevel.AllBasketballPlayers.FirstOrDefault(player => player.HasBasketball);
 
+
+            if (HasFocus && !_isStuckOnFloor && !_isHorizontalControlLocked)
+            {
+                moveInput.X = Input.GetActionStrength($"MoveEast_{TeamIdentifier}") - Input.GetActionStrength($"MoveWest_{TeamIdentifier}");
+                moveInput.Z = Input.GetActionStrength($"MoveSouth_{TeamIdentifier}") - Input.GetActionStrength($"MoveNorth_{TeamIdentifier}");
+            }
+            //else if (IsTargeted)
+            //{
+            //    float targetedMovementX = Input.GetActionStrength($"MoveTargetEast_{TeamIdentifier}") - Input.GetActionStrength($"MoveTargetWest_{TeamIdentifier}");
+            //    float targetedMovementZ = Input.GetActionStrength($"MoveTargetSouth_{TeamIdentifier}") - Input.GetActionStrength($"MoveTargetNorth_{TeamIdentifier}");
+
+            //    //Keep them moving from last movement as long as they aren't standing still
+            //    if (targetedMovementX != 0 || targetedMovementZ != 0)
+            //    {
+            //        moveInput.X = targetedMovementX;
+            //        moveInput.Z = targetedMovementZ;
+            //    }
+            //}
+
+
             //bool conditionsForSuperBlockAreMet = SkillStats.Blocking == GlobalConstants.SkillStatHigh && (ParentBasketballCourtLevel.Basketball.BasketballState == BasketballState.IsBeingShotAscending || ParentBasketballCourtLevel.Basketball.BasketballState == BasketballState.IsHeldByAirbornePlayerAndShootable) && playerWithBasketball != null && playerWithBasketball.PlayerState == PlayerState.IsShooting && playerWithBasketball != this && playerWithBasketball != null && PhysicsMathHelper.GetHorizontalDistance(GlobalPosition, playerWithBasketball.GlobalPosition) <= 10;
 
             bool conditionsForSuperBlockAreMet = SkillStats.Blocking == GlobalConstants.SkillStatHigh && (ParentBasketballCourtLevel.Basketball.BasketballState == BasketballState.IsBeingShotAscending || (ParentBasketballCourtLevel.Basketball.BasketballState == BasketballState.IsHeldByAirbornePlayerAndShootable && playerWithBasketball != null && playerWithBasketball.PlayerState == PlayerState.IsShooting && playerWithBasketball != this && playerWithBasketball != null));
@@ -541,11 +565,11 @@ namespace Entities
             bool conditionsForWeakReboundAreMet = SkillStats.Rebounding == GlobalConstants.SkillStatLow &&
                 (ParentBasketballCourtLevel.Basketball.BasketballState == BasketballState.IsReboundable || (ParentBasketballCourtLevel.Basketball.BasketballState == BasketballState.IsUpForGrabsOnGround && ParentBasketballCourtLevel.Basketball.GlobalPosition.Y > 2.5f)) && PhysicsMathHelper.GetHorizontalDistance(GlobalPosition, ParentBasketballCourtLevel.Basketball.GlobalPosition) <= 10;
 
-            bool conditionsForWeakDunkAreMet = SkillStats.Rebounding == GlobalConstants.SkillStatLow && HasBasketball && IsInDunkZone && ParentBasketballCourtLevel.Basketball.BasketballState == BasketballState.IsBeingShotAscending;
+            bool conditionsForWeakDunkAreMet = SkillStats.Dunking == GlobalConstants.SkillStatLow && HasBasketball && IsInDunkZone && !HasReachedDunkPoint && (moveInput.X != 0 || moveInput.Z != 0 || PlayerState == PlayerState.IsDunking);
 
-            bool conditionsForLayupAreMet = SkillStats.Rebounding == GlobalConstants.SkillStatAverage && HasBasketball && IsInDunkZone && ParentBasketballCourtLevel.Basketball.BasketballState == BasketballState.IsBeingShotAscending;
+            bool conditionsForLayupAreMet = SkillStats.Dunking == GlobalConstants.SkillStatAverage && HasBasketball && IsInDunkZone && !HasReachedDunkPoint && (moveInput.X != 0 || moveInput.Z != 0 || PlayerState == PlayerState.IsDunking);
 
-            bool conditionsForSuperDunkAreMet = SkillStats.Rebounding == GlobalConstants.SkillStatHigh && HasBasketball && IsInDunkZone && !HasReachedDunkPoint;
+            bool conditionsForSuperDunkAreMet = SkillStats.Dunking == GlobalConstants.SkillStatHigh && HasBasketball && IsInDunkZone && !HasReachedDunkPoint && (moveInput.X != 0 || moveInput.Z != 0 || PlayerState == PlayerState.IsDunking);
 
 
             //Is finished with super jump (ball has been blocked or rebounded) and must descend now
@@ -628,6 +652,14 @@ namespace Entities
                     _jumpAscensionTimer.WaitTime = _weakjumpTime;
 
                     FlashColor(new Color(0, 0, 0));
+
+                    if (conditionsForWeakDunkAreMet)
+                    {
+                        if (HasBasketball)
+                        {
+                            LoseTheBall(ParentBasketballCourtLevel.Basketball);
+                        }
+                    }
                 }
                 else if (PlayerState == PlayerState.IsShooting)
                 {
@@ -689,23 +721,7 @@ namespace Entities
 
             #endregion
 
-            if (HasFocus && !_isStuckOnFloor && !_isHorizontalControlLocked)
-            {
-                moveInput.X = Input.GetActionStrength($"MoveEast_{TeamIdentifier}") - Input.GetActionStrength($"MoveWest_{TeamIdentifier}");
-                moveInput.Z = Input.GetActionStrength($"MoveSouth_{TeamIdentifier}") - Input.GetActionStrength($"MoveNorth_{TeamIdentifier}");
-            }
-            //else if (IsTargeted)
-            //{
-            //    float targetedMovementX = Input.GetActionStrength($"MoveTargetEast_{TeamIdentifier}") - Input.GetActionStrength($"MoveTargetWest_{TeamIdentifier}");
-            //    float targetedMovementZ = Input.GetActionStrength($"MoveTargetSouth_{TeamIdentifier}") - Input.GetActionStrength($"MoveTargetNorth_{TeamIdentifier}");
-
-            //    //Keep them moving from last movement as long as they aren't standing still
-            //    if (targetedMovementX != 0 || targetedMovementZ != 0)
-            //    {
-            //        moveInput.X = targetedMovementX;
-            //        moveInput.Z = targetedMovementZ;
-            //    }
-            //}
+           
 
             Node3D nearestDunkPoint = ParentBasketballCourtLevel.DunkPoints.OrderBy(dunkPoint => dunkPoint.GlobalPosition.DistanceTo(this.GlobalPosition)).FirstOrDefault();
             float distanceToNearestDunkPoint = GlobalPosition.DistanceTo(nearestDunkPoint.GlobalPosition);
@@ -730,7 +746,7 @@ namespace Entities
             {
                 HasReachedDunkPoint = true;
             }
-            else if (distanceToNearestDunkPoint > .5f && yMoveInput > 0 && conditionsForSuperDunkAreMet && !HasReachedDunkPoint)
+            else if (distanceToNearestDunkPoint > .5f && yMoveInput > 0 && conditionsForSuperDunkAreMet && !HasReachedDunkPoint && (moveInput.X != 0 || moveInput.Z != 0 || PlayerState == PlayerState.IsDunking)) //And last move.X or Z != 0
             {
                 Vector3 directionToNearestDunkPoint = GlobalPosition.DirectionTo(nearestDunkPoint.GlobalPosition);
                 directionToNearestDunkPoint = new Vector3(directionToNearestDunkPoint.X, directionToNearestDunkPoint.Y * 2, directionToNearestDunkPoint.Z);
@@ -1245,7 +1261,11 @@ namespace Entities
                 //}
             }
 
-            if (SkillStats.BallHandling == GlobalConstants.SkillStatHigh && HasBasketball)
+            if (PlayerState == PlayerState.IsDunking)
+            {
+                Velocity = new Vector3(moveDirection.X * _standardMovementSpeed * .75f, yMoveInput * _standardMovementSpeed, moveDirection.Z * _standardMovementSpeed * .75f);
+            }
+            else if (SkillStats.BallHandling == GlobalConstants.SkillStatHigh && HasBasketball)
             {
                 Velocity = new Vector3(moveDirection.X * _standardMovementSpeed * 1.5f, yMoveInput * _standardMovementSpeed, moveDirection.Z * _standardMovementSpeed * 1.5f);
             }
@@ -1377,7 +1397,7 @@ namespace Entities
                     {
                         ReceiveTheBall(basketball);
                     }
-                    else if (basketball.BasketballState == BasketballState.IsUpForGrabsOnGround || basketball.BasketballState == BasketballState.IsReboundable)
+                    else if ((basketball.BasketballState == BasketballState.IsUpForGrabsOnGround || basketball.BasketballState == BasketballState.IsReboundable) && _ballReposessionTimer.IsStopped())
                     {
                         ReceiveTheBall(basketball);
                     }
@@ -1496,6 +1516,8 @@ namespace Entities
             basketball.BasketballState = BasketballState.IsUpForGrabsOnGround;
 
             basketball.LinearVelocity = new Vector3(ParentBasketballCourtLevel.RandomNumberGenerator.RandfRange(-2, 2), ParentBasketballCourtLevel.RandomNumberGenerator.RandfRange(0, 5), ParentBasketballCourtLevel.RandomNumberGenerator.RandfRange(-2, 2));
+
+            _ballReposessionTimer.Start();
 
             //Vector3 currentPlayerVelocity = new Vector3(Velocity.X, Velocity.Y, Velocity.Z);
 

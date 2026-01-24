@@ -233,7 +233,7 @@ TeamIdentifier = "2"
 PlayerIdentifier = "3"
 
 [node name="DunkZone" type="Area3D" parent="." groups=["DunkZone"]]
-transform = Transform3D(4, 0, 0, 0, 1, 0, 0, 0, 3, 0, 0, -41.5061)
+transform = Transform3D(4, 0, 0, 0, 1, 0, 0, 0, 3, 0.303377, 0, -41.6409)
 collision_layer = 4
 collision_mask = 0
 
