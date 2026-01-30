@@ -19,6 +19,8 @@ namespace Enums
 
         IsBeingDunked,
 
+        IsLayup,
+
         IsInBasket,
 
         IsReboundable,

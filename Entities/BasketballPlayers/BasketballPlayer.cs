@@ -860,8 +860,6 @@ namespace Entities
                     ParentBasketballCourtLevel.Basketball.Reparent(ParentBasketballCourtLevel);
                 }
 
-                ParentBasketballCourtLevel.Basketball.BasketballState = BasketballState.IsBeingShotAscending;
-
                 ParentBasketballCourtLevel.Basketball.GlobalPositionAtPointOfShot = ParentBasketballCourtLevel.Basketball.GlobalPosition;
 
 
@@ -875,11 +873,13 @@ namespace Entities
                 {
                     if (IsInDunkZone && SkillStats.Dunking == GlobalConstants.SkillStatAverage && (moveDirection.X != 0 || moveDirection.Z != 0)) //Doing a laypup
                     {
+                        ParentBasketballCourtLevel.Basketball.BasketballState = BasketballState.IsLayup;
+
                         GD.Print("Attempting Layup");
 
                         Node3D nearestLayupPoint = ParentBasketballCourtLevel.LayupPoints.OrderBy(dunkPoint => dunkPoint.GlobalPosition.DistanceTo(this.GlobalPosition)).FirstOrDefault();
 
-                        int chanceOfShotGoingIn = 100;// 45;
+                        int chanceOfShotGoingIn = 45;
 
                         int randomValue = ParentBasketballCourtLevel.RandomNumberGenerator.RandiRange(0, 100);
 
@@ -915,6 +915,8 @@ namespace Entities
                     }
                     else
                     {
+                        ParentBasketballCourtLevel.Basketball.BasketballState = BasketballState.IsBeingShotAscending;
+
                         int chanceOfShotGoingIn = 0;
 
                         if (SkillStats.TwoPointShooting == GlobalConstants.SkillStatLow)
@@ -994,6 +996,8 @@ namespace Entities
                 }
                 else
                 {
+                    ParentBasketballCourtLevel.Basketball.BasketballState = BasketballState.IsBeingShotAscending;
+
                     int chanceOfShotGoingIn = 0;
 
                     if (SkillStats.ThreePointShooting == GlobalConstants.SkillStatLow)

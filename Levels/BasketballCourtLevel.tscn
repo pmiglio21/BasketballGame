@@ -259,7 +259,6 @@ mesh = SubResource("CapsuleMesh_a5gyj")
 
 [node name="BasketballHoop" type="StaticBody3D" parent="." groups=["Bounceable", "HoopBody"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.29451, 3.04699, -48.6729)
-collision_layer = 3
 collision_mask = 0
 
 [node name="HoopPoleCollisionShape" type="CollisionShape3D" parent="BasketballHoop"]
@@ -336,10 +335,10 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.28156, 9.475, -44.4871)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.307437, 8.71011, -48.0287)
 
 [node name="LayupPoint2" type="Node3D" parent="." groups=["LayupPoint"]]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.25632, 9.68359, -48.0287)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.39924, 9.00872, -48.0287)
 
 [node name="LayupPoint3" type="Node3D" parent="." groups=["LayupPoint"]]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.238862, 9.57341, -48.0287)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.837654, 9.06964, -48.0287)
 
 [node name="BasketballResetTimer" type="Timer" parent="."]
 wait_time = 10.0

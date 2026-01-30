@@ -93,19 +93,19 @@ namespace Entities
 
         private float _shotAscensionCountModifier = 4f;
 
-        public bool IsInLayup
+        public bool IsContinuingLayup
         {
-            get { return _isInLayup; }
+            get { return _isContinuingLayup; }
             set
             {
-                if (_isInLayup != value)
+                if (_isContinuingLayup != value)
                 {
-                    _isInLayup = value;
-                    OnPropertyChanged(nameof(IsInLayup));
+                    _isContinuingLayup = value;
+                    OnPropertyChanged(nameof(IsContinuingLayup));
                 }
             }
         }
-        private bool _isInLayup;
+        private bool _isContinuingLayup;
 
         public int PointsExpected
         {
@@ -254,7 +254,7 @@ namespace Entities
 
             if (GlobalPosition.Y <= BasketballCourtLevel.HoopArea.GlobalPosition.Y)
             {
-                IsInLayup = false;
+                IsContinuingLayup = false;
             }
 
             if (BasketballState == BasketballState.IsBeingDribbled)
@@ -276,6 +276,12 @@ namespace Entities
             else if (BasketballState == BasketballState.IsInBasket)
             {
                 LinearVelocity = new Vector3(0, -10f, 0);
+
+                MoveAndCollide(LinearVelocity * (float)delta);
+            }
+            else if (BasketballState == BasketballState.IsLayup)
+            {
+                LinearVelocity = GlobalPosition.DirectionTo(DestinationGlobalPosition) * 10f;
 
                 MoveAndCollide(LinearVelocity * (float)delta);
             }
@@ -394,7 +400,7 @@ namespace Entities
             //Bouncing on floor or rebounding off basket, etc.
             else if (BasketballState == BasketballState.IsUpForGrabsOnGround || BasketballState == BasketballState.IsReboundable)
             {
-                if (IsInLayup)
+                if (IsContinuingLayup) //Layup bouncing off basket (part 2 of layup)
                 {
                     var moveInput = GlobalPosition.DirectionTo(BasketballCourtLevel.HoopArea.GlobalPosition);
 
@@ -402,7 +408,7 @@ namespace Entities
 
                     //var moveDirection = new Vector3(normalizedMoveInput.X, 0, normalizedMoveInput.Z);
 
-                    LinearVelocity = moveInput * 5f;
+                    LinearVelocity = moveInput * 7f;
                 }
 
                 KinematicCollision3D collisionInfo = MoveAndCollide(LinearVelocity * (float)delta);
@@ -450,7 +456,7 @@ namespace Entities
 
                 HasPassedIntoHoopArea = true;
 
-                IsInLayup = false;
+                IsContinuingLayup = false;
             }
             else if (area.IsInGroup(GroupTags.ForceShotDownArea))
             {
@@ -479,7 +485,7 @@ namespace Entities
 
                 if (body.IsInGroup(GroupTags.HoopBackboard) && IsDestinedToSucceed)
                 {
-                    IsInLayup = true;
+                    IsContinuingLayup = true;
                 }
             }
             else if (body.IsInGroup(GroupTags.Bounceable) && BasketballState != BasketballState.IsBeingDribbled && BasketballState != BasketballState.IsBeingPassed)
