@@ -1,9 +1,10 @@
-[gd_scene load_steps=20 format=3 uid="uid://ckacamuxb6baa"]
+[gd_scene load_steps=21 format=3 uid="uid://ckacamuxb6baa"]
 
 [ext_resource type="Script" path="res://Levels/BasketballCourtLevel.cs" id="1_fd8c3"]
 [ext_resource type="PackedScene" uid="uid://67mof4iojay2" path="res://Entities/BasketballPlayers/BasketballPlayer.tscn" id="1_omy0y"]
 [ext_resource type="PackedScene" uid="uid://doymmdgdlp6g0" path="res://Entities/Basketball/Basketball.tscn" id="3_aa00t"]
 [ext_resource type="PackedScene" uid="uid://dcdbyrr8ou4w5" path="res://Levels/LevelObjects/PlayerStartPoint.tscn" id="4_kuxo6"]
+[ext_resource type="PackedScene" uid="uid://cn3a28qa54ur3" path="res://Levels/LevelObjects/CpuOccupationZone.tscn" id="5_oe34a"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_ihpvk"]
 absorbent = true
@@ -359,3 +360,15 @@ PlayerIdentifier = "2"
 [node name="PlayerStartPoint3" parent="." instance=ExtResource("4_kuxo6")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20, 1, -30)
 PlayerIdentifier = "3"
+
+[node name="CpuOccupationZone1" parent="." instance=ExtResource("5_oe34a")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13.6513, 1, -38)
+ZoneNumber = 1
+
+[node name="CpuOccupationZone2" parent="." instance=ExtResource("5_oe34a")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12.5404, 1, -38)
+ZoneNumber = 2
+
+[node name="CpuOccupationZone3" parent="." instance=ExtResource("5_oe34a")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.419801, 1, -31.1012)
+ZoneNumber = 3

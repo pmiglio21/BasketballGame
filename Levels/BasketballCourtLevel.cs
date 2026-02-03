@@ -2,6 +2,8 @@ using Constants;
 using Entities;
 using Enums;
 using Godot;
+using Helpers;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -32,6 +34,8 @@ namespace Levels
         public List<Node3D> DunkPoints = new();
 
         public List<Node3D> LayupPoints = new();
+
+        public List<CpuOccupationZone> CpuOccupationZones = new();
 
         #endregion
 
@@ -64,6 +68,8 @@ namespace Levels
 
             LayupPoints = GetTree().GetNodesInGroup(GroupTags.LayupPoint).Cast<Node3D>().ToList();
 
+            CpuOccupationZones = GetTree().GetNodesInGroup(GroupTags.CpuOccupationZone).Cast<CpuOccupationZone>().ToList();
+
             GetAllBasketballPlayers();
 
             AssignPlayersToStartPoints();
@@ -72,6 +78,7 @@ namespace Levels
         // Called every frame. 'delta' is the elapsed time since the previous frame.
         public override void _Process(double delta)
         {
+            AssignPlayersToCpuOccupationZones();
         }
 
         public void GetAllBasketballPlayers()
@@ -246,7 +253,6 @@ namespace Levels
                 }
             }
 
-            basketballPlayer.SkillStats.Dunking = GlobalConstants.SkillStatAverage;
             basketballPlayer.SkillStats.Rebounding = GlobalConstants.SkillStatHigh;
             basketballPlayer.SkillStats.Blocking = GlobalConstants.SkillStatHigh;
         }
@@ -260,6 +266,50 @@ namespace Levels
                 if (assignedStartPoint != null)
                 {
                     basketballPlayer.GlobalPosition = assignedStartPoint.GlobalPosition;
+                }
+            }
+        }
+
+        public void AssignPlayersToCpuOccupationZones()
+        {
+            //Clear all zones for each player, including non-offensive players
+            foreach (BasketballPlayer basketballPlayer in AllBasketballPlayers)
+            {
+                basketballPlayer.CurrentCpuOccupationZone = null;
+            }
+
+            List<Tuple<BasketballPlayer, CpuOccupationZone, float>> playersOccupationZonesAndDistances = new List<Tuple<BasketballPlayer, CpuOccupationZone, float>>();
+
+            //Get every iteration of the three players and three zones
+            for (int i = 0; i < 3; i++)
+            {
+                foreach (BasketballPlayer basketballPlayer in AllBasketballPlayers.Where(x => x.IsOnOffense))
+                {
+                    float distanceBetweenPlayerAndZone = PhysicsMathHelper.GetHorizontalDistance(basketballPlayer.GlobalPosition, CpuOccupationZones[i].GlobalPosition);
+
+                    playersOccupationZonesAndDistances.Add(new Tuple<BasketballPlayer, CpuOccupationZone, float>(basketballPlayer, CpuOccupationZones[i], distanceBetweenPlayerAndZone));
+                }
+            }
+
+            //Make sure all offensive players have been assigned a zone
+            List<int> takenOccupationZones = new List<int>();
+
+            //Smallest distance is first
+            playersOccupationZonesAndDistances = playersOccupationZonesAndDistances.OrderBy(x => x.Item3).ToList();
+
+            while (takenOccupationZones.Count != 3)
+            {
+                Tuple<BasketballPlayer, CpuOccupationZone, float> nextClosestPlayer = playersOccupationZonesAndDistances.FirstOrDefault();
+
+                if (nextClosestPlayer != null)
+                {
+                    takenOccupationZones.Add(nextClosestPlayer.Item2.ZoneNumber);
+
+                    nextClosestPlayer.Item1.CurrentCpuOccupationZone = nextClosestPlayer.Item2;
+
+                    playersOccupationZonesAndDistances.RemoveAll(x => x.Item2.ZoneNumber == nextClosestPlayer.Item2.ZoneNumber);
+
+                    playersOccupationZonesAndDistances.RemoveAll(x => x.Item1.PlayerIdentifier == nextClosestPlayer.Item1.PlayerIdentifier);
                 }
             }
         }

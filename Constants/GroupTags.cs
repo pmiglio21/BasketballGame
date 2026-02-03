@@ -15,6 +15,8 @@ namespace Constants
 
         public const string LayupPoint = "LayupPoint";
 
+        public const string CpuOccupationZone = "CpuOccupationZone";
+
         public const string ThreePointLine = "ThreePointLine";
 
         public const string BasketballCourtLevel = "BasketballCourtLevel";

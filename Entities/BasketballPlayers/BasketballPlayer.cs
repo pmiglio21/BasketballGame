@@ -283,6 +283,20 @@ namespace Entities
 
         #endregion
 
+        public CpuOccupationZone CurrentCpuOccupationZone
+        {
+            get { return _currentCpuOccupationZone; }
+            set
+            {
+                if (_currentCpuOccupationZone != value)
+                {
+                    _currentCpuOccupationZone = value;
+                    OnPropertyChanged(nameof(CurrentCpuOccupationZone));
+                }
+            }
+        }
+        private CpuOccupationZone _currentCpuOccupationZone;
+
         // Called when the node enters the scene tree for the first time.
         public override void _Ready()
         {
@@ -452,7 +466,9 @@ namespace Entities
                         //TODO: Make offensive CPUs try to get open
                         //MagnetizeCpuToPairedPlayer();
 
-                        moveDirection = new Vector3(0, -10f, 0);
+                        //moveDirection = new Vector3(0, -10f, 0);
+
+                        MakeCpuStayInOccupationZone();
                     }
                     else
                     {
@@ -465,6 +481,23 @@ namespace Entities
         #region Controller Inputs
 
         #region CPU Movement
+
+        protected void MakeCpuStayInOccupationZone()
+        {
+            if (CurrentCpuOccupationZone != null)
+            {
+                moveInput = GlobalPosition.DirectionTo(CurrentCpuOccupationZone.GlobalPosition);
+
+                var normalizedMoveInput = moveInput.Normalized();
+
+                moveDirection = new Vector3(normalizedMoveInput.X, -10f, normalizedMoveInput.Z);
+
+                //if (this.GlobalPosition.DistanceTo(PairingPlayer.CpuTargetBody.GlobalPosition) <= .5f)
+                //{
+                //    moveDirection = Vector3.Zero;
+                //}
+            }
+        }
 
         protected void MagnetizeCpuToPairedPlayer()
         {
