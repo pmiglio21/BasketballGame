@@ -283,6 +283,8 @@ namespace Entities
 
         #endregion
 
+        #region CPU Movement Properties
+
         public CpuOccupationZone CurrentCpuOccupationZone
         {
             get { return _currentCpuOccupationZone; }
@@ -296,6 +298,22 @@ namespace Entities
             }
         }
         private CpuOccupationZone _currentCpuOccupationZone;
+
+        public Vector3? CpuDestinationPosition
+        {
+            get { return _cpuDestinationPosition; }
+            set
+            {
+                if (_cpuDestinationPosition != value)
+                {
+                    _cpuDestinationPosition = value;
+                    OnPropertyChanged(nameof(CpuDestinationPosition));
+                }
+            }
+        }
+        private Vector3? _cpuDestinationPosition = null;
+
+        #endregion
 
         // Called when the node enters the scene tree for the first time.
         public override void _Ready()
@@ -468,7 +486,12 @@ namespace Entities
 
                         //moveDirection = new Vector3(0, -10f, 0);
 
-                        MakeCpuStayInOccupationZone();
+                        int chanceOfChangeInDirection = ParentBasketballCourtLevel.RandomNumberGenerator.RandiRange(0, 1000);
+
+                        //if (chanceOfChangeInDirection > 998)
+                        //{
+                            MakeCpuStayInOccupationZone();
+                        //}
                     }
                     else
                     {
@@ -486,16 +509,26 @@ namespace Entities
         {
             if (CurrentCpuOccupationZone != null)
             {
-                moveInput = GlobalPosition.DirectionTo(CurrentCpuOccupationZone.GlobalPosition);
+                if (CpuDestinationPosition != null && GlobalPosition.DistanceTo(CpuDestinationPosition.Value) < 2)
+                {
+                    float diffInX = ParentBasketballCourtLevel.RandomNumberGenerator.RandfRange(-20, 20);
+                    float diffInZ = ParentBasketballCourtLevel.RandomNumberGenerator.RandfRange(-20, 20);
 
-                var normalizedMoveInput = moveInput.Normalized();
+                    CpuDestinationPosition = CurrentCpuOccupationZone.GlobalPosition;// + new Vector3(diffInX, 0, diffInZ);
+                }
+                else
+                {
+                    moveInput = GlobalPosition.DirectionTo(CpuDestinationPosition.Value);
 
-                moveDirection = new Vector3(normalizedMoveInput.X, -10f, normalizedMoveInput.Z);
+                    var normalizedMoveInput = moveInput.Normalized();
 
-                //if (this.GlobalPosition.DistanceTo(PairingPlayer.CpuTargetBody.GlobalPosition) <= .5f)
-                //{
-                //    moveDirection = Vector3.Zero;
-                //}
+                    moveDirection = new Vector3(normalizedMoveInput.X, -10f, normalizedMoveInput.Z);
+
+                    //if (this.GlobalPosition.DistanceTo(PairingPlayer.CpuTargetBody.GlobalPosition) <= .5f)
+                    //{
+                    //    moveDirection = Vector3.Zero;
+                    //}
+                }
             }
         }
 

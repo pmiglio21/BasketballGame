@@ -297,21 +297,41 @@ namespace Levels
             //Smallest distance is first
             playersOccupationZonesAndDistances = playersOccupationZonesAndDistances.OrderBy(x => x.Item3).ToList();
 
-            while (takenOccupationZones.Count != 3)
+            //Deal with player with ball first
+            Tuple<BasketballPlayer, CpuOccupationZone, float> playerWithBall = playersOccupationZonesAndDistances.FirstOrDefault(p => p.Item1.HasBasketball);
+
+            if (playerWithBall != null)
             {
-                Tuple<BasketballPlayer, CpuOccupationZone, float> nextClosestPlayer = playersOccupationZonesAndDistances.FirstOrDefault();
+                takenOccupationZones.Add(playerWithBall.Item2.ZoneNumber);
 
-                if (nextClosestPlayer != null)
+                playerWithBall.Item1.CurrentCpuOccupationZone = playerWithBall.Item2;
+
+                playersOccupationZonesAndDistances.RemoveAll(x => x.Item2.ZoneNumber == playerWithBall.Item2.ZoneNumber);
+
+                playersOccupationZonesAndDistances.RemoveAll(x => x.Item1.PlayerIdentifier == playerWithBall.Item1.PlayerIdentifier);
+
+                while (takenOccupationZones.Count != 3)
                 {
-                    takenOccupationZones.Add(nextClosestPlayer.Item2.ZoneNumber);
+                    Tuple<BasketballPlayer, CpuOccupationZone, float> nextClosestPlayer = playersOccupationZonesAndDistances.FirstOrDefault();
 
-                    nextClosestPlayer.Item1.CurrentCpuOccupationZone = nextClosestPlayer.Item2;
+                    if (nextClosestPlayer != null)
+                    {
+                        takenOccupationZones.Add(nextClosestPlayer.Item2.ZoneNumber);
 
-                    playersOccupationZonesAndDistances.RemoveAll(x => x.Item2.ZoneNumber == nextClosestPlayer.Item2.ZoneNumber);
+                        nextClosestPlayer.Item1.CurrentCpuOccupationZone = nextClosestPlayer.Item2;
 
-                    playersOccupationZonesAndDistances.RemoveAll(x => x.Item1.PlayerIdentifier == nextClosestPlayer.Item1.PlayerIdentifier);
+                        playersOccupationZonesAndDistances.RemoveAll(x => x.Item2.ZoneNumber == nextClosestPlayer.Item2.ZoneNumber);
+
+                        playersOccupationZonesAndDistances.RemoveAll(x => x.Item1.PlayerIdentifier == nextClosestPlayer.Item1.PlayerIdentifier);
+                    }
                 }
             }
+
+
+            //foreach (var player in AllBasketballPlayers.Where(x => x.IsOnOffense))
+            //{
+            //    GD.Print($"Player {player.PlayerIdentifier} assigned to Zone {(player.CurrentCpuOccupationZone != null ? player.CurrentCpuOccupationZone.ZoneNumber.ToString() : "None")}");
+            //}
         }
 
         private void ResetBasketballOnTimeout()
