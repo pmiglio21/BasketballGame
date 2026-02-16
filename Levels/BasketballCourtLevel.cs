@@ -272,12 +272,6 @@ namespace Levels
 
         public void AssignPlayersToCpuOccupationZones()
         {
-            //Clear all zones for each player, including non-offensive players
-            foreach (BasketballPlayer basketballPlayer in AllBasketballPlayers)
-            {
-                basketballPlayer.CurrentCpuOccupationZone = null;
-            }
-
             List<Tuple<BasketballPlayer, CpuOccupationZone, float>> playersOccupationZonesAndDistances = new List<Tuple<BasketballPlayer, CpuOccupationZone, float>>();
 
             //Get every iteration of the three players and three zones
@@ -302,37 +296,38 @@ namespace Levels
 
             if (playerWithBall != null)
             {
-                takenOccupationZones.Add(playerWithBall.Item2.ZoneNumber);
-
-                playerWithBall.Item1.CurrentCpuOccupationZone = playerWithBall.Item2;
-
-                playersOccupationZonesAndDistances.RemoveAll(x => x.Item2.ZoneNumber == playerWithBall.Item2.ZoneNumber);
-
-                playersOccupationZonesAndDistances.RemoveAll(x => x.Item1.PlayerIdentifier == playerWithBall.Item1.PlayerIdentifier);
-
-                float diffInX = 0;// RandomNumberGenerator.RandfRange(-10, 10);
-                float diffInZ = 0;// RandomNumberGenerator.RandfRange(-10, 10);
-
-                playerWithBall.Item1.CpuDestinationPosition = playerWithBall.Item1.CurrentCpuOccupationZone.GlobalPosition + new Vector3(diffInX, 0, diffInZ);
-
-                while (takenOccupationZones.Count != 3)
+                //If player with ball is getting a new zone, THEN CPUs can find new destination position
+                if (playerWithBall.Item1.CurrentCpuOccupationZone == null || playerWithBall.Item2.ZoneNumber != playerWithBall.Item1.CurrentCpuOccupationZone.ZoneNumber)
                 {
-                    Tuple<BasketballPlayer, CpuOccupationZone, float> nextClosestPlayer = playersOccupationZonesAndDistances.FirstOrDefault();
+                    takenOccupationZones.Add(playerWithBall.Item2.ZoneNumber);
 
-                    if (nextClosestPlayer != null)
+                    playerWithBall.Item1.CurrentCpuOccupationZone = playerWithBall.Item2;
+
+                    playersOccupationZonesAndDistances.RemoveAll(x => x.Item2.ZoneNumber == playerWithBall.Item2.ZoneNumber);
+
+                    playersOccupationZonesAndDistances.RemoveAll(x => x.Item1.PlayerIdentifier == playerWithBall.Item1.PlayerIdentifier);
+
+                    playerWithBall.Item1.CpuDestinationPosition = playerWithBall.Item1.CurrentCpuOccupationZone.GlobalPosition;
+
+                    while (takenOccupationZones.Count != 3)
                     {
-                        takenOccupationZones.Add(nextClosestPlayer.Item2.ZoneNumber);
+                        Tuple<BasketballPlayer, CpuOccupationZone, float> nextClosestPlayer = playersOccupationZonesAndDistances.FirstOrDefault();
 
-                        nextClosestPlayer.Item1.CurrentCpuOccupationZone = nextClosestPlayer.Item2;
+                        if (nextClosestPlayer != null && (nextClosestPlayer.Item1.CurrentCpuOccupationZone == null || nextClosestPlayer.Item2.ZoneNumber != nextClosestPlayer.Item1.CurrentCpuOccupationZone.ZoneNumber))
+                        {
+                            nextClosestPlayer.Item1.CurrentCpuOccupationZone = nextClosestPlayer.Item2;
+
+                            float diffInX = RandomNumberGenerator.RandfRange(-5, 5);
+                            float diffInZ = RandomNumberGenerator.RandfRange(-5, 5);
+
+                            nextClosestPlayer.Item1.CpuDestinationPosition = nextClosestPlayer.Item1.CurrentCpuOccupationZone.GlobalPosition + new Vector3(diffInX, 0, diffInZ);
+                        }
+
+                        takenOccupationZones.Add(nextClosestPlayer.Item2.ZoneNumber);
 
                         playersOccupationZonesAndDistances.RemoveAll(x => x.Item2.ZoneNumber == nextClosestPlayer.Item2.ZoneNumber);
 
                         playersOccupationZonesAndDistances.RemoveAll(x => x.Item1.PlayerIdentifier == nextClosestPlayer.Item1.PlayerIdentifier);
-
-                        diffInX = 0;//RandomNumberGenerator.RandfRange(-10, 10);
-                        diffInZ = 0;//RandomNumberGenerator.RandfRange(-10, 10);
-
-                        nextClosestPlayer.Item1.CpuDestinationPosition = nextClosestPlayer.Item1.CurrentCpuOccupationZone.GlobalPosition + new Vector3(diffInX, 0, diffInZ);
                     }
                 }
             }

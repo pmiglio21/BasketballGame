@@ -481,17 +481,7 @@ namespace Entities
                 {
                     if (IsOnOffense)
                     {
-                        //TODO: Make offensive CPUs try to get open
-                        //MagnetizeCpuToPairedPlayer();
-
-                        //moveDirection = new Vector3(0, -10f, 0);
-
-                        //int chanceOfChangeInDirection = ParentBasketballCourtLevel.RandomNumberGenerator.RandiRange(0, 1000);
-
-                        //if (chanceOfChangeInDirection > 990)
-                        //{
-                            MakeCpuStayInOccupationZone();
-                        //}
+                        MakeCpuStayInOccupationZone();
                     }
                     else
                     {
@@ -930,7 +920,7 @@ namespace Entities
 
                 if (IsInThreePointLine)
                 {
-                    if (IsInDunkZone && SkillStats.Dunking == GlobalConstants.SkillStatAverage && (moveDirection.X != 0 || moveDirection.Z != 0)) //Doing a laypup
+                    if (IsInDunkZone && SkillStats.Dunking == GlobalConstants.SkillStatAverage && (moveDirection.X != 0 || moveDirection.Z != 0)) //Doing a layup
                     {
                         ParentBasketballCourtLevel.Basketball.BasketballState = BasketballState.IsLayup;
 
