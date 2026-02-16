@@ -362,13 +362,13 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20, 1, -30)
 PlayerIdentifier = "3"
 
 [node name="CpuOccupationZone1" parent="." instance=ExtResource("5_oe34a")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13.6513, 1, -38)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12.5404, 1, -38)
 ZoneNumber = 1
 
 [node name="CpuOccupationZone2" parent="." instance=ExtResource("5_oe34a")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12.5404, 1, -38)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.419801, 1, -31.1012)
 ZoneNumber = 2
 
 [node name="CpuOccupationZone3" parent="." instance=ExtResource("5_oe34a")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.419801, 1, -31.1012)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13.6513, 1, -38)
 ZoneNumber = 3

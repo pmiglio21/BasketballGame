@@ -299,7 +299,7 @@ namespace Entities
         }
         private CpuOccupationZone _currentCpuOccupationZone;
 
-        public Vector3? CpuDestinationPosition
+        public Vector3 CpuDestinationPosition
         {
             get { return _cpuDestinationPosition; }
             set
@@ -311,7 +311,7 @@ namespace Entities
                 }
             }
         }
-        private Vector3? _cpuDestinationPosition = null;
+        private Vector3 _cpuDestinationPosition = Vector3.Zero;
 
         #endregion
 
@@ -486,9 +486,9 @@ namespace Entities
 
                         //moveDirection = new Vector3(0, -10f, 0);
 
-                        int chanceOfChangeInDirection = ParentBasketballCourtLevel.RandomNumberGenerator.RandiRange(0, 1000);
+                        //int chanceOfChangeInDirection = ParentBasketballCourtLevel.RandomNumberGenerator.RandiRange(0, 1000);
 
-                        //if (chanceOfChangeInDirection > 998)
+                        //if (chanceOfChangeInDirection > 990)
                         //{
                             MakeCpuStayInOccupationZone();
                         //}
@@ -509,25 +509,18 @@ namespace Entities
         {
             if (CurrentCpuOccupationZone != null)
             {
-                if (CpuDestinationPosition != null && GlobalPosition.DistanceTo(CpuDestinationPosition.Value) < 2)
+                if (GlobalPosition.DistanceTo(CpuDestinationPosition) < 2)
                 {
-                    float diffInX = ParentBasketballCourtLevel.RandomNumberGenerator.RandfRange(-20, 20);
-                    float diffInZ = ParentBasketballCourtLevel.RandomNumberGenerator.RandfRange(-20, 20);
-
-                    CpuDestinationPosition = CurrentCpuOccupationZone.GlobalPosition;// + new Vector3(diffInX, 0, diffInZ);
+                    moveInput = new Vector3(0, 0, 0);
+                    moveDirection = new Vector3(0, 0, 0);
                 }
                 else
                 {
-                    moveInput = GlobalPosition.DirectionTo(CpuDestinationPosition.Value);
+                    moveInput = GlobalPosition.DirectionTo(CpuDestinationPosition);
 
                     var normalizedMoveInput = moveInput.Normalized();
 
                     moveDirection = new Vector3(normalizedMoveInput.X, -10f, normalizedMoveInput.Z);
-
-                    //if (this.GlobalPosition.DistanceTo(PairingPlayer.CpuTargetBody.GlobalPosition) <= .5f)
-                    //{
-                    //    moveDirection = Vector3.Zero;
-                    //}
                 }
             }
         }
