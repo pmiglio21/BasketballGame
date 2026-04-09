@@ -1,0 +1,17 @@
+[gd_scene load_steps=3 format=3 uid="uid://5xqlvun6d07g"]
+
+[ext_resource type="Script" path="res://Screens/RootSceneSwapper/RootSceneSwapper.cs" id="1_pni1d"]
+[ext_resource type="PackedScene" uid="uid://0gl4qvcl6uoh" path="res://Screens/TitleScreen/TitleScreen.tscn" id="2_qdsuh"]
+
+[node name="RootSceneSwapper" type="Node"]
+script = ExtResource("1_pni1d")
+
+[node name="GUI" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="TitleScreen" parent="GUI" instance=ExtResource("2_qdsuh")]
+
+[node name="UiSoundEffectsAudioStreamPlayer" type="AudioStreamPlayer" parent="."]

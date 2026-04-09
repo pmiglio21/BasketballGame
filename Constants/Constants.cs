@@ -18,6 +18,16 @@ namespace Constants
 
         #endregion
 
+
+
         public const float DistanceCpuTargetBodyIsFromParentPlayer = 2.5f;
+
+
+
+        #region Keyboard Device Identifier
+
+        public const string KeyboardDeviceIdentifier = "Keyboard";
+
+        #endregion
     }
 }
