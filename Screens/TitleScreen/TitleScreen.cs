@@ -11,13 +11,17 @@ namespace Screens
         private RootSceneSwapper _rootSceneSwapper;
 
         private Timer _inputTimer;
-        private Button _playButton;
+        private Button _localPlayButton;
+        private Button _onlinePlayButton;
         private Button _quitGameButton;
 
         #region Signals
 
         [Signal]
-        public delegate void GoToPlayScreenEventHandler();
+        public delegate void GoToLocalPlayScreenEventHandler();
+
+        [Signal]
+        public delegate void GoToOnlinePlayScreenEventHandler();
 
         [Signal]
         public delegate void QuitGameEventHandler();
@@ -29,12 +33,14 @@ namespace Screens
             _rootSceneSwapper = GetTree().Root.GetNode<RootSceneSwapper>("RootSceneSwapper");
 
             _inputTimer = FindChild("InputTimer") as Timer;
-            _playButton = FindChild("PlayButton") as Button;
-            _playButton.Pressed += OnGoToPlayScreen;
+            _localPlayButton = FindChild("LocalPlayButton") as Button;
+            _localPlayButton.Pressed += OnGoToLocalPlayScreen;
+            _onlinePlayButton = FindChild("OnlinePlayButton") as Button;
+            _onlinePlayButton.Pressed += OnGoToOnlinePlayScreen;
             _quitGameButton = FindChild("QuitGameButton") as Button;
             _quitGameButton.Pressed += OnQuitGame;
 
-            _playButton.GrabFocus();
+            _localPlayButton.GrabFocus();
         }
 
         public override void _Process(double delta)
@@ -48,9 +54,13 @@ namespace Screens
         {
             if (UniversalInputHelper.IsActionJustPressed(InputType.UiActionConfirm))
             {
-                if (_playButton.HasFocus())
+                if (_localPlayButton.HasFocus())
                 {
-                    OnGoToPlayScreen();
+                    OnGoToLocalPlayScreen();
+                }
+                else if (_onlinePlayButton.HasFocus())
+                {
+                    OnGoToOnlinePlayScreen();
                 }
                 else if (_quitGameButton.HasFocus())
                 {
@@ -63,10 +73,12 @@ namespace Screens
         {
             if (_inputTimer.IsStopped() && (UniversalInputHelper.IsActionPressed(InputType.MoveSouth) || UniversalInputHelper.IsActionPressed_GamePadOnly(InputType.DPadSouth)))
             {
-                if (_playButton.HasFocus())
+                if (_localPlayButton.HasFocus())
                 {
-                    //_rootSceneSwapper.PlayUiSoundEffect(SoundFilePaths.UiMoveSoundPath);
-
+                    _onlinePlayButton.GrabFocus();
+                }
+                else if (_onlinePlayButton.HasFocus())
+                {
                     _quitGameButton.GrabFocus();
                 }
 
@@ -76,9 +88,11 @@ namespace Screens
             {
                 if (_quitGameButton.HasFocus())
                 {
-                    //_rootSceneSwapper.PlayUiSoundEffect(SoundFilePaths.UiMoveSoundPath);
-
-                    _playButton.GrabFocus();
+                    _onlinePlayButton.GrabFocus();
+                }
+                else if (_onlinePlayButton.HasFocus())
+                {
+                    _localPlayButton.GrabFocus();
                 }
 
                 _inputTimer.Start();
@@ -87,20 +101,21 @@ namespace Screens
 
         public void GrabFocusOfTopButton()
         {
-            _playButton.GrabFocus();
+            _localPlayButton.GrabFocus();
         }
 
-        private void OnGoToPlayScreen()
+        private void OnGoToLocalPlayScreen()
         {
-            //_rootSceneSwapper.PlayUiSoundEffect(SoundFilePaths.UiButtonSelectSoundPath);
+            EmitSignal(SignalName.GoToLocalPlayScreen);
+        }
 
-            EmitSignal(SignalName.GoToPlayScreen);
+        private void OnGoToOnlinePlayScreen()
+        {
+            EmitSignal(SignalName.GoToOnlinePlayScreen);
         }
 
         private void OnQuitGame()
         {
-            //_rootSceneSwapper.PlayUiSoundEffect(SoundFilePaths.UiButtonSelectSoundPath);
-
             EmitSignal(SignalName.QuitGame);
         }
     }

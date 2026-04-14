@@ -8,3 +8,44 @@ anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0
 script = ExtResource("1_x6gpa")
+
+[node name="InputTimer" type="Timer" parent="."]
+wait_time = 0.15
+one_shot = true
+autostart = true
+
+[node name="RichTextLabel" type="RichTextLabel" parent="."]
+layout_mode = 0
+offset_left = 352.0
+offset_top = 136.0
+offset_right = 794.0
+offset_bottom = 247.0
+theme_override_font_sizes/normal_font_size = 48
+text = "MinMax Basketball"
+
+[node name="LocalPlayButton" type="Button" parent="."]
+layout_mode = 0
+offset_left = 446.0
+offset_top = 228.0
+offset_right = 686.0
+offset_bottom = 308.0
+focus_mode = 1
+text = "LOCAL PLAY"
+
+[node name="OnlinePlayButton" type="Button" parent="."]
+layout_mode = 0
+offset_left = 446.0
+offset_top = 340.0
+offset_right = 686.0
+offset_bottom = 420.0
+focus_mode = 1
+text = "ONLINE PLAY"
+
+[node name="QuitGameButton" type="Button" parent="."]
+layout_mode = 0
+offset_left = 446.0
+offset_top = 444.0
+offset_right = 686.0
+offset_bottom = 524.0
+focus_mode = 1
+text = "QUIT"

@@ -26,6 +26,10 @@ namespace Root
 
         private TitleScreen _titleScreen;
 
+        private LocalPlayScreen _localPlayScreen;
+
+        private OnlinePlayScreen _onlinePlayScreen;
+
         #endregion
 
         public override void _Ready()
@@ -34,9 +38,9 @@ namespace Root
             _uiAudioStreamPlayer = FindChild("UiSoundEffectsAudioStreamPlayer") as AudioStreamPlayer;
 
             _titleScreen = FindChild("TitleScreen") as TitleScreen;
-            _playScreen = FindChild("PlayScreen") as PlayScreen;
 
-            _titleScreen.GoToPlayScreen += OnTitleScreenRootGoToPlayModeScreen;
+            _titleScreen.GoToLocalPlayScreen += OnTitleScreenRootGoToLocalPlayModeScreen;
+            _titleScreen.GoToOnlinePlayScreen += OnTitleScreenRootGoToOnlinePlayModeScreen;
             _titleScreen.QuitGame += QuitGame;
 
             //ReadLastOpenedData();
@@ -47,9 +51,14 @@ namespace Root
 
         #region From Title Screen
 
-        private void OnTitleScreenRootGoToPlayModeScreen()
+        private void OnTitleScreenRootGoToLocalPlayModeScreen()
         {
-            ChangeSceneToPlayScreen(_titleScreen);
+            ChangeSceneToLocalPlayScreen(_titleScreen);
+        }
+
+        private void OnTitleScreenRootGoToOnlinePlayModeScreen()
+        {
+            ChangeSceneToOnlinePlayScreen(_titleScreen);
         }
 
 
@@ -81,6 +90,8 @@ namespace Root
             {
                 //SaveOutLastOpenedData();
 
+                _onlinePlayScreen?.QueueFree();
+                _localPlayScreen?.QueueFree();
                 _titleScreen?.QueueFree();
 
                 GetTree().Quit();
@@ -91,15 +102,47 @@ namespace Root
             }
         }
 
+
         #endregion
 
-        #region Play Screen
+        #region Local Play Screen
 
-        public void ChangeSceneToPlayScreen(Control currentUiScene)
+        public void ChangeSceneToLocalPlayScreen(Control currentUiScene)
         {
-            _rootGuiControl.AddChild(_playScreen);
+            //if (_localPlayScreen == null)
+            //{
+            //    _localPlayScreen = GD.Load<PackedScene>(LevelScenePaths.PlayModeScreenPath).Instantiate() as PlayModeScreenManager;
 
-            _rootGuiControl.RemoveChild(currentUiScene);
+            //    _localPlayScreen.GoToTitleScreen += OnPlayModeScreenGoToTitleScreen;
+            //    _localPlayScreen.GoToGameRulesScreen += OnPlayModeScreenGoToGameRulesScreen;
+            //}
+
+            //_rootGuiControl.AddChild(_localPlayScreen);
+
+            //_rootGuiControl.RemoveChild(currentUiScene);
+
+            //_localPlayScreen.GrabFocusOfFirstButton();
+        }
+
+        #endregion
+
+        #region Online Play Screen
+
+        public void ChangeSceneToOnlinePlayScreen(Control currentUiScene)
+        {
+            //if (_onlinePlayScreen == null)
+            //{
+            //    _onlinePlayScreen = GD.Load<PackedScene>(LevelScenePaths.PlayModeScreenPath).Instantiate() as PlayModeScreenManager;
+
+            //    _onlinePlayScreen.GoToTitleScreen += OnPlayModeScreenGoToTitleScreen;
+            //    _onlinePlayScreen.GoToGameRulesScreen += OnPlayModeScreenGoToGameRulesScreen;
+            //}
+
+            //_rootGuiControl.AddChild(_onlinePlayScreen);
+
+            //_rootGuiControl.RemoveChild(currentUiScene);
+
+            //_onlinePlayScreen.GrabFocusOfFirstButton();
         }
 
         #endregion
