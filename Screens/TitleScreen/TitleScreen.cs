@@ -71,7 +71,7 @@ namespace Screens
 
         private void GetNavigationInput()
         {
-            if (_inputTimer.IsStopped() && (UniversalInputHelper.IsActionPressed(InputType.MoveSouth) || UniversalInputHelper.IsActionPressed_GamePadOnly(InputType.DPadSouth)))
+            if (_inputTimer.IsStopped() && (UniversalInputHelper.IsActionPressed(InputType.MoveSouth) || UniversalInputHelper.IsActionPressed_GamePadOnly(InputType.NavigateSouth)))
             {
                 if (_localPlayButton.HasFocus())
                 {
@@ -84,7 +84,7 @@ namespace Screens
 
                 _inputTimer.Start();
             }
-            else if (_inputTimer.IsStopped() && (UniversalInputHelper.IsActionPressed(InputType.MoveNorth) || UniversalInputHelper.IsActionPressed_GamePadOnly(InputType.DPadNorth)))
+            else if (_inputTimer.IsStopped() && (UniversalInputHelper.IsActionPressed(InputType.MoveNorth) || UniversalInputHelper.IsActionPressed_GamePadOnly(InputType.NavigateNorth)))
             {
                 if (_quitGameButton.HasFocus())
                 {

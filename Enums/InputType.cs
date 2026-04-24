@@ -36,10 +36,10 @@ namespace Enums
         RightShoulder,
         RightTrigger,
 
-        //D-Pad buttons
-        DPadEast,
-        DPadNorth,
-        DPadWest,
-        DPadSouth
+        //Navigate UI buttons
+        NavigateEast,
+        NavigateNorth,
+        NavigateWest,
+        NavigateSouth
     }
 }
