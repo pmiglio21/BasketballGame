@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System;
 using Constants;
 using Screens;
+using Levels;
 
 namespace Root
 {
@@ -27,6 +28,8 @@ namespace Root
         private TitleScreen _titleScreen;
 
         private LocalPlayScreen _localPlayScreen;
+
+        private BasketballCourtLevel _basketballCourtLevel;
 
         private OnlinePlayScreen _onlinePlayScreen;
 
@@ -109,6 +112,15 @@ namespace Root
 
         public void ChangeSceneToLocalPlayScreen(Control currentUiScene)
         {
+            if (_basketballCourtLevel == null)
+            {
+                _basketballCourtLevel = GD.Load<PackedScene>(ScreenFilePaths.BasketballCourtLevelScreenPath).Instantiate() as BasketballCourtLevel;
+            }
+
+            _rootGuiControl.AddChild(_basketballCourtLevel);
+
+            _rootGuiControl.RemoveChild(currentUiScene);
+
             //if (_localPlayScreen == null)
             //{
             //    _localPlayScreen = GD.Load<PackedScene>(LevelScenePaths.PlayModeScreenPath).Instantiate() as PlayModeScreenManager;
