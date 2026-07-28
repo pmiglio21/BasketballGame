@@ -10,7 +10,7 @@ namespace Online
 
     public partial class Lobby : Node
     {
-        public static Lobby Instance { get; set; }
+        //public static Lobby Instance { get; set; }
 
         private MultiplayerApi _multiplayerApi => GetTree().GetMultiplayer();
 
@@ -43,7 +43,7 @@ namespace Online
 
         public override void _Ready()
         {
-            Instance = this;
+            //Instance = this;
             _multiplayerApi.PeerConnected += OnPlayerConnected;
             _multiplayerApi.PeerDisconnected += OnPlayerDisconnected;
             _multiplayerApi.ConnectedToServer += OnConnectOk;

@@ -177,6 +177,8 @@ one_shot = true
 [node name="BallReposessionTimer" type="Timer" parent="."]
 one_shot = true
 
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
+
 [connection signal="area_entered" from="BodyDetectionArea" to="." method="OnBodyDetectionAreaEntered"]
 [connection signal="area_exited" from="BodyDetectionArea" to="." method="OnBodyDetectionAreaExited"]
 [connection signal="body_entered" from="BodyDetectionArea" to="." method="OnBodyDetectionAreaBodyEntered"]

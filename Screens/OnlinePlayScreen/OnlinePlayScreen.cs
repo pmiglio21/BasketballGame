@@ -22,6 +22,9 @@ namespace Screens
         [Signal]
         public delegate void CreateAndPlayOnlineSessionEventHandler();
 
+        [Signal]
+        public delegate void JoinOnlineSessionEventHandler();
+
         #endregion
 
         public override void _Ready()
@@ -82,7 +85,7 @@ namespace Screens
 
         private void OnCreateServerAndJoin()
         {
-            //EmitSignal(SignalName.CreateAndPlayOnlineSession);
+            EmitSignal(SignalName.CreateAndPlayOnlineSession);
 
 
 
@@ -101,14 +104,14 @@ namespace Screens
 
             //Multiplayer.GetUniqueId();
 
-            Lobby.Instance = new Lobby();
+            //Lobby.Instance = new Lobby();
 
-            Lobby.Instance.CreateGame();
+            //Lobby.Instance.CreateGame();
         }
 
         private void OnJoinServer()
         {
-            //EmitSignal(SignalName.CreateAndPlayOnlineSession);
+            EmitSignal(SignalName.JoinOnlineSession);
 
 
 
@@ -127,9 +130,9 @@ namespace Screens
 
             //Multiplayer.GetUniqueId();
 
-            Lobby.Instance = new Lobby();
+            //Lobby.Instance = new Lobby();
 
-            Lobby.Instance.CreateGame();
+            //Lobby.Instance.CreateGame();
         }
     }
 }

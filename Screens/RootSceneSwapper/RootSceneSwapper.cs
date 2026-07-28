@@ -31,7 +31,7 @@ namespace Root
 
         private BasketballCourtLevel _basketballCourtLevel;
 
-        private OnlinePlayScreen _onlinePlayScreen;
+        public OnlinePlayScreen OnlinePlayScreen;
 
         #endregion
 
@@ -93,7 +93,7 @@ namespace Root
             {
                 //SaveOutLastOpenedData();
 
-                _onlinePlayScreen?.QueueFree();
+                OnlinePlayScreen?.QueueFree();
                 _basketballCourtLevel?.QueueFree();
                 _localPlayScreen?.QueueFree();
                 _titleScreen?.QueueFree();
@@ -143,19 +143,24 @@ namespace Root
 
         public void ChangeSceneToOnlinePlayScreen(Control currentUiScene)
         {
-            if (_onlinePlayScreen == null)
+            InitializeOnlinePlayScreen();
+
+            _rootGuiControl.AddChild(OnlinePlayScreen);
+
+            _rootGuiControl.RemoveChild(currentUiScene);
+
+            OnlinePlayScreen.GrabFocusOfTopButton();
+        }
+
+        public void InitializeOnlinePlayScreen()
+        {
+            if (OnlinePlayScreen == null)
             {
-                _onlinePlayScreen = GD.Load<PackedScene>(ScreenFilePaths.OnlinePlayScreenPath).Instantiate() as OnlinePlayScreen;
+                OnlinePlayScreen = GD.Load<PackedScene>(ScreenFilePaths.OnlinePlayScreenPath).Instantiate() as OnlinePlayScreen;
 
                 //_onlinePlayScreen.GoToTitleScreen += OnPlayModeScreenGoToTitleScreen;
                 //_onlinePlayScreen.GoToGameRulesScreen += OnPlayModeScreenGoToGameRulesScreen;
             }
-
-            _rootGuiControl.AddChild(_onlinePlayScreen);
-
-            _rootGuiControl.RemoveChild(currentUiScene);
-
-            _onlinePlayScreen.GrabFocusOfTopButton();
         }
 
         #endregion
