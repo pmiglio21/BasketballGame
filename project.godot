@@ -15,10 +15,6 @@ run/main_scene="res://Screens/RootSceneSwapper/RootSceneSwapper.tscn"
 config/features=PackedStringArray("4.1", "C#", "Forward Plus")
 config/icon="res://icon.svg"
 
-[autoload]
-
-OnlineNetworkHandler="*res://Online/OnlineNetworkHandler.cs"
-
 [dotnet]
 
 project/assembly_name="BasketballGame"

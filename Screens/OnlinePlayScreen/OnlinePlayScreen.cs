@@ -1,7 +1,7 @@
 ﻿using Enums;
 using Godot;
 using Helpers;
-using Online;
+using Root;
 using System.Net;
 
 namespace Screens
@@ -32,6 +32,9 @@ namespace Screens
             _inputTimer = FindChild("InputTimer") as Timer;
             _createServerAndJoinButton = FindChild("CreateServerAndJoinButton") as Button;
             _joinServerButton = FindChild("JoinServerButton") as Button;
+
+            _createServerAndJoinButton.Pressed += OnCreateServerAndJoin;
+            _joinServerButton.Pressed += OnJoinServer;
         }
 
         public override void _Process(double delta)
@@ -85,7 +88,11 @@ namespace Screens
 
         private void OnCreateServerAndJoin()
         {
-            EmitSignal(SignalName.CreateAndPlayOnlineSession);
+            //OnlineNetworkHandler.Instance.StartServer();
+
+
+
+            //EmitSignal(SignalName.CreateAndPlayOnlineSession);
 
 
 
@@ -111,7 +118,11 @@ namespace Screens
 
         private void OnJoinServer()
         {
-            EmitSignal(SignalName.JoinOnlineSession);
+            //OnlineNetworkHandler.Instance.StartClient();
+
+
+
+            //EmitSignal(SignalName.JoinOnlineSession);
 
 
 

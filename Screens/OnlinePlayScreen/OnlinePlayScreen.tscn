@@ -27,6 +27,7 @@ theme_override_font_sizes/font_size = 24
 text = "Create Server and Join"
 
 [node name="JoinServerButton" type="Button" parent="."]
+layout_mode = 0
 offset_left = 397.0
 offset_top = 381.0
 offset_right = 763.0
@@ -37,6 +38,7 @@ text = "Join Server"
 
 [node name="CompileAndLaunchClientButton" type="Button" parent="."]
 visible = false
+layout_mode = 0
 offset_left = 397.0
 offset_top = 381.0
 offset_right = 763.0
@@ -44,5 +46,3 @@ offset_bottom = 543.0
 focus_mode = 1
 theme_override_font_sizes/font_size = 24
 text = "Join Online Play Session"
-
-[node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="."]

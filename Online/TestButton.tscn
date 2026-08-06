@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3 uid="uid://c0n8noe7en64q"]
+
+[ext_resource type="Script" path="res://Online/TestButton.cs" id="1_rcmxt"]
+
+[node name="TestButton" type="Button"]
+offset_right = 118.0
+offset_bottom = 78.0
+script = ExtResource("1_rcmxt")

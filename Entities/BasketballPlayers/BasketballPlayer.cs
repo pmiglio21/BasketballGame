@@ -58,6 +58,8 @@ namespace Entities
         [Export]
         public string PlayerIdentifier = "1";
 
+        public long OnlinePlayerIdentifier = 0;
+
         #endregion
 
         #region State Properties
@@ -315,6 +317,11 @@ namespace Entities
 
         #endregion
 
+        public override void _EnterTree()
+        {
+            SetMultiplayerAuthority((int)OnlinePlayerIdentifier);
+        }
+
         // Called when the node enters the scene tree for the first time.
         public override void _Ready()
         {
@@ -419,76 +426,84 @@ namespace Entities
         // Called every frame. 'delta' is the elapsed time since the previous frame.
         public override void _Process(double delta)
         {
-            //Human-controlled logic
-            if (HasFocus)
+            if (true)
             {
-                if (IsOnOffense)
-                {
-                    GetSkillStatsData();
 
-                    GetMovementInput(delta);
-
-                    GetPassTargetSelectionInput();
-
-                    if (TargetPlayer != this)
-                    {
-                        if (HasBasketball)
-                        {
-                            GetPassBallInput();
-                        }
-                    }
-
-                    if (HasBasketball && PlayerState != PlayerState.IsDunking)
-                    {
-                        GetShootBasketballInput();
-                    }
-                }
-                else
-                {
-                    GetSkillStatsData();
-
-                    GetMovementInput(delta);
-
-                    GetPassTargetSelectionInput();
-
-                    if (TargetPlayer != this)
-                    {
-                        GetPassFocusInput();
-                    }
-
-                    if (_stealTimer.IsStopped())
-                    {
-                        GetStealInput();
-                    }
-                }
             }
-            //else if (IsTargeted)
-            //{
-            //    GetMovementInput(delta);
-            //}
-            //CPU logic
             else
             {
-                List<BasketballPlayer> playersOnTeam = ParentBasketballCourtLevel.AllBasketballPlayers.Where(player => player.TeamIdentifier == TeamIdentifier).ToList();
-
-                BasketballPlayer playerClosestToBasketball = playersOnTeam.OrderBy(player => player.GlobalPosition.DistanceTo(ParentBasketballCourtLevel.Basketball.GlobalPosition)).FirstOrDefault();
-
-                if (ParentBasketballCourtLevel.Basketball.GetParent() is BasketballCourtLevel && !ParentBasketballCourtLevel.Basketball.HasBeenScored && playerClosestToBasketball == this)
-                {
-                    GoAfterBasketball();
-                }
-                else
+                //Human-controlled logic
+                if (HasFocus)
                 {
                     if (IsOnOffense)
                     {
-                        MakeCpuStayInOccupationZone();
+                        GetSkillStatsData();
+
+                        GetMovementInput(delta);
+
+                        GetPassTargetSelectionInput();
+
+                        if (TargetPlayer != this)
+                        {
+                            if (HasBasketball)
+                            {
+                                GetPassBallInput();
+                            }
+                        }
+
+                        if (HasBasketball && PlayerState != PlayerState.IsDunking)
+                        {
+                            GetShootBasketballInput();
+                        }
                     }
                     else
                     {
-                        MagnetizeCpuToPairedPlayer();
+                        GetSkillStatsData();
+
+                        GetMovementInput(delta);
+
+                        GetPassTargetSelectionInput();
+
+                        if (TargetPlayer != this)
+                        {
+                            GetPassFocusInput();
+                        }
+
+                        if (_stealTimer.IsStopped())
+                        {
+                            GetStealInput();
+                        }
+                    }
+                }
+                //else if (IsTargeted)
+                //{
+                //    GetMovementInput(delta);
+                //}
+                //CPU logic
+                else
+                {
+                    List<BasketballPlayer> playersOnTeam = ParentBasketballCourtLevel.AllBasketballPlayers.Where(player => player.TeamIdentifier == TeamIdentifier).ToList();
+
+                    BasketballPlayer playerClosestToBasketball = playersOnTeam.OrderBy(player => player.GlobalPosition.DistanceTo(ParentBasketballCourtLevel.Basketball.GlobalPosition)).FirstOrDefault();
+
+                    if (ParentBasketballCourtLevel.Basketball.GetParent() is BasketballCourtLevel && !ParentBasketballCourtLevel.Basketball.HasBeenScored && playerClosestToBasketball == this)
+                    {
+                        GoAfterBasketball();
+                    }
+                    else
+                    {
+                        if (IsOnOffense)
+                        {
+                            MakeCpuStayInOccupationZone();
+                        }
+                        else
+                        {
+                            MagnetizeCpuToPairedPlayer();
+                        }
                     }
                 }
             }
+            
         }
 
         #region Controller Inputs

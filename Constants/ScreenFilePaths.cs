@@ -6,5 +6,7 @@ namespace Constants
     {
         public const string OnlinePlayScreenPath = "res://Screens/OnlinePlayScreen/OnlinePlayScreen.tscn";
         public const string BasketballCourtLevelScreenPath = "res://Levels/BasketballCourtLevel.tscn";
+        public const string BasketballPlayerPath = "res://Entities/BasketballPlayers/BasketballPlayer.tscn";
+        public const string TestButtonPath = "res://Online/TestButton.tscn";
     }
 }
