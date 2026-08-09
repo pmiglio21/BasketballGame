@@ -1,6 +1,8 @@
-﻿using Enums;
+﻿using Constants;
+using Enums;
 using Godot;
 using Helpers;
+using Levels;
 using Root;
 using System.Net;
 
@@ -8,12 +10,26 @@ namespace Screens
 {
     public partial class OnlinePlayScreen : Control
     {
-        private Timer _inputTimer;
+        #region Online Properties
+
+        private ENetMultiplayerPeer _peer;
+
+        [Export]
+        private int _serverPort = 7777;
+
+        [Export]
+        private string _ipAddress = "127.0.0.1"; //"localhost"
+
+        private const int _maxNumberOfPlayers = 2;
+
+        #endregion
 
         #region Components
 
-        private Button _createServerAndJoinButton;
+        private Timer _inputTimer;
+        private Button _createServerButton;
         private Button _joinServerButton;
+        private Button _startGameButton;
 
         #endregion
 
@@ -30,11 +46,18 @@ namespace Screens
         public override void _Ready()
         {
             _inputTimer = FindChild("InputTimer") as Timer;
-            _createServerAndJoinButton = FindChild("CreateServerAndJoinButton") as Button;
+            _createServerButton = FindChild("CreateServerButton") as Button;
             _joinServerButton = FindChild("JoinServerButton") as Button;
+            _startGameButton = FindChild("StartGameButton") as Button;
 
-            _createServerAndJoinButton.Pressed += OnCreateServerAndJoin;
+            Multiplayer.PeerConnected += OnPeerConnected;
+            Multiplayer.PeerDisconnected += OnPeerDisconnected;
+            Multiplayer.ConnectedToServer += OnConnectedToServer;
+            Multiplayer.ConnectionFailed += OnConnectionFailed;
+
+            _createServerButton.Pressed += OnCreateServer;
             _joinServerButton.Pressed += OnJoinServer;
+            _startGameButton.Pressed += OnStartGame;
         }
 
         public override void _Process(double delta)
@@ -48,9 +71,9 @@ namespace Screens
         {
             if (UniversalInputHelper.IsActionJustPressed(InputType.UiActionConfirm))
             {
-                if (_createServerAndJoinButton.HasFocus())
+                if (_createServerButton.HasFocus())
                 {
-                    OnCreateServerAndJoin();
+                    OnCreateServer();
                 }
                 else if (_joinServerButton.HasFocus())
                 {
@@ -63,7 +86,7 @@ namespace Screens
         {
             if (_inputTimer.IsStopped() && (UniversalInputHelper.IsActionPressed(InputType.MoveSouth) || UniversalInputHelper.IsActionPressed_GamePadOnly(InputType.NavigateSouth)))
             {
-                if (_createServerAndJoinButton.HasFocus())
+                if (_createServerButton.HasFocus())
                 {
                     _joinServerButton.GrabFocus();
                 }
@@ -74,7 +97,7 @@ namespace Screens
             {
                 if (_joinServerButton.HasFocus())
                 {
-                    _createServerAndJoinButton.GrabFocus();
+                    _createServerButton.GrabFocus();
                 }
 
                 _inputTimer.Start();
@@ -83,67 +106,98 @@ namespace Screens
 
         public void GrabFocusOfTopButton()
         {
-            _createServerAndJoinButton.GrabFocus();
+            _createServerButton.GrabFocus();
         }
 
-        private void OnCreateServerAndJoin()
+        #region Server Events
+
+        /// <summary>
+        /// Runs on all peers, including server
+        /// </summary>
+        /// <param name="id"></param>
+        private void OnPeerConnected(long id)
         {
-            //OnlineNetworkHandler.Instance.StartServer();
+            GD.Print($"Peer connected: {id}");
+        }
 
+        /// <summary>
+        /// Runs on all peers, including server
+        /// </summary>
+        /// <param name="id"></param>
+        private void OnPeerDisconnected(long id)
+        {
+            GD.Print($"Peer disconnected: {id}");
+        }
 
+        /// <summary>
+        /// Runs only on the clients
+        /// </summary>
+        private void OnConnectedToServer()
+        {
+            GD.Print($"Connected to server");
+        }
 
-            //EmitSignal(SignalName.CreateAndPlayOnlineSession);
+        /// <summary>
+        /// Runs only on the clients
+        /// </summary>
+        private void OnConnectionFailed()
+        {
+            GD.Print($"Connection failed");
+        }
 
+        #endregion
 
+        #region Button Pressed Events
 
+        private void OnCreateServer()
+        {
+            _peer = new ENetMultiplayerPeer();
+            Error error = _peer.CreateServer(_serverPort, _maxNumberOfPlayers);
 
-            //MultiplayerApi multiplayerApi = GetTree().GetMultiplayer(); // Get the default MultiplayerAPI object.
+            if (error != Error.Ok)
+            {
+                GD.Print($"Failed to create server: {error}");
+                return;
+            }
 
-            //// Create client.
-            //var peer = new ENetMultiplayerPeer();
-            //peer.CreateClient(IPAddress, 12345);
-            //Multiplayer.MultiplayerPeer = peer;
+            _peer.Host.Compress(ENetConnection.CompressionMode.RangeCoder);
 
-            //// Create server.
-            //var peer = new ENetMultiplayerPeer();
-            //peer.CreateServer(12345, 2);
-            //Multiplayer.MultiplayerPeer = peer;
+            Multiplayer.MultiplayerPeer = _peer;
 
-            //Multiplayer.GetUniqueId();
-
-            //Lobby.Instance = new Lobby();
-
-            //Lobby.Instance.CreateGame();
+            GD.Print("Waiting for players...");
         }
 
         private void OnJoinServer()
         {
-            //OnlineNetworkHandler.Instance.StartClient();
+            _peer = new ENetMultiplayerPeer();
+            Error error = _peer.CreateClient(_ipAddress, _serverPort);
 
+            if (error != Error.Ok)
+            {
+                GD.Print($"Failed to create client: {error}");
+                return;
+            }
+            _peer.Host.Compress(ENetConnection.CompressionMode.RangeCoder);
 
+            Multiplayer.MultiplayerPeer = _peer;
 
-            //EmitSignal(SignalName.JoinOnlineSession);
-
-
-
-
-            //MultiplayerApi multiplayerApi = GetTree().GetMultiplayer(); // Get the default MultiplayerAPI object.
-
-            //// Create client.
-            //var peer = new ENetMultiplayerPeer();
-            //peer.CreateClient(IPAddress, 12345);
-            //Multiplayer.MultiplayerPeer = peer;
-
-            //// Create server.
-            //var peer = new ENetMultiplayerPeer();
-            //peer.CreateServer(12345, 2);
-            //Multiplayer.MultiplayerPeer = peer;
-
-            //Multiplayer.GetUniqueId();
-
-            //Lobby.Instance = new Lobby();
-
-            //Lobby.Instance.CreateGame();
+            GD.Print("Joining game...");
         }
+
+        private void OnStartGame()
+        {
+            Rpc(nameof(StartGame));
+            StartGame();
+        }
+
+        [Rpc(MultiplayerApi.RpcMode.AnyPeer, CallLocal = true, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
+        private void StartGame()
+        {
+            BasketballCourtLevel basketballCourtLevel = ResourceLoader.Load<PackedScene>(ScreenFilePaths.BasketballCourtLevelScreenPath).Instantiate<BasketballCourtLevel>();
+            GetTree().Root.AddChild(basketballCourtLevel);
+            this.Hide();
+        }
+
+        #endregion
     }
 }
