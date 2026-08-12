@@ -208,7 +208,7 @@ namespace Screens
             this.Hide();
         }
 
-        [Rpc(MultiplayerApi.RpcMode.AnyPeer)] //He tried calling Rpc(1, nameof(SendPlayerInformation), onlineName, onlinePeerId); on ConnectedToServer, but Rpc doesn't take 1 as an argument
+        [Rpc(MultiplayerApi.RpcMode.AnyPeer)]
         private void SendPlayerInformationToServer(string onlineName, int onlinePeerId)
         {
             TestBasketballPlayer basketballPlayer = new TestBasketballPlayer()
@@ -226,7 +226,7 @@ namespace Screens
             {
                 foreach (TestBasketballPlayer player in GameManager.Players)
                 {
-                    Rpc(nameof(SendPlayerInformationToServer), onlineName, onlinePeerId);
+                    Rpc(nameof(SendPlayerInformationToServer), player.Name, player.OnlinePeerId);
                 }
             }
         }

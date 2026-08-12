@@ -323,14 +323,20 @@ namespace Entities
 
         #endregion
 
+        // Called when the node enters the scene tree for the first time.
         public override void _EnterTree()
         {
             //SetMultiplayerAuthority((int)OnlinePeerId);
         }
 
-        // Called when the node enters the scene tree for the first time.
+        
         public override void _Ready()
         {
+            _multiplayerSynchronizer = GetNode("MultiplayerSynchronizer") as MultiplayerSynchronizer;
+
+            GD.Print($"Setting authority: {OnlinePeerId}");
+            _multiplayerSynchronizer.SetMultiplayerAuthority((int)OnlinePeerId);
+
             ParentBasketballCourtLevel = GetParent() as TestBasketballCourtLevel;
 
             _characterBodyMesh = GetNode("CharacterBodyMesh") as MeshInstance3D;
@@ -382,8 +388,7 @@ namespace Entities
 
             _ballReposessionTimer = GetNode("BallReposessionTimer") as Timer;
 
-            _multiplayerSynchronizer = GetNode("MultiplayerSynchronizer") as MultiplayerSynchronizer;
-            _multiplayerSynchronizer.SetMultiplayerAuthority((int)OnlinePeerId);
+            
 
 
             //TODO: Maybe move this to the next available player by default
@@ -601,8 +606,8 @@ namespace Entities
 
             if (HasFocus && !_isStuckOnFloor && !_isHorizontalControlLocked)
             {
-                moveInput.X = Input.GetActionStrength($"MoveEast_{TeamIdentifier}") - Input.GetActionStrength($"MoveWest_{TeamIdentifier}");
-                moveInput.Z = Input.GetActionStrength($"MoveSouth_{TeamIdentifier}") - Input.GetActionStrength($"MoveNorth_{TeamIdentifier}");
+                moveInput.X = Input.GetActionStrength($"MoveEast_Online") - Input.GetActionStrength($"MoveWest_Online");
+                moveInput.Z = Input.GetActionStrength($"MoveSouth_Online") - Input.GetActionStrength($"MoveNorth_Online");
             }
             //else if (IsTargeted)
             //{
@@ -649,7 +654,7 @@ namespace Entities
                 _jumpAscensionCount = Mathf.Clamp(_jumpAscensionCount - 1, 1, int.MaxValue);
             }
             //Is on floor and begins jump startup
-            else if (HasFocus && _isJumpFinished && _jumpStartupTimer.IsStopped() && IsOnFloor() && Input.IsActionPressed($"Jump_{TeamIdentifier}"))
+            else if (HasFocus && _isJumpFinished && _jumpStartupTimer.IsStopped() && IsOnFloor() && Input.IsActionPressed($"Jump_Online"))
             {
                 if (HasBasketball)
                 {
@@ -678,12 +683,12 @@ namespace Entities
                 }
             }
             //Is on floor still when jump startup finishes but player decides not to continue with jump
-            else if (HasFocus && _jumpStartupTimer.IsStopped() && IsOnFloor() && !Input.IsActionPressed($"Jump_{TeamIdentifier}"))
+            else if (HasFocus && _jumpStartupTimer.IsStopped() && IsOnFloor() && !Input.IsActionPressed($"Jump_Online"))
             {
                 _isJumpStartupFinished = false;
             }
             //Is on floor and jump startup completes, continuing to jump
-            else if (HasFocus && _isJumpStartupFinished && IsOnFloor() && Input.IsActionPressed($"Jump_{TeamIdentifier}"))
+            else if (HasFocus && _isJumpStartupFinished && IsOnFloor() && Input.IsActionPressed($"Jump_Online"))
             {
                 _isJumpFinished = false;
 
@@ -748,7 +753,7 @@ namespace Entities
                 //_isHorizontalControlLocked = true;
             }
             //Is in air and continues to hold jump while ascending is still allowed (jumpAscensionTimer is not stopped yet)
-            else if (!HasReachedDunkPoint && HasFocus && _isJumpStartupFinished && !IsOnFloor() && !_jumpAscensionTimer.IsStopped() && Input.IsActionPressed($"Jump_{TeamIdentifier}"))
+            else if (!HasReachedDunkPoint && HasFocus && _isJumpStartupFinished && !IsOnFloor() && !_jumpAscensionTimer.IsStopped() && Input.IsActionPressed($"Jump_Online"))
             {
                 if (!IsOnOffense)
                 {
@@ -765,14 +770,14 @@ namespace Entities
                 }
             }
             //Is in air and continues to hold jump while ascending is still allowed (jumpAscensionTimer is not stopped yet), BUT has already completed dunk, so must descend
-            else if (HasReachedDunkPoint && HasFocus && _isJumpStartupFinished && !IsOnFloor() && !_jumpAscensionTimer.IsStopped() && Input.IsActionPressed($"Jump_{TeamIdentifier}"))
+            else if (HasReachedDunkPoint && HasFocus && _isJumpStartupFinished && !IsOnFloor() && !_jumpAscensionTimer.IsStopped() && Input.IsActionPressed($"Jump_Online"))
             {
                 yMoveInput = Mathf.Clamp(-GetStandardJumpYValue((float)delta), _minimumFallVelocity, _maximumFallVelocity);
 
                 _jumpAscensionCount = Mathf.Clamp(_jumpAscensionCount - 1, 1, int.MaxValue);
             }
             //Is in air and jump button is released before ascending is finished
-            else if (!IsOnFloor() && !_jumpAscensionTimer.IsStopped() && !Input.IsActionPressed($"Jump_{TeamIdentifier}"))
+            else if (!IsOnFloor() && !_jumpAscensionTimer.IsStopped() && !Input.IsActionPressed($"Jump_Online"))
             {
                 //PlayerState = PlayerState.IsIdle;
 
@@ -858,7 +863,7 @@ namespace Entities
                 {
                     moveDirection = new Vector3(moveDirection.X / 4, yMoveInput, moveDirection.Z / 4);
                 }
-                else if (Input.IsActionPressed($"Jump_{TeamIdentifier}") && IsOnFloor())
+                else if (Input.IsActionPressed($"Jump_Online") && IsOnFloor())
                 {
                     moveDirection = new Vector3(moveDirection.X / 2, yMoveInput, moveDirection.Z / 2);
                 }
@@ -872,7 +877,7 @@ namespace Entities
             //    PlayerState = PlayerState.IsRebounding;
             //}
 
-            if (Input.IsActionJustReleased($"Jump_{TeamIdentifier}"))
+            if (Input.IsActionJustReleased($"Jump_Online"))
             {
                 _isJumpFinished = true;
 
