@@ -11,11 +11,12 @@ using System.Threading.Tasks;
 
 namespace Entities
 {
-    public partial class BasketballPlayer : CharacterBody3D, INotifyPropertyChanged
+    public partial class TestBasketballPlayer : CharacterBody3D, INotifyPropertyChanged
     {
+
         #region Parents
 
-        public BasketballCourtLevel ParentBasketballCourtLevel = new BasketballCourtLevel();
+        public TestBasketballCourtLevel ParentBasketballCourtLevel = new TestBasketballCourtLevel();
 
         #endregion
 
@@ -284,7 +285,7 @@ namespace Entities
 
         #region Focus Passing Properties
 
-        public BasketballPlayer TargetPlayer = null;
+        public TestBasketballPlayer TargetPlayer = null;
 
         #endregion
 
@@ -320,11 +321,15 @@ namespace Entities
 
         #endregion
 
+        public override void _EnterTree()
+        {
+            //SetMultiplayerAuthority((int)OnlinePeerId);
+        }
 
         // Called when the node enters the scene tree for the first time.
         public override void _Ready()
         {
-            ParentBasketballCourtLevel = GetParent() as BasketballCourtLevel;
+            ParentBasketballCourtLevel = GetParent() as TestBasketballCourtLevel;
 
             _characterBodyMesh = GetNode("CharacterBodyMesh") as MeshInstance3D;
 
@@ -407,13 +412,13 @@ namespace Entities
                     _isSuperJumpComplete = true;
                 }
             }
-            else if (propertyName == nameof(IsOnOffense))
-            {
-                if (IsOnOffense)
-                {
-                    ToggleShotBlockBody(false);
-                }
-            }
+            //else if (propertyName == nameof(IsOnOffense))
+            //{
+            //    if (IsOnOffense)
+            //    {
+            //        ToggleShotBlockBody(false);
+            //    }
+            //}
             else if (propertyName == nameof(PlayerState))
             {
                 //GD.Print($"This is the new PlayerState: {PlayerState}");
@@ -440,7 +445,7 @@ namespace Entities
                     {
                         if (HasBasketball)
                         {
-                            GetPassBallInput();
+                            //GetPassBallInput();
                         }
                     }
 
@@ -475,25 +480,25 @@ namespace Entities
             //CPU logic
             else
             {
-                List<BasketballPlayer> playersOnTeam = ParentBasketballCourtLevel.AllBasketballPlayers.Where(player => player.TeamIdentifier == TeamIdentifier).ToList();
+                List<TestBasketballPlayer> playersOnTeam = GameManager.Players.Where(player => player.TeamIdentifier == TeamIdentifier).ToList();
 
-                BasketballPlayer playerClosestToBasketball = playersOnTeam.OrderBy(player => player.GlobalPosition.DistanceTo(ParentBasketballCourtLevel.Basketball.GlobalPosition)).FirstOrDefault();
+                //TestBasketballPlayer playerClosestToBasketball = playersOnTeam.OrderBy(player => player.GlobalPosition.DistanceTo(ParentBasketballCourtLevel.Basketball.GlobalPosition)).FirstOrDefault();
 
-                if (ParentBasketballCourtLevel.Basketball.GetParent() is BasketballCourtLevel && !ParentBasketballCourtLevel.Basketball.HasBeenScored && playerClosestToBasketball == this)
-                {
-                    GoAfterBasketball();
-                }
-                else
-                {
-                    if (IsOnOffense)
-                    {
-                        MakeCpuStayInOccupationZone();
-                    }
-                    else
-                    {
-                        MagnetizeCpuToPairedPlayer();
-                    }
-                }
+                //if (ParentBasketballCourtLevel.Basketball.GetParent() is TestBasketballCourtLevel && !ParentBasketballCourtLevel.Basketball.HasBeenScored && playerClosestToBasketball == this)
+                //{
+                //    GoAfterBasketball();
+                //}
+                //else
+                //{
+                //    if (IsOnOffense)
+                //    {
+                //        MakeCpuStayInOccupationZone();
+                //    }
+                //    else
+                //    {
+                //        MagnetizeCpuToPairedPlayer();
+                //    }
+                //}
             }
         }
 
@@ -550,7 +555,7 @@ namespace Entities
         {
             if (Input.IsActionJustPressed($"ShowSkillStats_{TeamIdentifier}"))
             {
-                foreach (BasketballPlayer player in ParentBasketballCourtLevel.AllBasketballPlayers.Where(player => player.TeamIdentifier == TeamIdentifier))
+                foreach (TestBasketballPlayer player in GameManager.Players.Where(player => player.TeamIdentifier == TeamIdentifier))
                 {
                     GD.Print($"Team: {player.TeamIdentifier}, Player: {player.PlayerIdentifier} \n" +
                         $"IsOnOffense: {IsOnOffense}\n"+
@@ -582,7 +587,7 @@ namespace Entities
 
             #region Jumping Logic
 
-            BasketballPlayer playerWithBasketball = ParentBasketballCourtLevel.AllBasketballPlayers.FirstOrDefault(player => player.HasBasketball);
+            TestBasketballPlayer playerWithBasketball = GameManager.Players.FirstOrDefault(player => player.HasBasketball);
 
 
             if (HasFocus && !_isStuckOnFloor && !_isHorizontalControlLocked)
@@ -700,19 +705,19 @@ namespace Entities
                 {
                     _jumpAscensionTimer.WaitTime = _superJumpTime;
 
-                    FlashColor(new Color(1, 1, 1));
+                    //FlashColor(new Color(1, 1, 1));
                 }
                 else if (conditionsForWeakBlockAreMet || conditionsForWeakReboundAreMet || conditionsForWeakDunkAreMet)
                 {
                     _jumpAscensionTimer.WaitTime = _weakjumpTime;
 
-                    FlashColor(new Color(0, 0, 0));
+                    //FlashColor(new Color(0, 0, 0));
 
                     if (conditionsForWeakDunkAreMet)
                     {
                         if (HasBasketball)
                         {
-                            LoseTheBall(ParentBasketballCourtLevel.Basketball);
+                            //LoseTheBall(ParentBasketballCourtLevel.Basketball);
                         }
                     }
                 }
@@ -738,7 +743,7 @@ namespace Entities
             {
                 if (!IsOnOffense)
                 {
-                    ToggleShotBlockBody(true);
+                    //ToggleShotBlockBody(true);
                 }
 
                 _jumpAscensionCount++;
@@ -830,16 +835,17 @@ namespace Entities
             {
                 moveDirection = new Vector3(moveInput.X, yMoveInput, moveInput.Z);
                 
-                //Player should move pretty slowly horizontally while shooting a three
-                if (ParentBasketballCourtLevel.Basketball.PreviousPlayer == this && 
-                    (ParentBasketballCourtLevel.Basketball.BasketballState == BasketballState.IsHeldByAirbornePlayerAndShootable ||
-                     ParentBasketballCourtLevel.Basketball.BasketballState == BasketballState.IsBeingShotAscending) &&
-                    !IsInThreePointLine && !IsOnFloor())
-                {
-                    moveDirection = new Vector3(moveDirection.X / 8, yMoveInput, moveDirection.Z / 8);
-                }
-                //Player should move a little slowly horizontally while shooting a two
-                else if (HasBasketball && yMoveInput > 0)
+                ////Player should move pretty slowly horizontally while shooting a three
+                //if (ParentBasketballCourtLevel.Basketball.PreviousPlayer == this && 
+                //    (ParentBasketballCourtLevel.Basketball.BasketballState == BasketballState.IsHeldByAirbornePlayerAndShootable ||
+                //     ParentBasketballCourtLevel.Basketball.BasketballState == BasketballState.IsBeingShotAscending) &&
+                //    !IsInThreePointLine && !IsOnFloor())
+                //{
+                //    moveDirection = new Vector3(moveDirection.X / 8, yMoveInput, moveDirection.Z / 8);
+                //}
+                ////Player should move a little slowly horizontally while shooting a two
+                //else 
+                if (HasBasketball && yMoveInput > 0)
                 {
                     moveDirection = new Vector3(moveDirection.X / 4, yMoveInput, moveDirection.Z / 4);
                 }
@@ -849,13 +855,13 @@ namespace Entities
                 }
             }
 
-            float horizontalDistanceFromBall = PhysicsMathHelper.GetHorizontalDistance(ParentBasketballCourtLevel.Basketball.GlobalPosition, GlobalPosition);
+            //float horizontalDistanceFromBall = PhysicsMathHelper.GetHorizontalDistance(ParentBasketballCourtLevel.Basketball.GlobalPosition, GlobalPosition);
             
-            //If you are near ball, do not have the ball, and are jumping, I'm assuming you are trying to rebound
-            if (horizontalDistanceFromBall <= 4 && !HasBasketball && !IsOnFloor())
-            {
-                PlayerState = PlayerState.IsRebounding;
-            }
+            ////If you are near ball, do not have the ball, and are jumping, I'm assuming you are trying to rebound
+            //if (horizontalDistanceFromBall <= 4 && !HasBasketball && !IsOnFloor())
+            //{
+            //    PlayerState = PlayerState.IsRebounding;
+            //}
 
             if (Input.IsActionJustReleased($"Jump_{TeamIdentifier}"))
             {
@@ -863,8 +869,8 @@ namespace Entities
 
                 if (HasBasketball && IsOnFloor())
                 {
-                    ParentBasketballCourtLevel.Basketball.BasketballState = BasketballState.IsBeingHeldByStationaryPlayer;
-                    ParentBasketballCourtLevel.Basketball.GlobalPosition = GlobalPosition + new Vector3(0, 0, 1f);
+                    //ParentBasketballCourtLevel.Basketball.BasketballState = BasketballState.IsBeingHeldByStationaryPlayer;
+                    //ParentBasketballCourtLevel.Basketball.GlobalPosition = GlobalPosition + new Vector3(0, 0, 1f);
 
                     _isStuckOnFloor = true;
                 }
@@ -872,7 +878,7 @@ namespace Entities
         }
 
         //If you are near player with ball, are on defense, and jumping, I'm assuming you are trying to block them
-        private bool IsAttemptingBlock(BasketballPlayer playerWithBasketball)
+        private bool IsAttemptingBlock(TestBasketballPlayer playerWithBasketball)
         {
             if (playerWithBasketball == null)
             {
@@ -1132,7 +1138,7 @@ namespace Entities
 
                 float ballSpeed = .5f;
 
-                ParentBasketballCourtLevel.Basketball.SetShotAsensionCountModifier(this);
+                //ParentBasketballCourtLevel.Basketball.SetShotAsensionCountModifier(this);
 
                 ParentBasketballCourtLevel.Basketball.LinearVelocity = new Vector3(basketballDestinationGlobalPosition.X - ParentBasketballCourtLevel.Basketball.GlobalPosition.X,
                                                                                    0,
@@ -1154,33 +1160,33 @@ namespace Entities
         {
             if (Input.IsActionJustPressed($"SelectTarget_{TeamIdentifier}"))
             {
-                FindPassTargetPlayer();
+                //FindPassTargetPlayer();
             }
         }
 
-        //Not going in any specific direction, just incrementing player number
-        private void FindPassTargetPlayer()
-        {
-            //Reset pass target indicators for all players
-            ParentBasketballCourtLevel.AllBasketballPlayers.ForEach(player => player.IsTargeted = false);
+        ////Not going in any specific direction, just incrementing player number
+        //private void FindPassTargetPlayer()
+        //{
+        //    //Reset pass target indicators for all players
+        //    ParentBasketballCourtLevel.AllBasketballPlayers.ForEach(player => player.IsTargeted = false);
 
-            List<BasketballPlayer> availablePlayersToPassTo = ParentBasketballCourtLevel.AllBasketballPlayers.Where(player => player.TeamIdentifier == TeamIdentifier && player != this).OrderBy(player => player.PlayerIdentifier).ToList();
+        //    List<BasketballPlayer> availablePlayersToPassTo = ParentBasketballCourtLevel.AllBasketballPlayers.Where(player => player.TeamIdentifier == TeamIdentifier && player != this).OrderBy(player => player.PlayerIdentifier).ToList();
 
-            BasketballPlayer nextTargetPlayer = null;
-            nextTargetPlayer = availablePlayersToPassTo.FirstOrDefault(player => int.Parse(player.PlayerIdentifier) > int.Parse(TargetPlayer.PlayerIdentifier));
+        //    BasketballPlayer nextTargetPlayer = null;
+        //    nextTargetPlayer = availablePlayersToPassTo.FirstOrDefault(player => int.Parse(player.PlayerIdentifier) > int.Parse(TargetPlayer.PlayerIdentifier));
 
-            //Current player is the highest-numbered player, use first numbered player
-            if (nextTargetPlayer == null)
-            {
-                TargetPlayer = availablePlayersToPassTo.First();
-            }
-            else
-            {
-               TargetPlayer = nextTargetPlayer;
-            }
+        //    //Current player is the highest-numbered player, use first numbered player
+        //    if (nextTargetPlayer == null)
+        //    {
+        //        TargetPlayer = availablePlayersToPassTo.First();
+        //    }
+        //    else
+        //    {
+        //       TargetPlayer = nextTargetPlayer;
+        //    }
 
-            TargetPlayer.IsTargeted = true;
-        }
+        //    TargetPlayer.IsTargeted = true;
+        //}
 
         protected void GetPassFocusInput()
         {
@@ -1196,108 +1202,108 @@ namespace Entities
 
         protected void GetPassBallInput()
         {
-            if (Input.IsActionJustPressed($"PassFocus_{TeamIdentifier}"))
-            {
-                if (HasBasketball)
-                {
-                    ParentBasketballCourtLevel.Basketball.PreviousPlayer = this;
-                    ParentBasketballCourtLevel.Basketball.TargetPlayer = TargetPlayer;
+            //if (Input.IsActionJustPressed($"PassFocus_{TeamIdentifier}"))
+            //{
+            //    if (HasBasketball)
+            //    {
+            //        ParentBasketballCourtLevel.Basketball.PreviousPlayer = this;
+            //        ParentBasketballCourtLevel.Basketball.TargetPlayer = TargetPlayer;
 
-                    this.HasBasketball = false;
+            //        this.HasBasketball = false;
 
-                    if (ParentBasketballCourtLevel.Basketball.GetParent() != ParentBasketballCourtLevel)
-                    {
-                        ParentBasketballCourtLevel.Basketball.Reparent(ParentBasketballCourtLevel);
-                    }
-                    ParentBasketballCourtLevel.Basketball.BasketballState = BasketballState.IsBeingPassed;
+            //        if (ParentBasketballCourtLevel.Basketball.GetParent() != ParentBasketballCourtLevel)
+            //        {
+            //            ParentBasketballCourtLevel.Basketball.Reparent(ParentBasketballCourtLevel);
+            //        }
+            //        ParentBasketballCourtLevel.Basketball.BasketballState = BasketballState.IsBeingPassed;
 
-                    TargetPlayer.TargetPlayer = this;
+            //        TargetPlayer.TargetPlayer = this;
 
-                    IsTargeted = true;
-                    TargetPlayer = this;
-                }
-            }
+            //        IsTargeted = true;
+            //        TargetPlayer = this;
+            //    }
+            //}
         }
 
         #endregion
 
         protected void GetStealInput()
         {
-            if (Input.IsActionJustPressed($"StealBall_{TeamIdentifier}"))
-            {
-                Basketball basketball = ParentBasketballCourtLevel.Basketball;
+            //if (Input.IsActionJustPressed($"StealBall_{TeamIdentifier}"))
+            //{
+            //    Basketball basketball = ParentBasketballCourtLevel.Basketball;
 
-                IsBasketballInDetectionArea = basketball.GlobalPosition.DistanceTo(GlobalPosition) <= 4.0f;
+            //    IsBasketballInDetectionArea = basketball.GlobalPosition.DistanceTo(GlobalPosition) <= 4.0f;
 
-                if (IsBasketballInDetectionArea)
-                {
-                    if (basketball.GetParent() is BasketballCourtLevel)
-                    {
-                        ReceiveTheBall(basketball);
+            //    if (IsBasketballInDetectionArea)
+            //    {
+            //        if (basketball.GetParent() is BasketballCourtLevel)
+            //        {
+            //            ReceiveTheBall(basketball);
 
-                        GD.Print($"Ball has been stolen by player {PlayerIdentifier}!");
-                    }
-                    else if (basketball.GetParent() is BasketballPlayer)
-                    {
-                        BasketballPlayer playerWithBall = basketball.GetParent() as BasketballPlayer;
+            //            GD.Print($"Ball has been stolen by player {PlayerIdentifier}!");
+            //        }
+            //        else if (basketball.GetParent() is BasketballPlayer)
+            //        {
+            //            BasketballPlayer playerWithBall = basketball.GetParent() as BasketballPlayer;
 
-                        if (playerWithBall.IsOnOffense != IsOnOffense && basketball.BasketballState == BasketballState.IsBeingDribbled)
-                        {
-                            int chanceOfSuccessfulSteal = ParentBasketballCourtLevel.RandomNumberGenerator.RandiRange(0, 100);
+            //            if (playerWithBall.IsOnOffense != IsOnOffense && basketball.BasketballState == BasketballState.IsBeingDribbled)
+            //            {
+            //                int chanceOfSuccessfulSteal = ParentBasketballCourtLevel.RandomNumberGenerator.RandiRange(0, 100);
 
-                            int attemptAtSteal = 0;
+            //                int attemptAtSteal = 0;
 
-                            if (SkillStats.Stealing == GlobalConstants.SkillStatHigh)
-                            {
-                                attemptAtSteal = 100;
-                            }
-                            else if (SkillStats.Stealing == GlobalConstants.SkillStatAverage)
-                            {
-                                attemptAtSteal = 40;
-                            }
-                            else if (SkillStats.Stealing == GlobalConstants.SkillStatLow)
-                            {
-                                attemptAtSteal = 10;
-                            }
+            //                if (SkillStats.Stealing == GlobalConstants.SkillStatHigh)
+            //                {
+            //                    attemptAtSteal = 100;
+            //                }
+            //                else if (SkillStats.Stealing == GlobalConstants.SkillStatAverage)
+            //                {
+            //                    attemptAtSteal = 40;
+            //                }
+            //                else if (SkillStats.Stealing == GlobalConstants.SkillStatLow)
+            //                {
+            //                    attemptAtSteal = 10;
+            //                }
 
-                            if (chanceOfSuccessfulSteal <= attemptAtSteal)
-                            {
-                                if (playerWithBall.SkillStats.BallHandling == GlobalConstants.SkillStatHigh)
-                                {
-                                    int chanceOfStealAgain = ParentBasketballCourtLevel.RandomNumberGenerator.RandiRange(0, 100);
+            //                if (chanceOfSuccessfulSteal <= attemptAtSteal)
+            //                {
+            //                    if (playerWithBall.SkillStats.BallHandling == GlobalConstants.SkillStatHigh)
+            //                    {
+            //                        int chanceOfStealAgain = ParentBasketballCourtLevel.RandomNumberGenerator.RandiRange(0, 100);
 
-                                    if (chanceOfStealAgain <= 50)
-                                    {
-                                        ReceiveTheBall(basketball);
+            //                        if (chanceOfStealAgain <= 50)
+            //                        {
+            //                            ReceiveTheBall(basketball);
 
-                                        FlashColor(new Color(1, 1, 1));
-                                    }
-                                    else
-                                    {
-                                        FlashColor(new Color(0, 0, 0));
-                                    }
-                                }
-                                else
-                                {
-                                    ReceiveTheBall(basketball);
+            //                            FlashColor(new Color(1, 1, 1));
+            //                        }
+            //                        else
+            //                        {
+            //                            FlashColor(new Color(0, 0, 0));
+            //                        }
+            //                    }
+            //                    else
+            //                    {
+            //                        ReceiveTheBall(basketball);
 
-                                    FlashColor(new Color(1, 1, 1));
-                                }
-                            }
-                            else
-                            {
-                                FlashColor(new Color(0, 0, 0));
-                            }
-                        }
-                    }
-                }
-                else
-                {
-                    FlashColor(new Color(0, 0, 0));
-                }
+            //                        FlashColor(new Color(1, 1, 1));
+            //                    }
+            //                }
+            //                else
+            //                {
+            //                    FlashColor(new Color(0, 0, 0));
+            //                }
+            //            }
+            //        }
+            //    }
+            //    else
+            //    {
+            //        FlashColor(new Color(0, 0, 0));
+            //    }
 
-                _stealTimer.Start();
-            }
+            //    _stealTimer.Start();
+            //}
         }
 
         #endregion
@@ -1310,7 +1316,7 @@ namespace Entities
         {
             MovePlayer();
 
-            RotateCpuTargetBody();
+            //RotateCpuTargetBody();
 
             //TODO: Trying to make shot block body face player that's being blocked. Not working... maybe because ShotBlockBody is static body? idk
             //if (PlayerState == PlayerState.IsBlocking)
@@ -1386,14 +1392,15 @@ namespace Entities
                 float newAngle;
 
                 //TODO: Fix rotating to a single direction when shooting, should be aiming towards hoop
-                if (PlayerState == PlayerState.IsShooting ||
-                    ((ParentBasketballCourtLevel.Basketball.BasketballState == BasketballState.IsBeingShotAscending || ParentBasketballCourtLevel.Basketball.BasketballState == BasketballState.IsBeingShotDescending) && ParentBasketballCourtLevel.Basketball.PreviousPlayer == this))
-                {
-                    newAngle = Mathf.LerpAngle(GlobalRotation.Y, Mathf.Atan2(ParentBasketballCourtLevel.HoopArea.GlobalPosition.X, ParentBasketballCourtLevel.HoopArea.GlobalPosition.Z), 1f);
+                //if (PlayerState == PlayerState.IsShooting ||
+                //    ((ParentBasketballCourtLevel.Basketball.BasketballState == BasketballState.IsBeingShotAscending || ParentBasketballCourtLevel.Basketball.BasketballState == BasketballState.IsBeingShotDescending) && ParentBasketballCourtLevel.Basketball.PreviousPlayer == this))
+                //{
+                //    newAngle = Mathf.LerpAngle(GlobalRotation.Y, Mathf.Atan2(ParentBasketballCourtLevel.HoopArea.GlobalPosition.X, ParentBasketballCourtLevel.HoopArea.GlobalPosition.Z), 1f);
 
-                    GlobalRotation = new Vector3(GlobalRotation.X, newAngle, GlobalRotation.Z);
-                }
-                else if (IsOnFloor())
+                //    GlobalRotation = new Vector3(GlobalRotation.X, newAngle, GlobalRotation.Z);
+                //}
+                //else 
+                if (IsOnFloor())
                 {
                     //if ((moveDirection.X != 0 || moveDirection.Z != 0) && SkillStats.BallHandling == GlobalConstants.SkillStatLow && HasBasketball)
                     //{
@@ -1408,9 +1415,9 @@ namespace Entities
                     //}
                     //else
                     //{
-                        newAngle = Mathf.LerpAngle(GlobalRotation.Y, Mathf.Atan2(moveDirection.X, moveDirection.Z), .2f);
+                    newAngle = Mathf.LerpAngle(GlobalRotation.Y, Mathf.Atan2(moveDirection.X, moveDirection.Z), .2f);
 
-                        GlobalRotation = new Vector3(GlobalRotation.X, newAngle, GlobalRotation.Z);
+                    GlobalRotation = new Vector3(GlobalRotation.X, newAngle, GlobalRotation.Z);
                     //}
                 }
 
@@ -1421,35 +1428,119 @@ namespace Entities
             }
         }
 
-        private void RotateCpuTargetBody()
-        {
-            if (IsOnOffense)
-            {
-                //Get between player and hoop
-                if (HasBasketball)
-                {
-                    Vector3 directionToHoop = GlobalPosition.DirectionTo(ParentBasketballCourtLevel.HoopArea.GlobalPosition);
 
-                    float newAngle = Mathf.LerpAngle(_cpuTargetPivot.GlobalRotation.Y, Mathf.Atan2(directionToHoop.X, directionToHoop.Z), 1f);
+        //private void MovePlayer()
+        //{
+        //    float yMoveInput = moveDirection.Y;
 
-                    _cpuTargetPivot.GlobalRotation = new Vector3(_cpuTargetPivot.GlobalRotation.X, newAngle, _cpuTargetPivot.GlobalRotation.Z);
-                }
-                //Get between player and the player with the ball
-                else
-                {
-                    BasketballPlayer playerWithBall = ParentBasketballCourtLevel.AllBasketballPlayers.FirstOrDefault(x => x.TeamIdentifier == TeamIdentifier && x.IsOnOffense && x.HasBasketball);
+        //    //Fall slower than you rise
+        //    if (yMoveInput < 0)
+        //    {
+        //        yMoveInput = -1;
 
-                    if (playerWithBall != null)
-                    {
-                        Vector3 directionToPlayerWithBall = GlobalPosition.DirectionTo(playerWithBall.GlobalPosition);
+        //        //GD.Print("In here");
 
-                        float newAngle = Mathf.LerpAngle(_cpuTargetPivot.GlobalRotation.Y, Mathf.Atan2(directionToPlayerWithBall.X, directionToPlayerWithBall.Z), .1f);
+        //        //if (PlayerState == PlayerState.IsRebounding || PlayerState == PlayerState.IsBlocking)
+        //        //{
+        //        //    //GD.Print("In here 2");
+        //        //    yMoveInput = -1;
 
-                        _cpuTargetPivot.GlobalRotation = new Vector3(_cpuTargetPivot.GlobalRotation.X, newAngle, _cpuTargetPivot.GlobalRotation.Z);
-                    }
-                }
-            }
-        }
+        //        //    GD.Print($"yMoveInput: {yMoveInput}");
+        //        //}
+        //        //else
+        //        //{
+        //        //    yMoveInput *= .125f;
+        //        //}
+        //    }
+
+        //    if (PlayerState == PlayerState.IsDunking)
+        //    {
+        //        Velocity = new Vector3(moveDirection.X * _standardMovementSpeed * .75f, yMoveInput * _standardMovementSpeed, moveDirection.Z * _standardMovementSpeed * .75f);
+        //    }
+        //    else if (SkillStats.BallHandling == GlobalConstants.SkillStatHigh && HasBasketball)
+        //    {
+        //        Velocity = new Vector3(moveDirection.X * _standardMovementSpeed * 1.5f, yMoveInput * _standardMovementSpeed, moveDirection.Z * _standardMovementSpeed * 1.5f);
+        //    }
+        //    else if (SkillStats.BallHandling == GlobalConstants.SkillStatLow && HasBasketball)
+        //    {
+        //        Velocity = new Vector3(moveDirection.X * _standardMovementSpeed * .5f, yMoveInput * _standardMovementSpeed, moveDirection.Z * _standardMovementSpeed * .5f);
+        //    }
+        //    else
+        //    {
+        //        Velocity = new Vector3(moveDirection.X, yMoveInput, moveDirection.Z) * _standardMovementSpeed;
+        //    }
+
+        //    MoveAndSlide();
+
+        //    if (moveDirection != Vector3.Zero)
+        //    {
+        //        float newAngle;
+
+        //        //TODO: Fix rotating to a single direction when shooting, should be aiming towards hoop
+        //        if (PlayerState == PlayerState.IsShooting ||
+        //            ((ParentBasketballCourtLevel.Basketball.BasketballState == BasketballState.IsBeingShotAscending || ParentBasketballCourtLevel.Basketball.BasketballState == BasketballState.IsBeingShotDescending) && ParentBasketballCourtLevel.Basketball.PreviousPlayer == this))
+        //        {
+        //            newAngle = Mathf.LerpAngle(GlobalRotation.Y, Mathf.Atan2(ParentBasketballCourtLevel.HoopArea.GlobalPosition.X, ParentBasketballCourtLevel.HoopArea.GlobalPosition.Z), 1f);
+
+        //            GlobalRotation = new Vector3(GlobalRotation.X, newAngle, GlobalRotation.Z);
+        //        }
+        //        else if (IsOnFloor())
+        //        {
+        //            //if ((moveDirection.X != 0 || moveDirection.Z != 0) && SkillStats.BallHandling == GlobalConstants.SkillStatLow && HasBasketball)
+        //            //{
+        //            //    int chanceOfLosingBall = ParentBasketballCourtLevel.RandomNumberGenerator.RandiRange(0, 100);
+
+        //            //    if (chanceOfLosingBall <= 1) //1% to lose ball every time they move
+        //            //    {
+        //            //        LoseTheBall(ParentBasketballCourtLevel.Basketball);
+
+        //            //        FlashColor(new Color(0,0,0));
+        //            //    }
+        //            //}
+        //            //else
+        //            //{
+        //                newAngle = Mathf.LerpAngle(GlobalRotation.Y, Mathf.Atan2(moveDirection.X, moveDirection.Z), .2f);
+
+        //                GlobalRotation = new Vector3(GlobalRotation.X, newAngle, GlobalRotation.Z);
+        //            //}
+        //        }
+
+        //        //if (HasBasketball)
+        //        //{
+        //        //    GD.Print($"Move Direction Y is {moveDirection.Y}");
+        //        //}
+        //    }
+        //}
+
+        //private void RotateCpuTargetBody()
+        //{
+        //    if (IsOnOffense)
+        //    {
+        //        //Get between player and hoop
+        //        if (HasBasketball)
+        //        {
+        //            Vector3 directionToHoop = GlobalPosition.DirectionTo(ParentBasketballCourtLevel.HoopArea.GlobalPosition);
+
+        //            float newAngle = Mathf.LerpAngle(_cpuTargetPivot.GlobalRotation.Y, Mathf.Atan2(directionToHoop.X, directionToHoop.Z), 1f);
+
+        //            _cpuTargetPivot.GlobalRotation = new Vector3(_cpuTargetPivot.GlobalRotation.X, newAngle, _cpuTargetPivot.GlobalRotation.Z);
+        //        }
+        //        //Get between player and the player with the ball
+        //        else
+        //        {
+        //            BasketballPlayer playerWithBall = ParentBasketballCourtLevel.AllBasketballPlayers.FirstOrDefault(x => x.TeamIdentifier == TeamIdentifier && x.IsOnOffense && x.HasBasketball);
+
+        //            if (playerWithBall != null)
+        //            {
+        //                Vector3 directionToPlayerWithBall = GlobalPosition.DirectionTo(playerWithBall.GlobalPosition);
+
+        //                float newAngle = Mathf.LerpAngle(_cpuTargetPivot.GlobalRotation.Y, Mathf.Atan2(directionToPlayerWithBall.X, directionToPlayerWithBall.Z), .1f);
+
+        //                _cpuTargetPivot.GlobalRotation = new Vector3(_cpuTargetPivot.GlobalRotation.X, newAngle, _cpuTargetPivot.GlobalRotation.Z);
+        //            }
+        //        }
+        //    }
+        //}
 
         #endregion
 
@@ -1486,170 +1577,170 @@ namespace Entities
 
         private void OnBallDetectionAreaEntered(Area3D area)
         {
-            if (area.IsInGroup(GroupTags.BasketballDetectionArea))
-            {
-                Basketball basketball = area.GetParent() as Basketball;
+            //if (area.IsInGroup(GroupTags.BasketballDetectionArea))
+            //{
+            //    Basketball basketball = area.GetParent() as Basketball;
 
-                if (basketball.GetParent() is BasketballCourtLevel)
-                {
-                    IsBasketballInDetectionArea = true;
+            //    if (basketball.GetParent() is BasketballCourtLevel)
+            //    {
+            //        IsBasketballInDetectionArea = true;
 
-                    if (basketball.BasketballState == BasketballState.IsBeingPassed && basketball.PreviousPlayer != this && basketball.TargetPlayer == this)
-                    {
-                        ReceiveTheBall(basketball);
-                    }
-                    else if ((basketball.BasketballState == BasketballState.IsUpForGrabsOnGround || basketball.BasketballState == BasketballState.IsReboundable) && _ballReposessionTimer.IsStopped())
-                    {
-                        ReceiveTheBall(basketball);
-                    }
-                }
-            }
+            //        if (basketball.BasketballState == BasketballState.IsBeingPassed && basketball.PreviousPlayer != this && basketball.TargetPlayer == this)
+            //        {
+            //            ReceiveTheBall(basketball);
+            //        }
+            //        else if ((basketball.BasketballState == BasketballState.IsUpForGrabsOnGround || basketball.BasketballState == BasketballState.IsReboundable) && _ballReposessionTimer.IsStopped())
+            //        {
+            //            ReceiveTheBall(basketball);
+            //        }
+            //    }
+            //}
         }
 
         private void OnBallDetectionAreaExited(Area3D area)
         {
-            if (area.IsInGroup(GroupTags.BasketballDetectionArea))
-            {
-                Basketball basketball = area.GetParent() as Basketball;
+            //if (area.IsInGroup(GroupTags.BasketballDetectionArea))
+            //{
+            //    Basketball basketball = area.GetParent() as Basketball;
 
-                if (basketball.GetParent() is BasketballCourtLevel)
-                {
-                    IsBasketballInDetectionArea = false;
-                }
-            }
+            //    if (basketball.GetParent() is BasketballCourtLevel)
+            //    {
+            //        IsBasketballInDetectionArea = false;
+            //    }
+            //}
         }
 
         private void OnBodyDetectionAreaBodyEntered(Node3D body)
         {
-            //This all should happen if player touches the ground
-            if (body.IsInGroup(GroupTags.Floor))
-            {
-                if (!_jumpAscensionTimer.IsStopped())
-                {
-                    _jumpAscensionTimer.Stop();
-                }
+            ////This all should happen if player touches the ground
+            //if (body.IsInGroup(GroupTags.Floor))
+            //{
+            //    if (!_jumpAscensionTimer.IsStopped())
+            //    {
+            //        _jumpAscensionTimer.Stop();
+            //    }
 
-                if (HasBasketball)
-                {
-                    ParentBasketballCourtLevel.Basketball.BasketballState = BasketballState.IsBeingDribbled;
-                }
+            //    if (HasBasketball)
+            //    {
+            //        ParentBasketballCourtLevel.Basketball.BasketballState = BasketballState.IsBeingDribbled;
+            //    }
 
-                PlayerState = PlayerState.IsIdle;
+            //    PlayerState = PlayerState.IsIdle;
 
-                ToggleShotBlockBody(false);
+            //    ToggleShotBlockBody(false);
 
-                _isJumpStartupFinished = false;
-                _isSuperJumpComplete = false;
-                _isHorizontalControlLocked = false;
-                HasReachedDunkPoint = false;
-            }
+            //    _isJumpStartupFinished = false;
+            //    _isSuperJumpComplete = false;
+            //    _isHorizontalControlLocked = false;
+            //    HasReachedDunkPoint = false;
+            //}
         }
 
         #endregion
 
         private bool _isReparenting = false; //Doesn't necessarily work
 
-        private void ReceiveTheBall(Basketball basketball)
-        {
-            if (!_isReparenting)
-            {
-                List<BasketballPlayer> playersOnTeam = ParentBasketballCourtLevel.AllBasketballPlayers.Where(player => player.TeamIdentifier == TeamIdentifier).ToList();
+        //private void ReceiveTheBall(Basketball basketball)
+        //{
+        //    if (!_isReparenting)
+        //    {
+        //        List<BasketballPlayer> playersOnTeam = ParentBasketballCourtLevel.AllBasketballPlayers.Where(player => player.TeamIdentifier == TeamIdentifier).ToList();
 
-                foreach (BasketballPlayer player in playersOnTeam)
-                {
-                    player.HasFocus = false;
-                }
+        //        foreach (BasketballPlayer player in playersOnTeam)
+        //        {
+        //            player.HasFocus = false;
+        //        }
 
-                HasFocus = true;
-                HasBasketball = true;
+        //        HasFocus = true;
+        //        HasBasketball = true;
 
-        //        if body == player and not is_reparenting:
-        //        is_reparenting = true
-        //# Reparent logic here
-        //var new_parent = get_node("/root/Map2")
-        //get_parent().remove_child(self)
-        //new_parent.add_child(self)
+        ////        if body == player and not is_reparenting:
+        ////        is_reparenting = true
+        ////# Reparent logic here
+        ////var new_parent = get_node("/root/Map2")
+        ////get_parent().remove_child(self)
+        ////new_parent.add_child(self)
 
-                if (ParentBasketballCourtLevel.Basketball.GetParent() != this)
-                {
-                    _isReparenting = true;
+        //        if (ParentBasketballCourtLevel.Basketball.GetParent() != this)
+        //        {
+        //            _isReparenting = true;
 
-                    basketball.Reparent(this);
+        //            basketball.Reparent(this);
 
-                    _isReparenting = false;
-                }
+        //            _isReparenting = false;
+        //        }
 
-                basketball.LinearVelocity = Vector3.Zero;
+        //        basketball.LinearVelocity = Vector3.Zero;
 
-                //Vector3 distanceBetweenPlayerAndBall = new Vector3(0, 0, 1.5f);
-                //Vector3 rotatedDistance = distanceBetweenPlayerAndBall.Rotated(Vector3.Up, this.GlobalPosition.Y);
-                //basketball.GlobalPosition = this.GlobalPosition + rotatedDistance;
+        //        //Vector3 distanceBetweenPlayerAndBall = new Vector3(0, 0, 1.5f);
+        //        //Vector3 rotatedDistance = distanceBetweenPlayerAndBall.Rotated(Vector3.Up, this.GlobalPosition.Y);
+        //        //basketball.GlobalPosition = this.GlobalPosition + rotatedDistance;
 
-                //basketball.GlobalPosition = this.GlobalPosition + new Vector3(0, 0, 1.5f);
+        //        //basketball.GlobalPosition = this.GlobalPosition + new Vector3(0, 0, 1.5f);
 
-                basketball.GlobalPosition = _dribblingBallTargetBody.GlobalPosition;
+        //        basketball.GlobalPosition = _dribblingBallTargetBody.GlobalPosition;
 
-                if (IsOnFloor())
-                {
-                    ParentBasketballCourtLevel.Basketball.BasketballState = BasketballState.IsBeingDribbled;
-                }
-                else
-                {
-                    ParentBasketballCourtLevel.Basketball.BasketballState = BasketballState.IsBeingHeldByAirbornePlayer;
-                }
+        //        if (IsOnFloor())
+        //        {
+        //            ParentBasketballCourtLevel.Basketball.BasketballState = BasketballState.IsBeingDribbled;
+        //        }
+        //        else
+        //        {
+        //            ParentBasketballCourtLevel.Basketball.BasketballState = BasketballState.IsBeingHeldByAirbornePlayer;
+        //        }
 
-                //basketball.TargetPlayer = null;
-                basketball.PreviousPlayer = this;
+        //        //basketball.TargetPlayer = null;
+        //        basketball.PreviousPlayer = this;
 
-                ParentBasketballCourtLevel.FlipTeamIsOnOffense(TeamIdentifier, true);
-            }
-        }
+        //        ParentBasketballCourtLevel.FlipTeamIsOnOffense(TeamIdentifier, true);
+        //    }
+        //}
 
-        private void LoseTheBall(Basketball basketball)
-        {
-            if (basketball.GetParent() != ParentBasketballCourtLevel)
-            {
-                basketball.Reparent(ParentBasketballCourtLevel);
-            }
+        //private void LoseTheBall(Basketball basketball)
+        //{
+        //    if (basketball.GetParent() != ParentBasketballCourtLevel)
+        //    {
+        //        basketball.Reparent(ParentBasketballCourtLevel);
+        //    }
 
-            HasBasketball = false;
+        //    HasBasketball = false;
 
-            basketball.BasketballState = BasketballState.IsUpForGrabsOnGround;
+        //    basketball.BasketballState = BasketballState.IsUpForGrabsOnGround;
 
-            basketball.LinearVelocity = new Vector3(ParentBasketballCourtLevel.RandomNumberGenerator.RandfRange(-2, 2), ParentBasketballCourtLevel.RandomNumberGenerator.RandfRange(0, 5), ParentBasketballCourtLevel.RandomNumberGenerator.RandfRange(-2, 2));
+        //    basketball.LinearVelocity = new Vector3(ParentBasketballCourtLevel.RandomNumberGenerator.RandfRange(-2, 2), ParentBasketballCourtLevel.RandomNumberGenerator.RandfRange(0, 5), ParentBasketballCourtLevel.RandomNumberGenerator.RandfRange(-2, 2));
 
-            _ballReposessionTimer.Start();
+        //    _ballReposessionTimer.Start();
 
-            //Vector3 currentPlayerVelocity = new Vector3(Velocity.X, Velocity.Y, Velocity.Z);
+        //    //Vector3 currentPlayerVelocity = new Vector3(Velocity.X, Velocity.Y, Velocity.Z);
 
-            //basketball.LinearVelocity = currentPlayerVelocity;
-        }
+        //    //basketball.LinearVelocity = currentPlayerVelocity;
+        //}
 
-        private void ToggleShotBlockBody(bool isVisible)
-        {
-            if (isVisible)
-            {
-                _shotBlockBody.CollisionLayer = 1;
+        //private void ToggleShotBlockBody(bool isVisible)
+        //{
+        //    if (isVisible)
+        //    {
+        //        _shotBlockBody.CollisionLayer = 1;
 
-                _shotBlockBody.Show();
-            }
-            else
-            {
-                _shotBlockBody.CollisionLayer = 0;
+        //        _shotBlockBody.Show();
+        //    }
+        //    else
+        //    {
+        //        _shotBlockBody.CollisionLayer = 0;
 
-                _shotBlockBody.Hide();
-            }
-        }
+        //        _shotBlockBody.Hide();
+        //    }
+        //}
 
-        public async void FlashColor(Color newMeshColor)
-        {
-            if (_characterBodyMeshMaterial == null) return;
+        //public async void FlashColor(Color newMeshColor)
+        //{
+        //    if (_characterBodyMeshMaterial == null) return;
 
-            _characterBodyMeshMaterial.AlbedoColor = newMeshColor;
-            // Wait for a short duration (e.g., 0.2 seconds)
-            await Task.Delay(200);
-            _characterBodyMeshMaterial.AlbedoColor = _originalCharacterBodyColor;
-        }
+        //    _characterBodyMeshMaterial.AlbedoColor = newMeshColor;
+        //    // Wait for a short duration (e.g., 0.2 seconds)
+        //    await Task.Delay(200);
+        //    _characterBodyMeshMaterial.AlbedoColor = _originalCharacterBodyColor;
+        //}
     }
 }
 

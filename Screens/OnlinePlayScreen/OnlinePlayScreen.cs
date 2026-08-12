@@ -1,8 +1,10 @@
 ﻿using Constants;
+using Entities;
 using Enums;
 using Godot;
 using Helpers;
 using Levels;
+using Online;
 using Root;
 using System.Net;
 
@@ -135,6 +137,7 @@ namespace Screens
         private void OnConnectedToServer()
         {
             GD.Print($"Connected to server");
+            RpcId(1, nameof(SendPlayerInformationToServer), GetNode<LineEdit>("LineEdit").Text, Multiplayer.GetUniqueId());
         }
 
         /// <summary>
@@ -165,6 +168,8 @@ namespace Screens
             Multiplayer.MultiplayerPeer = _peer;
 
             GD.Print("Waiting for players...");
+
+            SendPlayerInformationToServer(GetNode<LineEdit>("LineEdit").Text, 1);
         }
 
         private void OnJoinServer()
@@ -187,15 +192,43 @@ namespace Screens
         private void OnStartGame()
         {
             Rpc(nameof(StartGame));
-            StartGame();
         }
 
         [Rpc(MultiplayerApi.RpcMode.AnyPeer, CallLocal = true, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
         private void StartGame()
         {
-            BasketballCourtLevel basketballCourtLevel = ResourceLoader.Load<PackedScene>(ScreenFilePaths.BasketballCourtLevelScreenPath).Instantiate<BasketballCourtLevel>();
+            foreach (TestBasketballPlayer player in GameManager.Players)
+            {
+                GD.Print($"{player.OnlineName} : {player.OnlinePeerId} is playing");
+            }
+
+
+            TestBasketballCourtLevel basketballCourtLevel = ResourceLoader.Load<PackedScene>(ScreenFilePaths.TestBasketballCourtLevelScreenPath).Instantiate<TestBasketballCourtLevel>();
             GetTree().Root.AddChild(basketballCourtLevel);
             this.Hide();
+        }
+
+        [Rpc(MultiplayerApi.RpcMode.AnyPeer)] //He tried calling Rpc(1, nameof(SendPlayerInformation), onlineName, onlinePeerId); on ConnectedToServer, but Rpc doesn't take 1 as an argument
+        private void SendPlayerInformationToServer(string onlineName, int onlinePeerId)
+        {
+            TestBasketballPlayer basketballPlayer = new TestBasketballPlayer()
+            {
+                OnlineName = onlineName,
+                OnlinePeerId = onlinePeerId
+            };
+
+            if (!GameManager.Players.Contains(basketballPlayer))
+            {
+                GameManager.Players.Add(basketballPlayer);
+            }
+
+            if (Multiplayer.IsServer())
+            {
+                foreach (TestBasketballPlayer player in GameManager.Players)
+                {
+                    Rpc(nameof(SendPlayerInformationToServer), onlineName, onlinePeerId);
+                }
+            }
         }
 
         #endregion
