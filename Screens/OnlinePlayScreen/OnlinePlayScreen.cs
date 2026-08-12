@@ -6,6 +6,7 @@ using Helpers;
 using Levels;
 using Online;
 using Root;
+using System.Linq;
 using System.Net;
 
 namespace Screens
@@ -60,6 +61,11 @@ namespace Screens
             _createServerButton.Pressed += OnCreateServer;
             _joinServerButton.Pressed += OnJoinServer;
             _startGameButton.Pressed += OnStartGame;
+
+            if (OS.GetCmdlineArgs().Contains("--server"))
+            {
+                CreateServer();
+            }
         }
 
         public override void _Process(double delta)
@@ -129,6 +135,23 @@ namespace Screens
         private void OnPeerDisconnected(long id)
         {
             GD.Print($"Peer disconnected: {id}");
+
+            GameManager.Players.RemoveAll(player => player.OnlinePeerId == id);
+
+            var players = GetTree().GetNodesInGroup(GroupTags.BasketballPlayer);
+
+            foreach (var player in players)
+            {
+                if (player is TestBasketballPlayer)
+                {
+                    TestBasketballPlayer testBasketballPlayer = player as TestBasketballPlayer;
+
+                    if (testBasketballPlayer != null && testBasketballPlayer.OnlinePeerId == id)
+                    {
+                        player.QueueFree();
+                    }
+                }
+            }
         }
 
         /// <summary>
@@ -154,6 +177,13 @@ namespace Screens
 
         private void OnCreateServer()
         {
+            CreateServer();
+
+            SendPlayerInformationToServer(GetNode<LineEdit>("LineEdit").Text, 1);
+        }
+
+        private void CreateServer()
+        {
             _peer = new ENetMultiplayerPeer();
             Error error = _peer.CreateServer(_serverPort, _maxNumberOfPlayers);
 
@@ -168,8 +198,6 @@ namespace Screens
             Multiplayer.MultiplayerPeer = _peer;
 
             GD.Print("Waiting for players...");
-
-            SendPlayerInformationToServer(GetNode<LineEdit>("LineEdit").Text, 1);
         }
 
         private void OnJoinServer()
