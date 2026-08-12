@@ -46,6 +46,8 @@ namespace Entities
 
         private Timer _ballReposessionTimer = new();
 
+        private MultiplayerSynchronizer _multiplayerSynchronizer = new();
+
         #endregion
 
         #region Player Identification Properties
@@ -380,6 +382,10 @@ namespace Entities
 
             _ballReposessionTimer = GetNode("BallReposessionTimer") as Timer;
 
+            _multiplayerSynchronizer = GetNode("MultiplayerSynchronizer") as MultiplayerSynchronizer;
+            _multiplayerSynchronizer.SetMultiplayerAuthority((int)OnlinePeerId);
+
+
             //TODO: Maybe move this to the next available player by default
             //Start target on the current player so TargetBasketballPlayer has something to go off of on the first target-selection input
             //List<BasketballPlayer> playersOnTeam = ParentBasketballCourtLevel.AllBasketballPlayers.Where(player => player.TeamIdentifier == TeamIdentifier && player != this).OrderBy(player => player.PlayerIdentifier).ToList();
@@ -430,75 +436,78 @@ namespace Entities
         // Called every frame. 'delta' is the elapsed time since the previous frame.
         public override void _Process(double delta)
         {
-            //Human-controlled logic
-            if (HasFocus)
+            if (_multiplayerSynchronizer.GetMultiplayerAuthority() == Multiplayer.GetUniqueId())
             {
-                if (IsOnOffense)
+                //Human-controlled logic
+                if (HasFocus)
                 {
-                    GetSkillStatsData();
-
-                    GetMovementInput(delta);
-
-                    GetPassTargetSelectionInput();
-
-                    if (TargetPlayer != this)
+                    if (IsOnOffense)
                     {
-                        if (HasBasketball)
+                        GetSkillStatsData();
+
+                        GetMovementInput(delta);
+
+                        GetPassTargetSelectionInput();
+
+                        if (TargetPlayer != this)
                         {
-                            //GetPassBallInput();
+                            if (HasBasketball)
+                            {
+                                //GetPassBallInput();
+                            }
+                        }
+
+                        if (HasBasketball && PlayerState != PlayerState.IsDunking)
+                        {
+                            GetShootBasketballInput();
                         }
                     }
-
-                    if (HasBasketball && PlayerState != PlayerState.IsDunking)
+                    else
                     {
-                        GetShootBasketballInput();
+                        GetSkillStatsData();
+
+                        GetMovementInput(delta);
+
+                        GetPassTargetSelectionInput();
+
+                        if (TargetPlayer != this)
+                        {
+                            GetPassFocusInput();
+                        }
+
+                        if (_stealTimer.IsStopped())
+                        {
+                            GetStealInput();
+                        }
                     }
                 }
+                //else if (IsTargeted)
+                //{
+                //    GetMovementInput(delta);
+                //}
+                //CPU logic
                 else
                 {
-                    GetSkillStatsData();
+                    List<TestBasketballPlayer> playersOnTeam = GameManager.Players.Where(player => player.TeamIdentifier == TeamIdentifier).ToList();
 
-                    GetMovementInput(delta);
+                    //TestBasketballPlayer playerClosestToBasketball = playersOnTeam.OrderBy(player => player.GlobalPosition.DistanceTo(ParentBasketballCourtLevel.Basketball.GlobalPosition)).FirstOrDefault();
 
-                    GetPassTargetSelectionInput();
-
-                    if (TargetPlayer != this)
-                    {
-                        GetPassFocusInput();
-                    }
-
-                    if (_stealTimer.IsStopped())
-                    {
-                        GetStealInput();
-                    }
+                    //if (ParentBasketballCourtLevel.Basketball.GetParent() is TestBasketballCourtLevel && !ParentBasketballCourtLevel.Basketball.HasBeenScored && playerClosestToBasketball == this)
+                    //{
+                    //    GoAfterBasketball();
+                    //}
+                    //else
+                    //{
+                    //    if (IsOnOffense)
+                    //    {
+                    //        MakeCpuStayInOccupationZone();
+                    //    }
+                    //    else
+                    //    {
+                    //        MagnetizeCpuToPairedPlayer();
+                    //    }
+                    //}
                 }
-            }
-            //else if (IsTargeted)
-            //{
-            //    GetMovementInput(delta);
-            //}
-            //CPU logic
-            else
-            {
-                List<TestBasketballPlayer> playersOnTeam = GameManager.Players.Where(player => player.TeamIdentifier == TeamIdentifier).ToList();
-
-                //TestBasketballPlayer playerClosestToBasketball = playersOnTeam.OrderBy(player => player.GlobalPosition.DistanceTo(ParentBasketballCourtLevel.Basketball.GlobalPosition)).FirstOrDefault();
-
-                //if (ParentBasketballCourtLevel.Basketball.GetParent() is TestBasketballCourtLevel && !ParentBasketballCourtLevel.Basketball.HasBeenScored && playerClosestToBasketball == this)
-                //{
-                //    GoAfterBasketball();
-                //}
-                //else
-                //{
-                //    if (IsOnOffense)
-                //    {
-                //        MakeCpuStayInOccupationZone();
-                //    }
-                //    else
-                //    {
-                //        MagnetizeCpuToPairedPlayer();
-                //    }
-                //}
             }
         }
 
@@ -1314,34 +1323,37 @@ namespace Entities
 
         public override void _PhysicsProcess(double delta)
         {
-            MovePlayer();
+            if (_multiplayerSynchronizer.GetMultiplayerAuthority() == Multiplayer.GetUniqueId())
+            {
+                MovePlayer();
 
-            //RotateCpuTargetBody();
+                //RotateCpuTargetBody();
 
-            //TODO: Trying to make shot block body face player that's being blocked. Not working... maybe because ShotBlockBody is static body? idk
-            //if (PlayerState == PlayerState.IsBlocking)
-            //{
-            //    BasketballPlayer playerWithBasketball = ParentBasketballCourtLevel.AllBasketballPlayers.FirstOrDefault(player => player.HasBasketball);
+                //TODO: Trying to make shot block body face player that's being blocked. Not working... maybe because ShotBlockBody is static body? idk
+                //if (PlayerState == PlayerState.IsBlocking)
+                //{
+                //    BasketballPlayer playerWithBasketball = ParentBasketballCourtLevel.AllBasketballPlayers.FirstOrDefault(player => player.HasBasketball);
 
-               
 
-            //    if (playerWithBasketball != null)
-            //    {
-            //        //Vector3 directionToPlayerWithBall = _shotBlockBody.GlobalPosition.DirectionTo(playerWithBasketball.GlobalPosition);
 
-            //        //float newAngle = Mathf.LerpAngle(_shotBlockBody.GlobalRotation.Y, Mathf.Atan2(directionToPlayerWithBall.X, directionToPlayerWithBall.Z), .01f);
+                //    if (playerWithBasketball != null)
+                //    {
+                //        //Vector3 directionToPlayerWithBall = _shotBlockBody.GlobalPosition.DirectionTo(playerWithBasketball.GlobalPosition);
 
-            //        //_shotBlockBody.GlobalRotation = new Vector3(_shotBlockBody.GlobalRotation.X, newAngle, _shotBlockBody.GlobalRotation.Z);
+                //        //float newAngle = Mathf.LerpAngle(_shotBlockBody.GlobalRotation.Y, Mathf.Atan2(directionToPlayerWithBall.X, directionToPlayerWithBall.Z), .01f);
 
-            //        //_shotBlockBody.LookAt(playerWithBasketball.GlobalPosition, Vector3.Up);
-            //    }
-            //    //else
-            //    //{
-            //    //    _shotBlockBody.LookAt(GlobalPosition, Vector3.Up);
-            //    //}
+                //        //_shotBlockBody.GlobalRotation = new Vector3(_shotBlockBody.GlobalRotation.X, newAngle, _shotBlockBody.GlobalRotation.Z);
 
-            //    //GD.Print($"ShotBlockBody Rotation Y: {_shotBlockBody.GlobalRotation.Y}");
-            //}
+                //        //_shotBlockBody.LookAt(playerWithBasketball.GlobalPosition, Vector3.Up);
+                //    }
+                //    //else
+                //    //{
+                //    //    _shotBlockBody.LookAt(GlobalPosition, Vector3.Up);
+                //    //}
+
+                //    //GD.Print($"ShotBlockBody Rotation Y: {_shotBlockBody.GlobalRotation.Y}");
+                //}
+            }
         }
 
         private void MovePlayer()

@@ -74,6 +74,9 @@ namespace Levels
             CpuOccupationZones = GetTree().GetNodesInGroup(GroupTags.CpuOccupationZone).Cast<CpuOccupationZone>().ToList();
 
 
+            int index = 1;
+
+            //Instantiating players for each player in the GameManager.Players list
             foreach (TestBasketballPlayer player in GameManager.Players)
             {
                 TestBasketballPlayer currentPlayer = _basketballPlayerScene.Instantiate< TestBasketballPlayer>();
@@ -81,6 +84,7 @@ namespace Levels
                 currentPlayer.Name = "p1";
                 currentPlayer.OnlinePeerId = player.OnlinePeerId;
                 currentPlayer.HasFocus = true;
+                currentPlayer.TeamIdentifier = index.ToString();
                 AddChild(currentPlayer);
 
                 PlayerStartPoint assignedStartPoint = PlayerStartPoints.FirstOrDefault(sp => sp.PlayerIdentifierLONG == 0);
@@ -91,6 +95,8 @@ namespace Levels
 
                     assignedStartPoint.PlayerIdentifierLONG = currentPlayer.OnlinePeerId;
                 }
+
+                index++;
             }
             //GetAllBasketballPlayers();
 

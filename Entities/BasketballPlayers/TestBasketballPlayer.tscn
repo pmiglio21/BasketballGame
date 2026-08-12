@@ -1,4 +1,4 @@
-[gd_scene load_steps=21 format=3 uid="uid://bcnco2cbacswb"]
+[gd_scene load_steps=22 format=3 uid="uid://bcnco2cbacswb"]
 
 [ext_resource type="Script" path="res://Entities/BasketballPlayers/TestBasketballPlayer.cs" id="1_j5pcn"]
 [ext_resource type="PackedScene" uid="uid://f8100ldjgx8q" path="res://Entities/EntityShadow.tscn" id="2_ufxtw"]
@@ -42,6 +42,8 @@ material = SubResource("StandardMaterial3D_i3nkc")
 [sub_resource type="SphereShape3D" id="SphereShape3D_fctlk"]
 
 [sub_resource type="SphereMesh" id="SphereMesh_iwtvc"]
+
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_a4w2c"]
 
 [node name="BasketballPlayer" type="CharacterBody3D" groups=["BasketballPlayer"]]
 collision_layer = 0
@@ -176,6 +178,9 @@ one_shot = true
 
 [node name="BallReposessionTimer" type="Timer" parent="."]
 one_shot = true
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
+replication_config = SubResource("SceneReplicationConfig_a4w2c")
 
 [connection signal="area_entered" from="BodyDetectionArea" to="." method="OnBodyDetectionAreaEntered"]
 [connection signal="area_exited" from="BodyDetectionArea" to="." method="OnBodyDetectionAreaExited"]
