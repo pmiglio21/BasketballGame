@@ -1,6 +1,8 @@
-[gd_scene load_steps=2 format=3 uid="uid://fppceoo5wpn7"]
+[gd_scene load_steps=4 format=3 uid="uid://fppceoo5wpn7"]
 
 [ext_resource type="Script" path="res://Screens/OnlinePlayScreen/OnlinePlayScreen.cs" id="1_le7c7"]
+[ext_resource type="Script" path="res://Online/WebRtcClient.cs" id="2_icspp"]
+[ext_resource type="Script" path="res://Online/WebRtcServer.cs" id="3_ptfuw"]
 
 [node name="OnlinePlayScreen" type="Control"]
 layout_mode = 3
@@ -60,3 +62,9 @@ offset_left = 217.0
 offset_top = 153.0
 offset_right = 509.0
 offset_bottom = 184.0
+
+[node name="Client" type="Node" parent="."]
+script = ExtResource("2_icspp")
+
+[node name="Server" type="Node" parent="."]
+script = ExtResource("3_ptfuw")
