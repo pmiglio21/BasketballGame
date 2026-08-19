@@ -68,3 +68,15 @@ script = ExtResource("2_icspp")
 
 [node name="Server" type="Node" parent="."]
 script = ExtResource("3_ptfuw")
+
+[node name="SendPacketButton" type="Button" parent="."]
+layout_mode = 0
+offset_left = 218.0
+offset_top = 283.0
+offset_right = 497.0
+offset_bottom = 343.0
+text = "Send Packet"
+
+[connection signal="pressed" from="CreateServerButton" to="Server" method="OnCreateServerButtonPressed"]
+[connection signal="pressed" from="JoinServerButton" to="Client" method="OnJoinServerButtonPressed"]
+[connection signal="pressed" from="SendPacketButton" to="Client" method="OnSendPacketButtonPressed"]

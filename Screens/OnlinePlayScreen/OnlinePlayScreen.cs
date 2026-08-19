@@ -53,14 +53,14 @@ namespace Screens
             _joinServerButton = FindChild("JoinServerButton") as Button;
             _startGameButton = FindChild("StartGameButton") as Button;
 
-            Multiplayer.PeerConnected += OnPeerConnected;
-            Multiplayer.PeerDisconnected += OnPeerDisconnected;
-            Multiplayer.ConnectedToServer += OnConnectedToServer;
-            Multiplayer.ConnectionFailed += OnConnectionFailed;
+            //Multiplayer.PeerConnected += OnPeerConnected;
+            //Multiplayer.PeerDisconnected += OnPeerDisconnected;
+            //Multiplayer.ConnectedToServer += OnConnectedToServer;
+            //Multiplayer.ConnectionFailed += OnConnectionFailed;
 
-            _createServerButton.Pressed += OnCreateServer;
-            _joinServerButton.Pressed += OnJoinServer;
-            _startGameButton.Pressed += OnStartGame;
+            //_createServerButton.Pressed += OnCreateServer;
+            //_joinServerButton.Pressed += OnJoinServer;
+            //_startGameButton.Pressed += OnStartGame;
 
             if (OS.GetCmdlineArgs().Contains("--server"))
             {
