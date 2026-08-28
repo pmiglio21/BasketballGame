@@ -10,38 +10,37 @@ namespace Online
 {
     public partial class WebRtcClient : Node
     {
-        WebSocketMultiplayerPeer peer;
+        WebSocketMultiplayerPeer _peer;
 
         public override void _Ready()
         {
-            peer = new();
+            _peer = new();
         }
 
         public override void _Process(double delta)
         {
-            peer.Poll();
+            _peer.Poll();
 
-            if (peer.GetAvailablePacketCount() > 0)
+            if (_peer.GetAvailablePacketCount() > 0)
             {
-                var packet = peer.GetPacket();
+                var packet = _peer.GetPacket();
 
                 if (packet != null)
                 {
                     var dataString = packet.GetStringFromUtf8();
 
-                    GD.Print($"Packet data: {dataString}");
+                    //GD.Print($"Packet data: {dataString}");
 
-                    if (dataString.ToString().Contains("_ID"))
-                    {
-                        GD.Print($"My id is {dataString.Replace("_ID","")}");
-                    }
+                    PacketData packetData = Newtonsoft.Json.JsonConvert.DeserializeObject<PacketData>(dataString);
+
+                    GD.Print($"My id is {packetData.PlayerId}");
                 }
             }
         }
 
         private void ConnectToServer(string ipAddress)
         {
-            peer.CreateClient("ws://127.0.0.1:8915");
+            _peer.CreateClient("ws://127.0.0.1:8915");
             GD.Print("Started client...");
         }
 
@@ -52,15 +51,35 @@ namespace Online
 
         private void OnSendPacketButtonPressed()
         {
-            var packetData = new
+            PacketData packetData = new()
             {
-                message = "Joining server",
-                data = "test"
+                Message = $"Client {_peer.GetUniqueId()} sending packet to server",
+                PlayerId = _peer.GetUniqueId().ToString(),
             };
 
-            byte[] packet = JsonSerializer.SerializeToUtf8Bytes(packetData);
-
-            peer.PutPacket(packet);
+            SendPacketData(packetData);
         }
+       
+        private void OnJoinLobbyButtonPressed()
+        {
+            LineEdit lineEdit = GetParent().GetNode<LineEdit>("LineEdit");
+
+            PacketData packetData = new()
+            {
+                Message = $"Client {_peer.GetUniqueId()} joining lobby",
+                PlayerId = _peer.GetUniqueId().ToString(),
+                LobbyId = lineEdit.Text
+            };
+
+            SendPacketData(packetData);
+        }
+
+        private void SendPacketData(PacketData packetData)
+        {
+            string jsonData = Newtonsoft.Json.JsonConvert.SerializeObject(packetData);
+
+            _peer.PutPacket(jsonData.ToUtf8Buffer());
+        }
+
     }
 }

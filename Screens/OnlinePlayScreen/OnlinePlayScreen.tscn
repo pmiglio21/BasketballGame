@@ -54,7 +54,7 @@ offset_left = 161.0
 offset_top = 153.0
 offset_right = 280.0
 offset_bottom = 211.0
-text = "Name"
+text = "Lobby"
 
 [node name="LineEdit" type="LineEdit" parent="."]
 layout_mode = 0
@@ -77,6 +77,14 @@ offset_right = 497.0
 offset_bottom = 343.0
 text = "Send Packet"
 
+[node name="JoinLobbyButton" type="Button" parent="."]
+offset_left = 218.0
+offset_top = 378.0
+offset_right = 497.0
+offset_bottom = 438.0
+text = "Join Lobby"
+
 [connection signal="pressed" from="CreateServerButton" to="Server" method="OnCreateServerButtonPressed"]
 [connection signal="pressed" from="JoinServerButton" to="Client" method="OnJoinServerButtonPressed"]
 [connection signal="pressed" from="SendPacketButton" to="Client" method="OnSendPacketButtonPressed"]
+[connection signal="pressed" from="JoinLobbyButton" to="Client" method="OnJoinLobbyButtonPressed"]
