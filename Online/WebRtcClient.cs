@@ -19,6 +19,11 @@ namespace Online
 
         public override void _Process(double delta)
         {
+            PollAndHandlePackets();
+        }
+
+        private void PollAndHandlePackets()
+        {
             _peer.Poll();
 
             if (_peer.GetAvailablePacketCount() > 0)
@@ -33,9 +38,19 @@ namespace Online
 
                     PacketData packetData = Newtonsoft.Json.JsonConvert.DeserializeObject<PacketData>(dataString);
 
-                    GD.Print($"My id is {packetData.PlayerId}");
+                    //GD.Print($"My id is {packetData.PlayerId}");
+
+                    if (packetData.PacketType == PacketType.LobbyJoined)
+                    {
+                        CreatePeer(packetData.PlayerId);
+                    }
                 }
             }
+        }
+
+        private void CreatePeer(string playerId)
+        {
+
         }
 
         private void ConnectToServer(string ipAddress)
@@ -53,6 +68,7 @@ namespace Online
         {
             PacketData packetData = new()
             {
+                PacketType  = PacketType.TestPacket,
                 Message = $"Client {_peer.GetUniqueId()} sending packet to server",
                 PlayerId = _peer.GetUniqueId().ToString(),
             };
@@ -67,6 +83,7 @@ namespace Online
             PacketData packetData = new()
             {
                 Message = $"Client {_peer.GetUniqueId()} joining lobby",
+                PacketType = PacketType.JoiningLobby,
                 PlayerId = _peer.GetUniqueId().ToString(),
                 LobbyId = lineEdit.Text
             };

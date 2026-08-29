@@ -44,10 +44,8 @@ namespace Online
 
                     PacketData packetData = Newtonsoft.Json.JsonConvert.DeserializeObject<PacketData>(dataString);
 
-                    //GD.Print($"Packet data: {packetData.Message}");
-
                     //need something better than this - probably an enum
-                    if (packetData.Message.Contains("lobby"))
+                    if (packetData.PacketType == PacketType.JoiningLobby)
                     {
                         JoinLobby(Int32.Parse(packetData.PlayerId), packetData.LobbyId);
                     }
@@ -61,19 +59,28 @@ namespace Online
             {
                 lobbyId = GenerateRandomLobbyId();
                 _lobbies[lobbyId] = new Lobby(userId);
+
+                GD.Print($"Created new lobby: {lobbyId}");
             }
 
-            var player = _lobbies[lobbyId].AddPlayer(userId.ToString());
+            TestBasketballPlayer newPlayer = _lobbies[lobbyId].AddPlayer(userId.ToString());
+
+            GD.Print($"Client {userId} joining lobby {lobbyId}");
+
+            GD.Print($"Current list of players in lobby: {string.Join(", ", _lobbies[lobbyId].Players.Keys)}");
 
             PacketData packetData = new PacketData
             {
+                PacketType = PacketType.LobbyJoined,
                 Message = $"User {userId} connected to lobby {lobbyId}",
                 PlayerId = userId.ToString(),
                 HostId = _lobbies[lobbyId].HostId.ToString(),
-                Player = _lobbies[lobbyId].Players[userId.ToString()]
+                //Player = _lobbies[lobbyId].Players[userId.ToString()]
             };
 
             SendPacketData(packetData, userId);
+
+            //GD.Print("User connected to lobby!");
         }
 
         private string GenerateRandomLobbyId()
@@ -88,6 +95,8 @@ namespace Online
 
                 result += _charactersForLobbyIdGeneration[index];
             }
+
+            GD.Print($"Lobby Key: {result}");
 
             return result;
         }
@@ -115,6 +124,7 @@ namespace Online
 
             PacketData packetData = new PacketData
             {
+                PacketType = PacketType.PeerConnected,
                 Message = "Peer connected",
                 PlayerId = _users.Last().ToString()
             };
