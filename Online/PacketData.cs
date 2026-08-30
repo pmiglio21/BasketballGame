@@ -14,6 +14,7 @@ namespace Online
         public string PlayerId;
         public string HostId;
         public string LobbyId;
-        public TestBasketballPlayer Player;
+        public TestOnlinePlayer Player;
+        public List<TestOnlinePlayer> Players;
     }
 }

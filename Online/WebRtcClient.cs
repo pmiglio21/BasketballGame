@@ -1,4 +1,5 @@
 ﻿using Godot;
+using Levels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,27 +25,47 @@ namespace Online
 
         private void PollAndHandlePackets()
         {
-            _peer.Poll();
-
-            if (_peer.GetAvailablePacketCount() > 0)
+            try
             {
-                var packet = _peer.GetPacket();
+                _peer.Poll();
 
-                if (packet != null)
+                if (_peer.GetAvailablePacketCount() > 0)
                 {
-                    var dataString = packet.GetStringFromUtf8();
+                    var packet = _peer.GetPacket();
 
-                    //GD.Print($"Packet data: {dataString}");
-
-                    PacketData packetData = Newtonsoft.Json.JsonConvert.DeserializeObject<PacketData>(dataString);
-
-                    //GD.Print($"My id is {packetData.PlayerId}");
-
-                    if (packetData.PacketType == PacketType.LobbyJoined)
+                    if (packet != null)
                     {
-                        CreatePeer(packetData.PlayerId);
+                        var dataString = packet.GetStringFromUtf8();
+
+                        //GD.Print($"Packet data: {dataString}");
+
+                        PacketData packetData = Newtonsoft.Json.JsonConvert.DeserializeObject<PacketData>(dataString);
+
+                        //GD.Print($"My id is {packetData.PlayerId}");
+
+                        if (packetData.PacketType == PacketType.LobbyJoined)
+                        {
+                            CreatePeer(packetData.PlayerId);
+                        }
+                        else if (packetData.PacketType == PacketType.SyncLobbyPlayers)
+                        {
+                            GameManager.TestPlayers = packetData.Players;
+
+                            string message = "Current list of players in lobby, sent to client: ";
+
+                            foreach (var player in GameManager.TestPlayers)
+                            {
+                                message += $"{player.PlayerId}, ";
+                            }
+
+                            GD.Print($"{message}");
+                        }
                     }
                 }
+            }
+            catch (Exception ex)
+            {
+                GD.PushError($"Error in PollAndHandlePackets: {ex.Message}");
             }
         }
 

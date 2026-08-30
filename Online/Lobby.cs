@@ -11,7 +11,7 @@ namespace Online
     public partial class Lobby : Node
     {
         public int HostId;
-        public Dictionary<string, TestBasketballPlayer> Players = new Dictionary<string, TestBasketballPlayer>();
+        public Dictionary<string, TestOnlinePlayer> Players = new Dictionary<string, TestOnlinePlayer>();
 
         //Might need to initalize instead
         public Lobby(int hostId)
@@ -19,9 +19,14 @@ namespace Online
             HostId = hostId;
         }
 
-        public TestBasketballPlayer AddPlayer(string playerId)
+        public TestOnlinePlayer AddPlayer(string playerId)
         {
-            Players.Add(playerId, new TestBasketballPlayer());
+            TestOnlinePlayer newPlayer = new TestOnlinePlayer()
+            {
+                PlayerId = playerId
+            };
+
+            Players.Add(playerId, newPlayer);
 
             return Players[playerId];
         }

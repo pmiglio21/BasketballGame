@@ -63,11 +63,26 @@ namespace Online
                 GD.Print($"Created new lobby: {lobbyId}");
             }
 
-            TestBasketballPlayer newPlayer = _lobbies[lobbyId].AddPlayer(userId.ToString());
+            TestOnlinePlayer newPlayer = _lobbies[lobbyId].AddPlayer(userId.ToString());
 
             GD.Print($"Client {userId} joining lobby {lobbyId}");
 
             GD.Print($"Current list of players in lobby: {string.Join(", ", _lobbies[lobbyId].Players.Keys)}");
+
+            foreach (string playerId in _lobbies[lobbyId].Players.Keys)
+            {
+                PacketData lobbyPacketData = new PacketData
+                {
+                    PacketType = PacketType.SyncLobbyPlayers,
+                    //Message = $"User {userId} connected to lobby {lobbyId}",
+                    PlayerId = userId.ToString(),
+                    HostId = _lobbies[lobbyId].HostId.ToString(),
+                    Players = _lobbies[lobbyId].Players.Values.ToList(),
+                    //Player = player
+                };
+
+                SendPacketData(lobbyPacketData, long.Parse(playerId));
+            }
 
             PacketData packetData = new PacketData
             {

@@ -12,6 +12,7 @@ namespace Online
         PeerDisconnected,
         LobbyJoined,
         JoiningLobby,
+        SyncLobbyPlayers,
         TestPacket
     }
 }
