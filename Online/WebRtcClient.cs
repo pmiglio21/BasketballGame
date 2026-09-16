@@ -74,6 +74,8 @@ namespace Online
                         }
                         else if (packetData.PacketType == PacketType.LobbyJoined)
                         {
+                            //GD.Print("Entered CreatePeerConnection()");
+
                             _hostId = Int32.Parse(packetData.HostId);
                             _lobbyId = packetData.LobbyId;
 
@@ -180,7 +182,9 @@ namespace Online
 
                 _rtcPeer.AddPeer(peerConnection, Int32.Parse(playerId));
 
-                if (Int32.Parse(playerId) < _rtcPeer.GetUniqueId())
+                int peerId = _peer.GetUniqueId();
+
+                if (_hostId != Int32.Parse(playerId))
                 {
                     peerConnection.CreateOffer();
                 }
