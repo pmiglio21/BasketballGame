@@ -44,10 +44,17 @@ namespace Online
 
                     PacketData packetData = Newtonsoft.Json.JsonConvert.DeserializeObject<PacketData>(dataString);
 
-                    //need something better than this - probably an enum
                     if (packetData.PacketType == PacketType.JoiningLobby)
                     {
                         JoinLobby(Int32.Parse(packetData.PlayerId), packetData.LobbyId);
+                    }
+
+                    if (packetData.PacketType == PacketType.SendingOffer || packetData.PacketType == PacketType.SendingAnswer || packetData.PacketType == PacketType.IceCandidateCreated)
+                    {
+                        //OfferData is probably not a good name to use
+                        GD.Print($"Source Id is {packetData.OriginalPeerId}. Message Data {packetData.OfferData}");
+
+                        SendPacketData(packetData, long.Parse(packetData.PeerId));
                     }
                 }
             }
@@ -71,29 +78,51 @@ namespace Online
 
             foreach (string playerId in _lobbies[lobbyId].Players.Keys)
             {
-                PacketData lobbyPacketData = new PacketData
+                PacketData lobbyJoinedPacketData = new PacketData
+                {
+                    PacketType = PacketType.LobbyJoined,
+                    PlayerId = userId.ToString(),
+                    HostId = _lobbies[lobbyId].HostId.ToString(),
+                    LobbyId = lobbyId,
+                };
+
+                SendPacketData(lobbyJoinedPacketData, long.Parse(playerId));
+
+
+                PacketData lobbyJoinedPacketData2 = new PacketData
+                {
+                    PacketType = PacketType.LobbyJoined,
+                    PlayerId = playerId,
+                    HostId = _lobbies[lobbyId].HostId.ToString(),
+                    LobbyId = lobbyId,
+                };
+
+                SendPacketData(lobbyJoinedPacketData2, long.Parse(playerId));
+
+                PacketData syncLobbyPacketData = new PacketData
                 {
                     PacketType = PacketType.SyncLobbyPlayers,
                     //Message = $"User {userId} connected to lobby {lobbyId}",
                     PlayerId = userId.ToString(),
                     HostId = _lobbies[lobbyId].HostId.ToString(),
+                    LobbyId = lobbyId,
                     Players = _lobbies[lobbyId].Players.Values.ToList(),
-                    //Player = player
                 };
 
-                SendPacketData(lobbyPacketData, long.Parse(playerId));
+                SendPacketData(syncLobbyPacketData, long.Parse(playerId));
             }
 
-            PacketData packetData = new PacketData
+            PacketData lobbyJoinedPacketData3 = new PacketData
             {
                 PacketType = PacketType.LobbyJoined,
                 Message = $"User {userId} connected to lobby {lobbyId}",
                 PlayerId = userId.ToString(),
                 HostId = _lobbies[lobbyId].HostId.ToString(),
+                LobbyId = lobbyId,
                 //Player = _lobbies[lobbyId].Players[userId.ToString()]
             };
 
-            SendPacketData(packetData, userId);
+            SendPacketData(lobbyJoinedPacketData3, userId);
 
             //GD.Print("User connected to lobby!");
         }

@@ -13,6 +13,9 @@ namespace Online
         LobbyJoined,
         JoiningLobby,
         SyncLobbyPlayers,
-        TestPacket
+        TestPacket,
+        SendingOffer,
+        SendingAnswer,
+        IceCandidateCreated
     }
 }

@@ -78,6 +78,7 @@ offset_bottom = 343.0
 text = "Send Packet"
 
 [node name="JoinLobbyButton" type="Button" parent="."]
+layout_mode = 0
 offset_left = 218.0
 offset_top = 378.0
 offset_right = 497.0

@@ -11,12 +11,20 @@
       "RelativeMoniker": "D:0:0:{59D50053-CA9E-4119-921D-F3733D2C85E7}|BasketballGame.csproj|solutionrelative:online\\webrtcserver.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{59D50053-CA9E-4119-921D-F3733D2C85E7}|BasketballGame.csproj|c:\\users\\pmigl\\onedrive\\documents\\github\\basketballgame\\online\\testonlineplayer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{59D50053-CA9E-4119-921D-F3733D2C85E7}|BasketballGame.csproj|solutionrelative:online\\testonlineplayer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{59D50053-CA9E-4119-921D-F3733D2C85E7}|BasketballGame.csproj|c:\\users\\pmigl\\onedrive\\documents\\github\\basketballgame\\online\\packetdata.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{59D50053-CA9E-4119-921D-F3733D2C85E7}|BasketballGame.csproj|solutionrelative:online\\packetdata.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{59D50053-CA9E-4119-921D-F3733D2C85E7}|BasketballGame.csproj|c:\\users\\pmigl\\onedrive\\documents\\github\\basketballgame\\online\\packettype.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{59D50053-CA9E-4119-921D-F3733D2C85E7}|BasketballGame.csproj|solutionrelative:online\\packettype.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{59D50053-CA9E-4119-921D-F3733D2C85E7}|BasketballGame.csproj|c:\\users\\pmigl\\onedrive\\documents\\github\\basketballgame\\screens\\onlineplayscreen\\onlineplayscreen.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{59D50053-CA9E-4119-921D-F3733D2C85E7}|BasketballGame.csproj|solutionrelative:screens\\onlineplayscreen\\onlineplayscreen.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{59D50053-CA9E-4119-921D-F3733D2C85E7}|BasketballGame.csproj|c:\\users\\pmigl\\onedrive\\documents\\github\\basketballgame\\online\\testonlineplayer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{59D50053-CA9E-4119-921D-F3733D2C85E7}|BasketballGame.csproj|solutionrelative:online\\testonlineplayer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{59D50053-CA9E-4119-921D-F3733D2C85E7}|BasketballGame.csproj|c:\\users\\pmigl\\onedrive\\documents\\github\\basketballgame\\online\\lobby.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -31,20 +39,12 @@
       "RelativeMoniker": "D:0:0:{59D50053-CA9E-4119-921D-F3733D2C85E7}|BasketballGame.csproj|solutionrelative:levels\\testbasketballcourtlevel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{59D50053-CA9E-4119-921D-F3733D2C85E7}|BasketballGame.csproj|c:\\users\\pmigl\\onedrive\\documents\\github\\basketballgame\\screens\\onlineplayscreen\\onlineplayscreen.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{59D50053-CA9E-4119-921D-F3733D2C85E7}|BasketballGame.csproj|solutionrelative:screens\\onlineplayscreen\\onlineplayscreen.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{59D50053-CA9E-4119-921D-F3733D2C85E7}|BasketballGame.csproj|c:\\users\\pmigl\\onedrive\\documents\\github\\basketballgame\\levels\\gamemanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{59D50053-CA9E-4119-921D-F3733D2C85E7}|BasketballGame.csproj|solutionrelative:levels\\gamemanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{59D50053-CA9E-4119-921D-F3733D2C85E7}|BasketballGame.csproj|c:\\users\\pmigl\\onedrive\\documents\\github\\basketballgame\\entities\\basketball\\basketball.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{59D50053-CA9E-4119-921D-F3733D2C85E7}|BasketballGame.csproj|solutionrelative:entities\\basketball\\basketball.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{59D50053-CA9E-4119-921D-F3733D2C85E7}|BasketballGame.csproj|c:\\users\\pmigl\\onedrive\\documents\\github\\basketballgame\\online\\packetdata.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{59D50053-CA9E-4119-921D-F3733D2C85E7}|BasketballGame.csproj|solutionrelative:online\\packetdata.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{59D50053-CA9E-4119-921D-F3733D2C85E7}|BasketballGame.csproj|c:\\users\\pmigl\\onedrive\\documents\\github\\basketballgame\\entities\\basketballplayers\\basketballplayer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -126,14 +126,14 @@
             {
               "$type": "Document",
               "DocumentIndex": 2,
-              "Title": "TestOnlinePlayer.cs",
-              "DocumentMoniker": "C:\\Users\\pmigl\\OneDrive\\Documents\\GitHub\\BasketballGame\\Online\\TestOnlinePlayer.cs",
-              "RelativeDocumentMoniker": "Online\\TestOnlinePlayer.cs",
-              "ToolTip": "C:\\Users\\pmigl\\OneDrive\\Documents\\GitHub\\BasketballGame\\Online\\TestOnlinePlayer.cs",
-              "RelativeToolTip": "Online\\TestOnlinePlayer.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAA4AAAAZAAAA",
+              "Title": "PacketData.cs",
+              "DocumentMoniker": "C:\\Users\\pmigl\\OneDrive\\Documents\\GitHub\\BasketballGame\\Online\\PacketData.cs",
+              "RelativeDocumentMoniker": "Online\\PacketData.cs",
+              "ToolTip": "C:\\Users\\pmigl\\OneDrive\\Documents\\GitHub\\BasketballGame\\Online\\PacketData.cs",
+              "RelativeToolTip": "Online\\PacketData.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAqwA0AAAAdAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-08-30T18:11:11.817Z",
+              "WhenOpened": "2026-08-28T01:09:38.014Z",
               "EditorCaption": ""
             },
             {
@@ -144,10 +144,9 @@
               "RelativeDocumentMoniker": "Online\\PacketType.cs",
               "ToolTip": "C:\\Users\\pmigl\\OneDrive\\Documents\\GitHub\\BasketballGame\\Online\\PacketType.cs",
               "RelativeToolTip": "Online\\PacketType.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAgAAAAaAAAA",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAABIAAAAbAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-08-29T01:48:53.169Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-08-29T01:48:53.169Z"
             },
             {
               "$type": "Document",
@@ -157,7 +156,7 @@
               "RelativeDocumentMoniker": "Online\\WebRtcServer.cs",
               "ToolTip": "C:\\Users\\pmigl\\OneDrive\\Documents\\GitHub\\BasketballGame\\Online\\WebRtcServer.cs",
               "RelativeToolTip": "Online\\WebRtcServer.cs",
-              "ViewState": "AQIAAD0AAAAAAAAAAAAQwEUAAAALAAAA",
+              "ViewState": "AQIAAEoAAAAAAAAAAAAQwFUAAAAmAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-08-28T01:26:52.678Z",
               "EditorCaption": ""
@@ -170,14 +169,14 @@
               "RelativeDocumentMoniker": "Online\\WebRtcClient.cs",
               "ToolTip": "C:\\Users\\pmigl\\OneDrive\\Documents\\GitHub\\BasketballGame\\Online\\WebRtcClient.cs",
               "RelativeToolTip": "Online\\WebRtcClient.cs",
-              "ViewState": "AQIAACgAAAAAAAAAAAAAwDoAAABXAAAA",
+              "ViewState": "AQIAAIcAAAAAAAAAAAAWwJAAAAAOAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-08-28T01:26:58.523Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
+              "DocumentIndex": 4,
               "Title": "OnlinePlayScreen.cs",
               "DocumentMoniker": "C:\\Users\\pmigl\\OneDrive\\Documents\\GitHub\\BasketballGame\\Screens\\OnlinePlayScreen\\OnlinePlayScreen.cs",
               "RelativeDocumentMoniker": "Screens\\OnlinePlayScreen\\OnlinePlayScreen.cs",
@@ -185,12 +184,11 @@
               "RelativeToolTip": "Screens\\OnlinePlayScreen\\OnlinePlayScreen.cs",
               "ViewState": "AQIAAIAAAAAAAAAAAAAhwIwAAAArAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-04-14T11:38:36.497Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-04-14T11:38:36.497Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 9,
+              "DocumentIndex": 10,
               "Title": "Basketball.cs",
               "DocumentMoniker": "C:\\Users\\pmigl\\OneDrive\\Documents\\GitHub\\BasketballGame\\Entities\\Basketball\\Basketball.cs",
               "RelativeDocumentMoniker": "Entities\\Basketball\\Basketball.cs",
@@ -203,7 +201,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 8,
+              "DocumentIndex": 9,
               "Title": "GameManager.cs",
               "DocumentMoniker": "C:\\Users\\pmigl\\OneDrive\\Documents\\GitHub\\BasketballGame\\Levels\\GameManager.cs",
               "RelativeDocumentMoniker": "Levels\\GameManager.cs",
@@ -211,12 +209,11 @@
               "RelativeToolTip": "Levels\\GameManager.cs",
               "ViewState": "AQIAAAAAAAAAAAAAAAAAABEAAAA4AAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-08-12T12:29:05.108Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-08-12T12:29:05.108Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 7,
               "Title": "TestBasketballPlayer.cs",
               "DocumentMoniker": "C:\\Users\\pmigl\\OneDrive\\Documents\\GitHub\\BasketballGame\\Entities\\BasketballPlayers\\TestBasketballPlayer.cs",
               "RelativeDocumentMoniker": "Entities\\BasketballPlayers\\TestBasketballPlayer.cs",
@@ -224,12 +221,11 @@
               "RelativeToolTip": "Entities\\BasketballPlayers\\TestBasketballPlayer.cs",
               "ViewState": "AQIAAAAAAAAAAAAAAAAAAEcBAAAJAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-08-12T12:52:10.499Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-08-12T12:52:10.499Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 6,
               "Title": "Lobby.cs",
               "DocumentMoniker": "C:\\Users\\pmigl\\OneDrive\\Documents\\GitHub\\BasketballGame\\Online\\Lobby.cs",
               "RelativeDocumentMoniker": "Online\\Lobby.cs",
@@ -237,12 +233,23 @@
               "RelativeToolTip": "Online\\Lobby.cs",
               "ViewState": "AQIAAAoAAAAAAAAAAIAxwBUAAAApAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-08-26T16:35:01.911Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-08-26T16:35:01.911Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 5,
+              "Title": "TestOnlinePlayer.cs",
+              "DocumentMoniker": "C:\\Users\\pmigl\\OneDrive\\Documents\\GitHub\\BasketballGame\\Online\\TestOnlinePlayer.cs",
+              "RelativeDocumentMoniker": "Online\\TestOnlinePlayer.cs",
+              "ToolTip": "C:\\Users\\pmigl\\OneDrive\\Documents\\GitHub\\BasketballGame\\Online\\TestOnlinePlayer.cs",
+              "RelativeToolTip": "Online\\TestOnlinePlayer.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAA4AAAAZAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-08-30T18:11:11.817Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
               "Title": "TestBasketballCourtLevel.cs",
               "DocumentMoniker": "C:\\Users\\pmigl\\OneDrive\\Documents\\GitHub\\BasketballGame\\Levels\\TestBasketballCourtLevel.cs",
               "RelativeDocumentMoniker": "Levels\\TestBasketballCourtLevel.cs",
@@ -250,21 +257,7 @@
               "RelativeToolTip": "Levels\\TestBasketballCourtLevel.cs",
               "ViewState": "AQIAAEoAAAAAAAAAAAAQwFcAAAAQAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-08-12T12:38:50.354Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 10,
-              "Title": "PacketData.cs",
-              "DocumentMoniker": "C:\\Users\\pmigl\\OneDrive\\Documents\\GitHub\\BasketballGame\\Online\\PacketData.cs",
-              "RelativeDocumentMoniker": "Online\\PacketData.cs",
-              "ToolTip": "C:\\Users\\pmigl\\OneDrive\\Documents\\GitHub\\BasketballGame\\Online\\PacketData.cs",
-              "RelativeToolTip": "Online\\PacketData.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAABAAAAAfAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-08-28T01:09:38.014Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-08-12T12:38:50.354Z"
             },
             {
               "$type": "Document",
@@ -276,8 +269,7 @@
               "RelativeToolTip": "Levels\\LevelObjects\\PlayerStartPoint.cs",
               "ViewState": "AQIAAAAAAAAAAAAAAAAqwAkAAAAoAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-08-12T12:43:13.295Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-08-12T12:43:13.295Z"
             },
             {
               "$type": "Document",
@@ -302,8 +294,7 @@
               "RelativeToolTip": "Screens\\RootSceneSwapper\\RootSceneSwapper.cs",
               "ViewState": "AQIAAAIAAAAAAAAAAAAQwCQAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-04-08T14:58:54.773Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-04-08T14:58:54.773Z"
             },
             {
               "$type": "Document",
@@ -328,8 +319,7 @@
               "RelativeToolTip": "Constants\\GroupTags.cs",
               "ViewState": "AQIAAAAAAAAAAAAAAAAAAAUAAAAsAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-22T19:55:43.833Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-11-22T19:55:43.833Z"
             },
             {
               "$type": "Document",
@@ -341,8 +331,7 @@
               "RelativeToolTip": "Constants\\ScreenFilePaths.cs",
               "ViewState": "AQIAAAAAAAAAAAAAAAAAAAgAAAA+AAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-04-24T17:39:05.002Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-04-24T17:39:05.002Z"
             },
             {
               "$type": "Document",
@@ -354,8 +343,7 @@
               "RelativeToolTip": "Online\\TestButton.cs",
               "ViewState": "AQIAAAAAAAAAAAAAAAAAABkAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-08-01T19:27:53.046Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-08-01T19:27:53.046Z"
             },
             {
               "$type": "Document",
@@ -367,8 +355,7 @@
               "RelativeToolTip": "Screens\\TitleScreen\\TitleScreen.cs",
               "ViewState": "AQIAAAAAAAAAAAAAAAAAACAAAAAMAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-04-08T15:00:06.358Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-04-08T15:00:06.358Z"
             },
             {
               "$type": "Document",
@@ -380,8 +367,7 @@
               "RelativeToolTip": "Screens\\LocalPlayScreen\\LocalPlayScreen.cs",
               "ViewState": "AQIAAAAAAAAAAAAAAAAAAAoAAAAFAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-04-14T11:38:16.741Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-04-14T11:38:16.741Z"
             },
             {
               "$type": "Document",
@@ -393,8 +379,7 @@
               "RelativeToolTip": "Helpers\\UniversalInputHelper.cs",
               "ViewState": "AQIAAAQAAAAAAAAAAADgvxYAAAAMAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-04-08T15:15:42.745Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-04-08T15:15:42.745Z"
             },
             {
               "$type": "Document",
@@ -406,8 +391,7 @@
               "RelativeToolTip": "Enums\\InputType.cs",
               "ViewState": "AQIAAA4AAAAAAAAAAAAQwCcAAAAVAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-04-08T15:16:48.947Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-04-08T15:16:48.947Z"
             },
             {
               "$type": "Document",
@@ -419,8 +403,7 @@
               "RelativeToolTip": "Constants\\Constants.cs",
               "ViewState": "AQIAAAAAAAAAAAAAAAAAAAoAAAAIAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-04-08T15:17:32.91Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-04-08T15:17:32.91Z"
             },
             {
               "$type": "Document",
@@ -432,8 +415,7 @@
               "RelativeToolTip": "..\\..\\..\\..\\AppData\\Local\\Temp\\.vsdbgsrc\\3c7a5616b6027ca6c4867b30cf381f68a1dc20c5e8eb708f8399e9cc85d46817\\GodotObject.cs",
               "ViewState": "AQIAAAECAAAAAAAAAIAwwBcCAAABAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-07-29T17:27:53.776Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-07-29T17:27:53.776Z"
             },
             {
               "$type": "Document",
@@ -445,8 +427,7 @@
               "RelativeToolTip": "Enums\\BasketballState.cs",
               "ViewState": "AQIAAAAAAAAAAAAAAAAAABMAAAAVAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-01-17T18:31:51.846Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-01-17T18:31:51.846Z"
             },
             {
               "$type": "Document",
@@ -458,8 +439,7 @@
               "RelativeToolTip": "Enums\\SkillStatType.cs",
               "ViewState": "AQIAAAAAAAAAAAAAAAAAAAMAAAAdAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-09T12:47:20.872Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-12-09T12:47:20.872Z"
             },
             {
               "$type": "Document",
@@ -471,8 +451,7 @@
               "RelativeToolTip": "Entities\\BasketballPlayers\\SkillStats.cs",
               "ViewState": "AQIAABwAAAAAAAAAAAAkwCUAAAATAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-09T12:47:16.746Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-12-09T12:47:16.746Z"
             },
             {
               "$type": "Document",
@@ -484,8 +463,7 @@
               "RelativeToolTip": "Enums\\PlayerState.cs",
               "ViewState": "AQIAAAAAAAAAAAAAAAAAAAcAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-08T03:04:50.01Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-12-08T03:04:50.01Z"
             }
           ]
         }
