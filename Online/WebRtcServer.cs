@@ -97,7 +97,7 @@ namespace Online
                     LobbyId = lobbyId,
                 };
 
-                SendPacketData(lobbyJoinedPacketData2, long.Parse(playerId));
+                SendPacketData(lobbyJoinedPacketData2, userId);
 
                 PacketData syncLobbyPacketData = new PacketData
                 {

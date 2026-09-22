@@ -66,6 +66,8 @@ namespace Online
 
                         PacketData packetData = Newtonsoft.Json.JsonConvert.DeserializeObject<PacketData>(dataString);
 
+                        var peers = _rtcPeer.GetPeers().ToList();
+
                         //GD.Print($"My id is {packetData.PlayerId}");
 
                         if (packetData.PacketType == PacketType.PeerConnected)
@@ -163,16 +165,6 @@ namespace Online
                     }
                 };
 
-                //Dictionary<string, object[]> webRtcConfig = new()
-                //{
-                //    //Test STUN server
-                //    { "iceServers", new object[] { new Dictionary<string, object> { { "urls", new string[] { "stun:stun.l.google.com:19302" } } } } }
-                //};
-
-                //peer.Initialize({
-                //    "iceServers" : [{"urls" : ["stun:stun.l.google.com:19302"]}]
-                //});
-
                 peerConnection.Initialize(configuration);
 
                 GD.Print($"Binding id {playerId}. My id is {_peer.GetUniqueId()}");
@@ -180,9 +172,9 @@ namespace Online
                 peerConnection.SessionDescriptionCreated += (type, sdp) => OfferCreated(type, sdp, playerId);
                 peerConnection.IceCandidateCreated += (media, index, name) => IceCandidateCreated(media, index, name, playerId);
 
-                _rtcPeer.AddPeer(peerConnection, Int32.Parse(playerId));
+                //I don't think this is doing the thing it's supposed to
 
-                int peerId = _peer.GetUniqueId();
+                _rtcPeer.AddPeer(peerConnection, Int32.Parse(playerId));
 
                 if (_hostId != Int32.Parse(playerId))
                 {
