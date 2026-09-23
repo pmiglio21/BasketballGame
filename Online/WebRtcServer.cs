@@ -124,6 +124,9 @@ namespace Online
 
             SendPacketData(lobbyJoinedPacketData3, userId);
 
+            LineEdit lineEdit = GetParent().GetNode<LineEdit>("LineEdit");
+            lineEdit.Text = lobbyId;
+
             //GD.Print("User connected to lobby!");
         }
 

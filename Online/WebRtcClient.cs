@@ -1,6 +1,7 @@
 ﻿using Godot;
 using Godot.Collections;
 using Levels;
+using Screens;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,6 +14,8 @@ namespace Online
 {
     public partial class WebRtcClient : Node
     {
+        OnlinePlayScreen _onlinePlayScreen;
+        Label _pingTextBox;
         WebSocketMultiplayerPeer _peer;
         WebRtcMultiplayerPeer _rtcPeer;
         int _hostId;
@@ -22,6 +25,9 @@ namespace Online
         {
             _peer = new();
             _rtcPeer = new();
+
+            _onlinePlayScreen = GetParent() as OnlinePlayScreen;
+            _pingTextBox = _onlinePlayScreen.FindChild("PingTextBox") as Label;
 
             Multiplayer.ConnectedToServer += OnRtcServerConnected;
             Multiplayer.PeerConnected += OnPeerConnected;
@@ -262,14 +268,24 @@ namespace Online
 
         private void OnSendPacketButtonPressed()
         {
-            PacketData packetData = new()
-            {
-                PacketType  = PacketType.TestPacket,
-                Message = $"Client {_peer.GetUniqueId()} sending packet to server",
-                PlayerId = _peer.GetUniqueId().ToString(),
-            };
+            Ping();
 
-            SendPacketData(packetData);
+            //PacketData packetData = new()
+            //{
+            //    PacketType  = PacketType.TestPacket,
+            //    Message = $"Client {_peer.GetUniqueId()} sending packet to server",
+            //    PlayerId = _peer.GetUniqueId().ToString(),
+            //};
+
+            //SendPacketData(packetData);
+        }
+
+        [Rpc(MultiplayerApi.RpcMode.AnyPeer)]
+        private void Ping()
+        {
+            _pingTextBox.Text = $"Ping from {_peer.GetUniqueId()} at {DateTime.Now.ToString("HH:mm:ss")}";
+
+            GD.Print($"Ping from {_peer.GetUniqueId()} at {DateTime.Now.ToString("HH:mm:ss")}");
         }
        
         private void OnJoinLobbyButtonPressed()

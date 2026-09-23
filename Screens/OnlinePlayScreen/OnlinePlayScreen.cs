@@ -62,10 +62,10 @@ namespace Screens
             //_joinServerButton.Pressed += OnJoinServer;
             //_startGameButton.Pressed += OnStartGame;
 
-            if (OS.GetCmdlineArgs().Contains("--server"))
-            {
-                CreateServer();
-            }
+            //if (OS.GetCmdlineArgs().Contains("--server"))
+            //{
+            //    CreateServer();
+            //}
         }
 
         public override void _Process(double delta)

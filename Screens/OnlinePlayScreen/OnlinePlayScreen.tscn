@@ -1,10 +1,10 @@
-[gd_scene load_steps=4 format=3 uid="uid://fppceoo5wpn7"]
+[gd_scene format=3 uid="uid://fppceoo5wpn7"]
 
-[ext_resource type="Script" path="res://Screens/OnlinePlayScreen/OnlinePlayScreen.cs" id="1_le7c7"]
-[ext_resource type="Script" path="res://Online/WebRtcClient.cs" id="2_icspp"]
-[ext_resource type="Script" path="res://Online/WebRtcServer.cs" id="3_ptfuw"]
+[ext_resource type="Script" uid="uid://bxjd0annqp2wv" path="res://Screens/OnlinePlayScreen/OnlinePlayScreen.cs" id="1_le7c7"]
+[ext_resource type="Script" uid="uid://borbjww8b4ya3" path="res://Online/WebRtcClient.cs" id="2_icspp"]
+[ext_resource type="Script" uid="uid://bfchf3dx3gybt" path="res://Online/WebRtcServer.cs" id="3_ptfuw"]
 
-[node name="OnlinePlayScreen" type="Control"]
+[node name="OnlinePlayScreen" type="Control" unique_id=81044651]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -13,12 +13,12 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_le7c7")
 
-[node name="InputTimer" type="Timer" parent="."]
+[node name="InputTimer" type="Timer" parent="." unique_id=1705835962]
 wait_time = 0.15
 one_shot = true
 autostart = true
 
-[node name="CreateServerButton" type="Button" parent="."]
+[node name="CreateServerButton" type="Button" parent="." unique_id=1915983665]
 layout_mode = 0
 offset_left = 614.0
 offset_top = 66.0
@@ -28,7 +28,7 @@ focus_mode = 1
 theme_override_font_sizes/font_size = 24
 text = "Create Server"
 
-[node name="JoinServerButton" type="Button" parent="."]
+[node name="JoinServerButton" type="Button" parent="." unique_id=63794942]
 layout_mode = 0
 offset_left = 616.0
 offset_top = 248.0
@@ -38,7 +38,7 @@ focus_mode = 1
 theme_override_font_sizes/font_size = 24
 text = "Join Server"
 
-[node name="StartGameButton" type="Button" parent="."]
+[node name="StartGameButton" type="Button" parent="." unique_id=825529532]
 layout_mode = 0
 offset_left = 616.0
 offset_top = 428.0
@@ -48,7 +48,7 @@ focus_mode = 1
 theme_override_font_sizes/font_size = 24
 text = "Start Game"
 
-[node name="Label" type="Label" parent="."]
+[node name="Label" type="Label" parent="." unique_id=957813922]
 layout_mode = 0
 offset_left = 161.0
 offset_top = 153.0
@@ -56,34 +56,49 @@ offset_right = 280.0
 offset_bottom = 211.0
 text = "Lobby"
 
-[node name="LineEdit" type="LineEdit" parent="."]
+[node name="LineEdit" type="LineEdit" parent="." unique_id=1139775486]
 layout_mode = 0
 offset_left = 217.0
 offset_top = 153.0
 offset_right = 509.0
 offset_bottom = 184.0
 
-[node name="Client" type="Node" parent="."]
+[node name="Client" type="Node" parent="." unique_id=2141451933]
 script = ExtResource("2_icspp")
 
-[node name="Server" type="Node" parent="."]
+[node name="Server" type="Node" parent="." unique_id=1312200580]
 script = ExtResource("3_ptfuw")
 
-[node name="SendPacketButton" type="Button" parent="."]
+[node name="SendPacketButton" type="Button" parent="." unique_id=363891181]
 layout_mode = 0
 offset_left = 218.0
 offset_top = 283.0
 offset_right = 497.0
 offset_bottom = 343.0
-text = "Send Packet"
+text = "Ping (to test RTC connection)"
 
-[node name="JoinLobbyButton" type="Button" parent="."]
+[node name="JoinLobbyButton" type="Button" parent="." unique_id=1818500983]
 layout_mode = 0
 offset_left = 218.0
 offset_top = 378.0
 offset_right = 497.0
 offset_bottom = 438.0
 text = "Join Lobby"
+
+[node name="PingTextLabel" type="Label" parent="." unique_id=202175689]
+layout_mode = 0
+offset_left = 52.0
+offset_top = 459.0
+offset_right = 339.0
+offset_bottom = 546.0
+text = "Post-Ping Message:"
+
+[node name="PingTextBox" type="Label" parent="." unique_id=1267860300]
+layout_mode = 0
+offset_left = 216.0
+offset_top = 463.0
+offset_right = 503.0
+offset_bottom = 550.0
 
 [connection signal="pressed" from="CreateServerButton" to="Server" method="OnCreateServerButtonPressed"]
 [connection signal="pressed" from="JoinServerButton" to="Client" method="OnJoinServerButtonPressed"]
