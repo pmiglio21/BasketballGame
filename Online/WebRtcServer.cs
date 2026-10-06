@@ -56,6 +56,10 @@ namespace Online
 
                         SendPacketData(packetData, long.Parse(packetData.PeerId));
                     }
+
+                    Label rollingTextLabel = GetParent().GetNode<Label>("RollingTextLabel");
+
+                    rollingTextLabel.Text += $"\nFrom {packetData.PeerId} - Type {packetData.PacketType} - {packetData.Message}";
                 }
             }
         }
@@ -124,7 +128,7 @@ namespace Online
 
             SendPacketData(lobbyJoinedPacketData3, userId);
 
-            LineEdit lineEdit = GetParent().GetNode<LineEdit>("LineEdit");
+            LineEdit lineEdit = GetParent().GetNode<LineEdit>("LobbyLineEdit");
             lineEdit.Text = lobbyId;
 
             //GD.Print("User connected to lobby!");

@@ -134,6 +134,10 @@ namespace Online
                                 webRtcConnection.SetRemoteDescription("answer", packetData.OfferData);
                             }
                         }
+
+                        Label rollingTextLabel = GetParent().GetNode<Label>("RollingTextLabel");
+
+                        rollingTextLabel.Text += $"\nFrom {packetData.PeerId} - Type {packetData.PacketType} - {packetData.Message}";
                     }
                 }
             }
@@ -283,14 +287,14 @@ namespace Online
         [Rpc(MultiplayerApi.RpcMode.AnyPeer)]
         private void Ping()
         {
-            _pingTextBox.Text = $"Ping from {_peer.GetUniqueId()} at {DateTime.Now.ToString("HH:mm:ss")}";
+            _pingTextBox.Text = $"Ping from this machine: {_peer.GetUniqueId()} at {DateTime.Now.ToString("HH:mm:ss")}";
 
-            GD.Print($"Ping from {_peer.GetUniqueId()} at {DateTime.Now.ToString("HH:mm:ss")}");
+            GD.Print($"Ping from this machine: {_peer.GetUniqueId()} at {DateTime.Now.ToString("HH:mm:ss")}");
         }
        
         private void OnJoinLobbyButtonPressed()
         {
-            LineEdit lineEdit = GetParent().GetNode<LineEdit>("LineEdit");
+            LineEdit lineEdit = GetParent().GetNode<LineEdit>("LobbyLineEdit");
 
             PacketData packetData = new()
             {

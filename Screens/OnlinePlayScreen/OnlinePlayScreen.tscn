@@ -13,6 +13,12 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_le7c7")
 
+[node name="Client" type="Node" parent="." unique_id=2141451933]
+script = ExtResource("2_icspp")
+
+[node name="Server" type="Node" parent="." unique_id=1312200580]
+script = ExtResource("3_ptfuw")
+
 [node name="InputTimer" type="Timer" parent="." unique_id=1705835962]
 wait_time = 0.15
 one_shot = true
@@ -48,7 +54,15 @@ focus_mode = 1
 theme_override_font_sizes/font_size = 24
 text = "Start Game"
 
-[node name="Label" type="Label" parent="." unique_id=957813922]
+[node name="JoinLobbyButton" type="Button" parent="." unique_id=1818500983]
+layout_mode = 0
+offset_left = 218.0
+offset_top = 72.0
+offset_right = 497.0
+offset_bottom = 132.0
+text = "Join Lobby"
+
+[node name="LobbyLabel" type="Label" parent="." unique_id=957813922]
 layout_mode = 0
 offset_left = 161.0
 offset_top = 153.0
@@ -56,34 +70,20 @@ offset_right = 280.0
 offset_bottom = 211.0
 text = "Lobby"
 
-[node name="LineEdit" type="LineEdit" parent="." unique_id=1139775486]
+[node name="LobbyLineEdit" type="LineEdit" parent="." unique_id=1139775486]
 layout_mode = 0
 offset_left = 217.0
 offset_top = 153.0
 offset_right = 509.0
 offset_bottom = 184.0
 
-[node name="Client" type="Node" parent="." unique_id=2141451933]
-script = ExtResource("2_icspp")
-
-[node name="Server" type="Node" parent="." unique_id=1312200580]
-script = ExtResource("3_ptfuw")
-
 [node name="SendPacketButton" type="Button" parent="." unique_id=363891181]
 layout_mode = 0
 offset_left = 218.0
-offset_top = 283.0
+offset_top = 391.0
 offset_right = 497.0
-offset_bottom = 343.0
+offset_bottom = 451.0
 text = "Ping (to test RTC connection)"
-
-[node name="JoinLobbyButton" type="Button" parent="." unique_id=1818500983]
-layout_mode = 0
-offset_left = 218.0
-offset_top = 378.0
-offset_right = 497.0
-offset_bottom = 438.0
-text = "Join Lobby"
 
 [node name="PingTextLabel" type="Label" parent="." unique_id=202175689]
 layout_mode = 0
@@ -100,7 +100,15 @@ offset_top = 463.0
 offset_right = 503.0
 offset_bottom = 550.0
 
+[node name="RollingTextLabel" type="Label" parent="." unique_id=493554411]
+layout_mode = 0
+offset_left = 226.0
+offset_top = 230.0
+offset_right = 496.0
+offset_bottom = 372.0
+autowrap_mode = 2
+
 [connection signal="pressed" from="CreateServerButton" to="Server" method="OnCreateServerButtonPressed"]
 [connection signal="pressed" from="JoinServerButton" to="Client" method="OnJoinServerButtonPressed"]
-[connection signal="pressed" from="SendPacketButton" to="Client" method="OnSendPacketButtonPressed"]
 [connection signal="pressed" from="JoinLobbyButton" to="Client" method="OnJoinLobbyButtonPressed"]
+[connection signal="pressed" from="SendPacketButton" to="Client" method="OnSendPacketButtonPressed"]

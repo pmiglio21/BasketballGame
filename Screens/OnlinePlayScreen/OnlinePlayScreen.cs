@@ -160,7 +160,7 @@ namespace Screens
         private void OnConnectedToServer()
         {
             GD.Print($"Connected to server");
-            RpcId(1, nameof(SendPlayerInformationToServer), GetNode<LineEdit>("LineEdit").Text, Multiplayer.GetUniqueId());
+            RpcId(1, nameof(SendPlayerInformationToServer), GetNode<LineEdit>("LobbyLineEdit").Text, Multiplayer.GetUniqueId());
         }
 
         /// <summary>
@@ -179,7 +179,7 @@ namespace Screens
         {
             CreateServer();
 
-            SendPlayerInformationToServer(GetNode<LineEdit>("LineEdit").Text, 1);
+            SendPlayerInformationToServer(GetNode<LineEdit>("LobbyLineEdit").Text, 1);
         }
 
         private void CreateServer()

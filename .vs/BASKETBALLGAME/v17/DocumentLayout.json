@@ -3,16 +3,16 @@
   "WorkspaceRootPath": "C:\\Users\\pmigl\\OneDrive\\Documents\\GitHub\\BasketballGame\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{59D50053-CA9E-4119-921D-F3733D2C85E7}|BasketballGame.csproj|c:\\users\\pmigl\\onedrive\\documents\\github\\basketballgame\\online\\webrtcclient.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{59D50053-CA9E-4119-921D-F3733D2C85E7}|BasketballGame.csproj|solutionrelative:online\\webrtcclient.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{59D50053-CA9E-4119-921D-F3733D2C85E7}|BasketballGame.csproj|c:\\users\\pmigl\\onedrive\\documents\\github\\basketballgame\\screens\\onlineplayscreen\\onlineplayscreen.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{59D50053-CA9E-4119-921D-F3733D2C85E7}|BasketballGame.csproj|solutionrelative:screens\\onlineplayscreen\\onlineplayscreen.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{59D50053-CA9E-4119-921D-F3733D2C85E7}|BasketballGame.csproj|c:\\users\\pmigl\\onedrive\\documents\\github\\basketballgame\\online\\webrtcserver.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{59D50053-CA9E-4119-921D-F3733D2C85E7}|BasketballGame.csproj|solutionrelative:online\\webrtcserver.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{59D50053-CA9E-4119-921D-F3733D2C85E7}|BasketballGame.csproj|c:\\users\\pmigl\\onedrive\\documents\\github\\basketballgame\\screens\\onlineplayscreen\\onlineplayscreen.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{59D50053-CA9E-4119-921D-F3733D2C85E7}|BasketballGame.csproj|solutionrelative:screens\\onlineplayscreen\\onlineplayscreen.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{59D50053-CA9E-4119-921D-F3733D2C85E7}|BasketballGame.csproj|c:\\users\\pmigl\\onedrive\\documents\\github\\basketballgame\\online\\webrtcclient.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{59D50053-CA9E-4119-921D-F3733D2C85E7}|BasketballGame.csproj|solutionrelative:online\\webrtcclient.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -22,17 +22,17 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 2,
+          "SelectedChildIndex": 0,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 0,
               "Title": "OnlinePlayScreen.cs",
               "DocumentMoniker": "C:\\Users\\pmigl\\OneDrive\\Documents\\GitHub\\BasketballGame\\Screens\\OnlinePlayScreen\\OnlinePlayScreen.cs",
               "RelativeDocumentMoniker": "Screens\\OnlinePlayScreen\\OnlinePlayScreen.cs",
               "ToolTip": "C:\\Users\\pmigl\\OneDrive\\Documents\\GitHub\\BasketballGame\\Screens\\OnlinePlayScreen\\OnlinePlayScreen.cs",
               "RelativeToolTip": "Screens\\OnlinePlayScreen\\OnlinePlayScreen.cs",
-              "ViewState": "AQIAAAwAAAAAAAAAAAAAAB0AAAAAAAAA",
+              "ViewState": "AQIAALAAAAAAAAAAAAAUwLUAAABKAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-09-23T17:19:00.183Z",
               "EditorCaption": ""
@@ -45,20 +45,20 @@
               "RelativeDocumentMoniker": "Online\\WebRtcServer.cs",
               "ToolTip": "C:\\Users\\pmigl\\OneDrive\\Documents\\GitHub\\BasketballGame\\Online\\WebRtcServer.cs",
               "RelativeToolTip": "Online\\WebRtcServer.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAHcAAAA9AAAA",
+              "ViewState": "AQIAAHgAAAAAAAAAAAAiwH4AAABMAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-09-22T17:50:57.661Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 2,
               "Title": "WebRtcClient.cs",
               "DocumentMoniker": "C:\\Users\\pmigl\\OneDrive\\Documents\\GitHub\\BasketballGame\\Online\\WebRtcClient.cs",
               "RelativeDocumentMoniker": "Online\\WebRtcClient.cs",
               "ToolTip": "C:\\Users\\pmigl\\OneDrive\\Documents\\GitHub\\BasketballGame\\Online\\WebRtcClient.cs",
               "RelativeToolTip": "Online\\WebRtcClient.cs",
-              "ViewState": "AQIAAIsAAAAAAAAAAAAEwKcAAABlAAAA",
+              "ViewState": "AQIAAB8BAAAAAAAAAAAUwCQBAAAdAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-09-22T17:50:17.564Z",
               "EditorCaption": ""
