@@ -10,6 +10,7 @@ namespace Online
     {
         PeerConnected,
         PeerDisconnected,
+        RtcPeerConnected,
         LobbyJoined,
         JoiningLobby,
         SyncLobbyPlayers,

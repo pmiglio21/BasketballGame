@@ -9,6 +9,8 @@ namespace Online
 {
     public class PacketData
     {
+        public string SendingFrom;
+
         public string Message;
         public PacketType PacketType;
         public string PlayerId;

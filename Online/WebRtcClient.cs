@@ -3,12 +3,7 @@ using Godot.Collections;
 using Levels;
 using Screens;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Intrinsics.Arm;
-using System.Text;
-using System.Text.Json;
-using System.Threading.Tasks;
 
 namespace Online
 {
@@ -42,6 +37,15 @@ namespace Online
         private void OnPeerConnected(long playerId)
         {
             GD.Print($"RTC Peer Connected: {playerId}");
+
+            PacketData packetData = new()
+            {
+                SendingFrom = "Client "+ _peer.GetUniqueId().ToString(),
+                PacketType = PacketType.RtcPeerConnected,
+                PlayerId = playerId.ToString()
+            };
+
+            SendPacketData(packetData);
         }
 
         private void OnPeerDisconnected(long playerId)
@@ -86,6 +90,9 @@ namespace Online
 
                             _hostId = Int32.Parse(packetData.HostId);
                             _lobbyId = packetData.LobbyId;
+
+                            LineEdit lineEdit = GetParent().GetNode<LineEdit>("LobbyLineEdit");
+                            lineEdit.Text = _lobbyId;
 
                             CreatePeerConnection(packetData.PlayerId);
                         }
@@ -135,9 +142,9 @@ namespace Online
                             }
                         }
 
-                        Label rollingTextLabel = GetParent().GetNode<Label>("RollingTextLabel");
+                        RichTextLabel rollingTextLabel = GetParent().GetNode<RichTextLabel>("RollingTextLabel");
 
-                        rollingTextLabel.Text += $"\nFrom {packetData.PeerId} - Type {packetData.PacketType} - {packetData.Message}";
+                        rollingTextLabel.Text += $"\n- From {packetData.SendingFrom} - Type {packetData.PacketType} - Message: {packetData.Message}";
                     }
                 }
             }
@@ -219,6 +226,7 @@ namespace Online
         {
             PacketData packetData = new()
             {
+                SendingFrom = "Client "+_peer.GetUniqueId().ToString(),
                 PacketType = PacketType.SendingOffer,
                 PeerId = playerId,
                 OriginalPeerId = _peer.GetUniqueId().ToString(),
@@ -233,6 +241,7 @@ namespace Online
         {
             PacketData packetData = new()
             {
+                SendingFrom = "Client " + _peer.GetUniqueId().ToString(),
                 PacketType = PacketType.SendingAnswer,
                 PeerId = playerId,
                 OriginalPeerId = _peer.GetUniqueId().ToString(),
@@ -247,6 +256,7 @@ namespace Online
         {
             PacketData packetData = new()
             {
+                SendingFrom = "Client " + _peer.GetUniqueId().ToString(),
                 PacketType = PacketType.IceCandidateCreated,
                 PeerId = playerId,
                 OriginalPeerId = _peer.GetUniqueId().ToString(),
@@ -298,6 +308,7 @@ namespace Online
 
             PacketData packetData = new()
             {
+                SendingFrom = "Client " + _peer.GetUniqueId().ToString(),
                 Message = $"Client {_peer.GetUniqueId()} joining lobby",
                 PacketType = PacketType.JoiningLobby,
                 PlayerId = _peer.GetUniqueId().ToString(),

@@ -57,9 +57,9 @@ namespace Online
                         SendPacketData(packetData, long.Parse(packetData.PeerId));
                     }
 
-                    Label rollingTextLabel = GetParent().GetNode<Label>("RollingTextLabel");
+                    RichTextLabel rollingTextLabel = GetParent().GetNode<RichTextLabel>("RollingTextLabel");
 
-                    rollingTextLabel.Text += $"\nFrom {packetData.PeerId} - Type {packetData.PacketType} - {packetData.Message}";
+                    rollingTextLabel.Text += $"\n- From {packetData.SendingFrom} - Type {packetData.PacketType} - Message: {packetData.Message}";
                 }
             }
         }
@@ -84,6 +84,7 @@ namespace Online
             {
                 PacketData lobbyJoinedPacketData = new PacketData
                 {
+                    SendingFrom = "Server " + _peer.GetUniqueId().ToString(),
                     PacketType = PacketType.LobbyJoined,
                     PlayerId = userId.ToString(),
                     HostId = _lobbies[lobbyId].HostId.ToString(),
@@ -95,6 +96,7 @@ namespace Online
 
                 PacketData lobbyJoinedPacketData2 = new PacketData
                 {
+                    SendingFrom = "Server " + _peer.GetUniqueId().ToString(),
                     PacketType = PacketType.LobbyJoined,
                     PlayerId = playerId,
                     HostId = _lobbies[lobbyId].HostId.ToString(),
@@ -105,6 +107,7 @@ namespace Online
 
                 PacketData syncLobbyPacketData = new PacketData
                 {
+                    SendingFrom = "Server " + _peer.GetUniqueId().ToString(),
                     PacketType = PacketType.SyncLobbyPlayers,
                     //Message = $"User {userId} connected to lobby {lobbyId}",
                     PlayerId = userId.ToString(),
@@ -118,6 +121,7 @@ namespace Online
 
             PacketData lobbyJoinedPacketData3 = new PacketData
             {
+                SendingFrom = "Server " + _peer.GetUniqueId().ToString(),
                 PacketType = PacketType.LobbyJoined,
                 Message = $"User {userId} connected to lobby {lobbyId}",
                 PlayerId = userId.ToString(),
@@ -175,6 +179,7 @@ namespace Online
 
             PacketData packetData = new PacketData
             {
+                SendingFrom = "Server " + _peer.GetUniqueId().ToString(),
                 PacketType = PacketType.PeerConnected,
                 Message = "Peer connected",
                 PlayerId = _users.Last().ToString()

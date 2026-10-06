@@ -100,13 +100,12 @@ offset_top = 463.0
 offset_right = 503.0
 offset_bottom = 550.0
 
-[node name="RollingTextLabel" type="Label" parent="." unique_id=493554411]
+[node name="RollingTextLabel" type="RichTextLabel" parent="." unique_id=1955242128]
 layout_mode = 0
-offset_left = 226.0
-offset_top = 230.0
-offset_right = 496.0
-offset_bottom = 372.0
-autowrap_mode = 2
+offset_left = 221.0
+offset_top = 225.0
+offset_right = 493.0
+offset_bottom = 374.0
 
 [connection signal="pressed" from="CreateServerButton" to="Server" method="OnCreateServerButtonPressed"]
 [connection signal="pressed" from="JoinServerButton" to="Client" method="OnJoinServerButtonPressed"]
